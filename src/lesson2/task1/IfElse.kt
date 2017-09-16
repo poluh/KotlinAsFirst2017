@@ -50,6 +50,7 @@ fun ageDescription(age: Int): String {
 }
 
 
+
 /**
  * Простая
  *
