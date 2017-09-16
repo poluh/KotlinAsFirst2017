@@ -62,8 +62,14 @@ fun seconds(hours: Int, minutes: Int, seconds: Int): Int = hours * 3600 + minute
  * Определить длину того же отрезка в метрах (в данном случае 18.98).
  * 1 сажень = 3 аршина = 48 вершков, 1 вершок = 4.445 см.
  */
-fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double = 4.445 * 48 * 3 * sagenes +
-        4.445 * 48 * arshins + 4.445 * vershoks
+fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double{
+
+    val oneLen = 0.04445
+    val endLen = oneLen * 3 * 48 * sagenes + oneLen * 16 * arshins + oneLen * vershoks
+
+    return endLen
+    
+}
 
 /**
  * Тривиальная
@@ -124,10 +130,17 @@ fun accountInThreeYears(initial: Int, percent: Int): Double = initial * sqrThree
 fun numberRevert(number: Int): Int
 {
 
-    val startNum = number%100 + 100
-    val middleNum = (number/10) + 10
-    val endNum = number/100
+    var numEnd = 0
+    var num = number
 
-    return (startNum + middleNum + endNum)
+    while (num > 0) {
+
+        val digit = number % 10
+        num = num / 10
+        numEnd = numEnd * 10
+        numEnd = numEnd + digit
+
+    }
+    return numEnd
 
 }
