@@ -122,4 +122,3 @@ fun accountInThreeYears(initial: Int, percent: Int): Double = initial * sqrThree
  */
 fun numberRevert(number: Int): Int = number % 10 * 100 + number / 10 % 10 * 10 + number / 100
 
-}
