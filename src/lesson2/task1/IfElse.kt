@@ -2,14 +2,14 @@
 
 package lesson2.task1
 
-import lesson1.task1.discriminant
+//import lesson1.task1.discriminant
 
 /**
  * Пример
  *
  * Найти наименьший корень биквадратного уравнения ax^4 + bx^2 + c = 0
  */
-fun minBiRoot(a: Double, b: Double, c: Double): Double {
+/*fun minBiRoot(a: Double, b: Double, c: Double): Double {
     // 1: в главной ветке if выполняется НЕСКОЛЬКО операторов
     if (a == 0.0) {
         if (b == 0.0) return Double.NaN // ... и ничего больше не делать
@@ -27,7 +27,7 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
     if (y3 < 0.0) return Double.NaN // 6
     return -Math.sqrt(y3)           // 7
 }
-
+*/
 /**
  * Простая
  *
