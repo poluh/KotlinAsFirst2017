@@ -2,7 +2,11 @@
 
 package lesson2.task1
 
+import java.lang.Math.*
+
 //import lesson1.task1.discriminant
+
+fun sqr(x: Double): Double = x * x
 
 /**
  * Пример
@@ -50,7 +54,6 @@ fun ageDescription(age: Int): String {
 }
 
 
-
 /**
  * Простая
  *
@@ -60,7 +63,21 @@ fun ageDescription(age: Int): String {
  */
 fun timeForHalfWay(t1: Double, v1: Double,
                    t2: Double, v2: Double,
-                   t3: Double, v3: Double): Double = TODO()
+                   t3: Double, v3: Double): Double {
+
+    val wayFirst = (t1 * v1 + t2 * v2 + t3 * v3) / 2.0
+    val waySec= t1 * v1
+    val s2 = t2 * v2
+
+    if (wayFirst < waySec)
+        return wayFirst / v1
+    else
+        if (wayFirst in waySec..(waySec + s2))
+            return t1 + (wayFirst - waySec) / v2
+        else
+            return t1 + t2 + (wayFirst - waySec - s2) / v3
+
+}
 
 /**
  * Простая
@@ -100,7 +117,19 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
  */
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
-                          bishopX: Int, bishopY: Int): Int = TODO()
+                          bishopX: Int, bishopY: Int): Int{
+
+    if (((kingX == rookX) || (kingY == rookY)) && ((kingX == abs(bishopX - (bishopX - kingX))) && (kingY == abs(bishopY - (bishopY - kingY)))))
+        return 3
+    else
+        if (((kingX != rookX) || (kingY != rookY)) && ((kingX == abs(bishopX - (bishopX - kingX))) && (kingY == abs(bishopY - (bishopY - kingY)))))
+            return 2
+        else
+            if (((kingX == rookX) || (kingY == rookY)) && ((kingX != abs(bishopX - (bishopX - kingX))) || (kingY != abs(bishopY - (bishopY - kingY)))))
+                return 1
+            else
+                return 0
+}
 
 /**
  * Простая
@@ -110,7 +139,21 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+
+    if ((sqr(a) + sqr(b) == sqr(c)) || (sqr(b) + sqr(c) == sqr(a)) || (sqr(c) + sqr(a) == sqr(b)))
+        return 1
+    else
+        if ((sqr(a) + sqr(b) > sqr(c)) || (sqr(b) + sqr(c) > sqr(a)) || (sqr(c) + sqr(a) > sqr(b)))
+            return 0
+        else
+            if ((sqr(a) + sqr(b) < sqr(c)) || (sqr(b) + sqr(c) < sqr(a)) || (sqr(c) + sqr(a) < sqr(b)))
+                return 2
+            else
+                return -1
+
+}
+
 
 /**
  * Средняя
@@ -120,4 +163,32 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = TODO()
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int{
+
+    var lan: Int
+
+    if (d in a..b)
+        lan = d - a
+    else
+        if (c in a..b)
+            lan = b - c
+        else
+            lan = -1
+
+
+    return lan
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
