@@ -61,7 +61,7 @@ fun seconds(hours: Int, minutes: Int, seconds: Int): Int = hours * 3600 + minute
  *
  *
  */
-fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double = (sagenes * 4.445 * 48 + arshins * 4.445 * 16 + vershoks * 4.445) / 100
+fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double = (sagenes * 48 + arshins * 16 + vershoks) * 0.04445
 
 
 
@@ -96,14 +96,7 @@ fun thirdDigit(number: Int): Int = (number / 100) % 10
  * прибыл на станцию назначения в h2 часов m2 минут того же дня (например в 13:01).
  * Определите время поезда в пути в минутах (в данном случае 216).
  */
-fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int {
-
-    val hoursDif = hoursArrive - hoursDepart
-    val minutesDif = minutesArrive - minutesDepart
-
-    return (hoursDif * 60 + minutesDif)
-
-}
+fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int = ((hoursArrive - hoursDepart) * 60 + minutesArrive - minutesDepart)
 
 /**
  * Простая

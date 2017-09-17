@@ -4,7 +4,7 @@ package lesson2.task1
 
 import java.lang.Math.*
 
-//import lesson1.task1.discriminant
+import lesson1.task1.discriminant
 
 fun sqr(x: Double): Double = x * x
 
@@ -13,7 +13,7 @@ fun sqr(x: Double): Double = x * x
  *
  * Найти наименьший корень биквадратного уравнения ax^4 + bx^2 + c = 0
  */
-/*fun minBiRoot(a: Double, b: Double, c: Double): Double {
+fun minBiRoot(a: Double, b: Double, c: Double): Double {
     // 1: в главной ветке if выполняется НЕСКОЛЬКО операторов
     if (a == 0.0) {
         if (b == 0.0) return Double.NaN // ... и ничего больше не делать
@@ -31,7 +31,7 @@ fun sqr(x: Double): Double = x * x
     if (y3 < 0.0) return Double.NaN // 6
     return -Math.sqrt(y3)           // 7
 }
-*/
+
 /**
  * Простая
  *
@@ -65,17 +65,17 @@ fun timeForHalfWay(t1: Double, v1: Double,
                    t2: Double, v2: Double,
                    t3: Double, v3: Double): Double {
 
-    val wayFirst = (t1 * v1 + t2 * v2 + t3 * v3) / 2.0
-    val waySec= t1 * v1
-    val s2 = t2 * v2
+    val halfWay = (t1 * v1 + t2 * v2 + t3 * v3) / 2.0
+    val firstWay = t1 * v1
+    val secondWay = t2 * v2
 
-    if (wayFirst < waySec)
-        return wayFirst / v1
+    if (halfWay < firstWay)
+        return halfWay / v1
     else
-        if (wayFirst in waySec..(waySec + s2))
-            return t1 + (wayFirst - waySec) / v2
+        if (halfWay in firstWay..(firstWay + secondWay))
+            return t1 + (halfWay - firstWay) / v2
         else
-            return t1 + t2 + (wayFirst - waySec - s2) / v3
+            return t1 + t2 + (halfWay - firstWay - secondWay) / v3
 
 }
 
@@ -117,18 +117,22 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
  */
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
-                          bishopX: Int, bishopY: Int): Int{
+                          bishopX: Int, bishopY: Int): Int {
 
-    if (((kingX == rookX) || (kingY == rookY)) && ((kingX == abs(bishopX - (bishopX - kingX))) && (kingY == abs(bishopY - (bishopY - kingY)))))
+    val imaginaryX = Math.abs(kingX - bishopX)
+    val imaginaryY = Math.abs(kingY - bishopY)
+
+
+    if ((kingX == rookX || kingY == rookY) && (imaginaryX == imaginaryY))
         return 3
     else
-        if (((kingX != rookX) || (kingY != rookY)) && ((kingX == abs(bishopX - (bishopX - kingX))) && (kingY == abs(bishopY - (bishopY - kingY)))))
-            return 2
+        if ((kingX == rookX || kingY == rookY) && (imaginaryX != imaginaryY))
+            return 1
         else
-            if (((kingX == rookX) || (kingY == rookY)) && ((kingX != abs(bishopX - (bishopX - kingX))) || (kingY != abs(bishopY - (bishopY - kingY)))))
-                return 1
-            else
-                return 0
+            if ((kingX != rookX && kingY != rookY) && (imaginaryX == imaginaryY))
+                return 2
+            else return 0
+
 }
 
 /**
@@ -141,19 +145,24 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
 
-    if ((sqr(a) + sqr(b) == sqr(c)) || (sqr(b) + sqr(c) == sqr(a)) || (sqr(c) + sqr(a) == sqr(b)))
-        return 1
+
+    val sqrA = sqr(a)
+    val sqrB = sqr(b)
+    val sqrC = sqr(c)
+
+
+    if (a + b < c || a + c < b || b + c < a)
+        return -1
     else
-        if ((sqr(a) + sqr(b) > sqr(c)) || (sqr(b) + sqr(c) > sqr(a)) || (sqr(c) + sqr(a) > sqr(b)))
-            return 0
+        if ((sqrA == sqrB + sqrC) || (sqrB == sqrA + sqrC) || (sqrC == sqrB + sqrA))
+            return 1
         else
-            if ((sqr(a) + sqr(b) < sqr(c)) || (sqr(b) + sqr(c) < sqr(a)) || (sqr(c) + sqr(a) < sqr(b)))
+            if ((sqrA > sqrB + sqrC) || (sqrB > sqrC + sqrA) || (sqrC > sqrB + sqrA))
                 return 2
             else
-                return -1
+                return 0
 
 }
-
 
 /**
  * Средняя
@@ -163,21 +172,25 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int{
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
 
-    var lan: Int
-
-    if (d in a..b)
-        lan = d - a
+    if (b >= c && a <= c && b <= d)
+        return b - c
     else
-        if (c in a..b)
-            lan = b - c
+        if (a <= d && c <= a && b >= d)
+            return d - a
         else
-            lan = -1
+            if (a >= c && b <= d)
+                return b - a
+            else
+                if (a <= c && b >= d)
+                    return d - c
+                else
+                    return -1
 
 
-    return lan
 }
+
 
 
 
