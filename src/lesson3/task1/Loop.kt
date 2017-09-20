@@ -330,12 +330,12 @@ fun isPalindrome(n: Int): Boolean = (revert(n) == n)
 fun hasDifferentDigits(n: Int): Boolean {
 
 
-    var nForChange = n
-    val buf = n % 10
+    var nForChange = Math.abs(n)
+    val buf = nForChange % 10
 
-    while (nForChange >= 0) {
+    if (n in -1..9) return true
 
-        if (n in 0..9) break
+    while (nForChange > 0) {
 
         if ((nForChange % 10) != buf) return false
 
@@ -355,23 +355,22 @@ fun hasDifferentDigits(n: Int): Boolean {
  */
 fun squareSequenceDigit(n: Int): Int {
 
-    var num = 0
-    var answer = 0
-    var i = 0
+    var sequence = " "
+    var i = 1.0
 
-    while (num < n) {
+    while (true) {
+
+        sequence += (Math.pow(i, 2.0)).toString()
+
         i++
-        num = num + squareSequenceDigit(i * i)
-    }
 
-    answer = i * i
-    for (i in n..num - 1) {
-        answer = answer / 10
+        if (sequence[n] != null) {
+            return sequence[n].toInt()
+        }
+
     }
-    return (answer % 10)
 
 }
-
 /**
  * Сложная
  *
