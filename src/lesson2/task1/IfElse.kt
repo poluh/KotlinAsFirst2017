@@ -151,16 +151,12 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     val sqrC = sqr(c)
 
 
-    if (a + b < c || a + c < b || b + c < a)
-        return -1
-    else
-        if ((sqrA == sqrB + sqrC) || (sqrB == sqrA + sqrC) || (sqrC == sqrB + sqrA))
-            return 1
-        else
-            if ((sqrA > sqrB + sqrC) || (sqrB > sqrC + sqrA) || (sqrC > sqrB + sqrA))
-                return 2
-            else
-                return 0
+    when {
+        (a + b < c || a + c < b || b + c < a) -> return -1
+        (sqrA == sqrB + sqrC || sqrB == sqrA + sqrC || sqrC == sqrB + sqrA) -> return 1
+        (sqrA > sqrB + sqrC || sqrB > sqrC + sqrA || sqrC > sqrB + sqrA) -> return 2
+        else -> return 0
+    }
 
 }
 

@@ -2,6 +2,17 @@
 
 package lesson3.task1
 
+fun seq(n: Int): Int {
+
+    var answer = 0
+
+    for (i in 1..n)
+        answer += i * i * (Math.pow(10.0, digitNumber(i*i).toDouble())).toInt()
+
+    return answer
+
+}
+
 /**
  * Пример
  *
@@ -127,9 +138,9 @@ fun lcm(m: Int, n: Int): Int {
 
         while (numM != numN) {
             if (numM > numN) {
-                numM = numM - numN
+                numM -= numN
             } else {
-                numN = numN - numM
+                numN -= numM
             }
         }
 
@@ -187,16 +198,14 @@ fun maxDivisor(n: Int): Int {
 fun isCoPrime(m: Int, n: Int): Boolean {
 
 
-    var total = 0
-
     for (i in 1..(n - 1)) {
 
         if (((n % i) == 0) && ((m % i) == 0)) {
-            total = i
+            return true
         }
     }
 
-    return (total == 1)
+    return false
 
 }
 
@@ -210,17 +219,16 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
 
-    var total = 0
 
     for (i in m..n) {
 
-        if ((i % (Math.sqrt(i.toDouble())) == 0.0)) {
-            total += 1
+        if ((Math.sqrt(i.toDouble()) % 1) == 0.0) {
+            return true
         }
 
     }
 
-    return (total > 0)
+    return false
 
 }
 
@@ -233,22 +241,23 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
  */
 fun sin(x: Double, eps: Double): Double {        //Не понял, что сделать с cos и sin, выдает NaN при тестировании, идей нет
 
-    var i = 0
-    var sinX = x
-    var rememberNum = x
-
+    var i = 1
+    var sinX = 0.0
+    var rememberNum = 1.0
 
     while (Math.abs(rememberNum) > eps) {
 
-        i++
+
 
         rememberNum = Math.pow(x, i * 2.0 + 1) / factorial(i * 2 + 1)
 
         if ((i % 2) == 1) {
-            sinX = sinX - rememberNum
+            sinX -= rememberNum
         } else {
-            sinX = sinX + rememberNum
+            sinX += rememberNum
         }
+
+        i++
 
     }
     return sinX
@@ -327,13 +336,11 @@ fun isPalindrome(n: Int): Boolean = (revert(n) == n)
  * Для заданного числа n определить, содержит ли оно различающиеся цифры.
  * Например, 54 и 323 состоят из разных цифр, а 111 и 0 из одинаковых.
  */
-fun hasDifferentDigits(n: Int): Boolean {
+fun hasDifferentDigits(n: Int): Boolean { //Тоже самое, что и с sin/cos
 
 
     var nForChange = Math.abs(n)
     val buf = nForChange % 10
-
-    if (n in -1..9) return true
 
     while (nForChange > 0) {
 
@@ -353,24 +360,8 @@ fun hasDifferentDigits(n: Int): Boolean {
  * 149162536496481100121144...
  * Например, 2-я цифра равна 4, 7-я 5, 12-я 6.
  */
-fun squareSequenceDigit(n: Int): Int {
+fun squareSequenceDigit(n: Int): Int = TODO()
 
-    var sequence = " "
-    var i = 1.0
-
-    while (true) {
-
-        sequence += (Math.pow(i, 2.0)).toString()
-
-        i++
-
-        if (sequence[n] != null) {
-            return sequence[n].toInt()
-        }
-
-    }
-
-}
 /**
  * Сложная
  *
