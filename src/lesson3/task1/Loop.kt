@@ -130,7 +130,7 @@ fun lcm(m: Int, n: Int): Int {
 
     var numM = m
     var numN = n
-    var prod = n * m
+    val prod = n * m
 
     if (numM == numN) {
         return numM

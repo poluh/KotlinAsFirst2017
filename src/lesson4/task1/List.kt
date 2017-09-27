@@ -1,4 +1,5 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson4.task1
 
 import lesson1.task1.discriminant
@@ -225,13 +226,15 @@ fun polynom(p: List<Double>, x: Double): Double {
 
     if (p != listOf<Double>()) {
 
+
+        answer += p[0]
+
         for (i in 1 until p.size) {
 
             answer += p[i] * Math.pow(x, i.toDouble())
 
         }
 
-        answer += p[0]
 
     }
 
@@ -252,18 +255,16 @@ fun polynom(p: List<Double>, x: Double): Double {
  */
 fun accumulate(list: MutableList<Double>): MutableList<Double> {
 
-    var amountOfPrevMem = 1.0
+    var amountOfPrevMem = 0.0
 
     if (list != listOf<Double>()) {
 
-        amountOfPrevMem = list[0]
 
-        for (i in 1 until list.size) {
-
-            list[i] += amountOfPrevMem
+        for (i in 0 until list.size) {
 
             amountOfPrevMem += list[i]
 
+            list[i] = amountOfPrevMem
 
         }
 
@@ -280,7 +281,29 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun factorize(n: Int): List<Int> = TODO()
+fun factorize(n: Int): List<Int> {
+    var nForMember = n
+    val answer = mutableListOf<Int>()
+    var i = 2
+
+    while (i <= nForMember) {
+
+        if (nForMember % i == 0) {
+
+            answer += i
+            nForMember /= i
+
+        } else {
+
+            i++
+
+        }
+
+    }
+
+    return answer.sorted()
+
+}
 
 /**
  * Сложная
@@ -288,7 +311,7 @@ fun factorize(n: Int): List<Int> = TODO()
  * Разложить заданное натуральное число n > 1 на простые множители.
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  */
-fun factorizeToString(n: Int): String = TODO()
+fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*")
 
 /**
  * Средняя
@@ -297,7 +320,20 @@ fun factorizeToString(n: Int): String = TODO()
  * Результат перевода вернуть в виде списка цифр в base-ичной системе от старшей к младшей,
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
-fun convert(n: Int, base: Int): List<Int> = TODO()
+fun convert(n: Int, base: Int): List<Int> {
+
+    var nForMember = n
+    var list = listOf<Int>()
+
+    while (nForMember > 0) {
+
+        list += nForMember % base
+        nForMember /= base
+
+    }
+    return list.reversed()
+
+}
 
 /**
  * Сложная
@@ -307,7 +343,27 @@ fun convert(n: Int, base: Int): List<Int> = TODO()
  * строчными буквами: 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
-fun convertToString(n: Int, base: Int): String = TODO()
+fun convertToString(n: Int, base: Int): String {
+
+    val list = convert(n, base)
+    var answerList = mutableListOf<String>()
+
+    for (i in 0 until list.size) {
+
+        if (list[i] > 9) {
+
+            answerList.add(i, (87 + list[i]).toChar().toString())
+
+        } else {
+
+            answerList.add(i, list[i].toString())
+
+        }
+
+    }
+
+    return answerList.joinToString(separator = "")
+}
 
 /**
  * Средняя
@@ -316,7 +372,21 @@ fun convertToString(n: Int, base: Int): String = TODO()
  * из системы счисления с основанием base в десятичную.
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
-fun decimal(digits: List<Int>, base: Int): Int = TODO()
+fun decimal(digits: List<Int>, base: Int): Int {
+
+
+    var answer = 0.0
+    val size = (digits.size - 1).toDouble()
+    val baseDouble = base.toDouble()
+
+    for (i in size.toInt() downTo 0) {
+
+        answer += (digits[i] * Math.pow(baseDouble, (size - i)))
+
+    }
+
+    return answer.toInt()
+}
 
 /**
  * Сложная
@@ -327,7 +397,28 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: str = "13c", base = 14 -> 250
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+
+    var list = listOf<Int>()
+
+    for (i in 0 until str.length) {
+
+        if (str[i] in '0'..'9') {
+
+            list += (str[i]).toInt() - 48
+
+        }
+        else {
+
+            list += (str[i]).toInt() - 87
+
+        }
+
+    }
+
+    return decimal(list, base)
+
+}
 
 /**
  * Сложная
