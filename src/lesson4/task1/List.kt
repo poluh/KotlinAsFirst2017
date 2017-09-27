@@ -325,10 +325,19 @@ fun convert(n: Int, base: Int): List<Int> {
     var nForMember = n
     var list = listOf<Int>()
 
-    while (nForMember > 0) {
+    if (n > 0) {
 
-        list += nForMember % base
-        nForMember /= base
+        while (nForMember > 0) {
+
+            list += nForMember % base
+            nForMember /= base
+
+        }
+
+    }
+    else {
+
+        list += 0
 
     }
     return list.reversed()
@@ -348,19 +357,28 @@ fun convertToString(n: Int, base: Int): String {
     val list = convert(n, base)
     var answerList = mutableListOf<String>()
 
-    for (i in 0 until list.size) {
+    if (n > 0) {
 
-        if (list[i] > 9) {
+        for (i in 0 until list.size) {
 
-            answerList.add(i, (87 + list[i]).toChar().toString())
+            if (list[i] > 9) {
 
-        } else {
+                answerList.add(i, (87 + list[i]).toChar().toString())
 
-            answerList.add(i, list[i].toString())
+            } else {
+
+                answerList.add(i, list[i].toString())
+
+            }
 
         }
+    }
+    else {
+
+        answerList.add(0, "0")
 
     }
+
 
     return answerList.joinToString(separator = "")
 }

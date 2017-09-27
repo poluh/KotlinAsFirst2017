@@ -1,4 +1,5 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson5.task1
 
 /**
@@ -48,12 +49,10 @@ fun main(args: Array<String>) {
         val seconds = timeStrToSeconds(line)
         if (seconds == -1) {
             println("Введённая строка $line не соответствует формату ЧЧ:ММ:СС")
-        }
-        else {
+        } else {
             println("Прошло секунд с начала суток: $seconds")
         }
-    }
-    else {
+    } else {
         println("Достигнут <конец файла> в процессе чтения строки. Программа прервана")
     }
 }
@@ -66,7 +65,27 @@ fun main(args: Array<String>) {
  * День и месяц всегда представлять двумя цифрами, например: 03.04.2011.
  * При неверном формате входной строки вернуть пустую строку
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun dateStrToDigit(str: String): String {
+
+    val customStr = str.split(" ")
+    var correctStr = ""
+    val monthsArr =
+            listOf<String>("января", "февраля", "марта", "апреля", "июня", "июля",
+                    "августа", "сентября", "октября", "ноября", "декабря")
+
+    if (customStr.size == 2) {
+
+        for (partStr in customStr) {
+
+
+
+        }
+
+    }
+
+    return correctStr
+
+}
 
 /**
  * Средняя

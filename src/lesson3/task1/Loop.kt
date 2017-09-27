@@ -197,15 +197,25 @@ fun maxDivisor(n: Int): Int {
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
 
+    var numN = n
+    var numM = m
 
-    for (i in 1..(n - 1)) {
+    while ((numM != 0) && (numN != 0)) {
 
-        if (((n % i) == 0) && ((m % i) == 0)) {
-            return true
+        if (numM > numN) {
+
+            numM %= numN
+
         }
+        else {
+
+            numN %= numM
+
+        }
+
     }
 
-    return false
+    return ((numM + numN) == 1)
 
 }
 
@@ -336,22 +346,8 @@ fun isPalindrome(n: Int): Boolean = (revert(n) == n)
  * Для заданного числа n определить, содержит ли оно различающиеся цифры.
  * Например, 54 и 323 состоят из разных цифр, а 111 и 0 из одинаковых.
  */
-fun hasDifferentDigits(n: Int): Boolean { //Тоже самое, что и с sin/cos
+fun hasDifferentDigits(n: Int): Boolean = !(digitCountInNumber(n, (n % 10)) == digitNumber(n))
 
-
-    var nForChange = Math.abs(n)
-    val buf = nForChange % 10
-
-    while (nForChange > 0) {
-
-        if ((nForChange % 10) != buf) return false
-
-        nForChange /= 10
-
-    }
-
-    return true
-}
 
 /**
  * Сложная
