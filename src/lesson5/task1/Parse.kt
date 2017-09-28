@@ -68,22 +68,41 @@ fun main(args: Array<String>) {
 fun dateStrToDigit(str: String): String {
 
     val customStr = str.split(" ")
-    var correctStr = ""
     val monthsArr =
-            listOf<String>("января", "февраля", "марта", "апреля", "июня", "июля",
+            listOf<String>("января", "февраля", "марта", "апреля", "мая", "июня", "июля",
                     "августа", "сентября", "октября", "ноября", "декабря")
-
-    if (customStr.size == 2) {
-
-        for (partStr in customStr) {
-
+    val day: String
+    val year: String
+    var month = ""
 
 
-        }
 
-    }
+    if (customStr.size == 3) {
+        if (customStr[0].toInt() in 1..31) {
 
-    return correctStr
+            day = customStr[0]
+            year = customStr[2]
+
+            for (i in 0..11) {
+
+                if (customStr[1] == monthsArr[i]) {
+
+                    month = (i + 1).toString()
+                    break
+
+                }
+                else {
+
+                    if (i == 11) return ""
+
+                }
+
+            }
+
+        } else return ""
+    } else return ""
+
+    return String.format("%02d.%02d.%d", day.toInt(), month.toInt(), year.toInt())
 
 }
 
@@ -94,7 +113,56 @@ fun dateStrToDigit(str: String): String {
  * Перевести её в строковый формат вида "15 июля 2016".
  * При неверном формате входной строки вернуть пустую строку
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+
+    val customStr = digital.split(".")
+
+    val monthsArr =
+            listOf<String>("января", "февраля", "марта", "апреля", "мая", "июня", "июля",
+                    "августа", "сентября", "октября", "ноября", "декабря")
+
+    var day: String
+    val month: String
+    val year: String
+
+    try {
+
+        if (customStr.size == 3) {
+
+            day = customStr[0]
+
+            if (day.toInt() in 1..9) {
+
+              day = day[1].toString()
+
+            }
+            if ((day.toInt() in 1..31) && (customStr[1].toInt() in 1..12)) {
+
+                month = monthsArr[customStr[1].toInt() - 1]
+                year = customStr[2]
+
+            }
+            else {
+
+                return ""
+
+            }
+
+        }
+        else {
+
+            return ""
+
+        }
+
+    }
+    catch (e: NumberFormatException) {
+        return ""
+    }
+
+    return String.format("%s %s %s", day, month, year)
+
+}
 
 /**
  * Средняя
@@ -108,7 +176,34 @@ fun dateDigitToStr(digital: String): String = TODO()
  * Все символы в номере, кроме цифр, пробелов и +-(), считать недопустимыми.
  * При неверном формате вернуть пустую строку
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String {
+
+    var phoneTrueStr = "+"
+    val containerTrueSimbol = listOf<Char>('(', ')', '-', ' ')
+
+    for (i in 0 until phone.length) {
+
+        if (phone[0] != '+') {
+
+            if ((phone[i] in 'a'..'z') || ((phone[i] !in containerTrueSimbol) && (phone[i] !in '0'..'9'))) {
+
+                return ""
+
+            }
+
+        }
+
+        if (phone[i] in '0'..'9') {
+
+            phoneTrueStr += phone[i].toString()
+
+        }
+
+    }
+
+    return phoneTrueStr
+
+}
 
 /**
  * Средняя
