@@ -75,7 +75,11 @@ fun dateStrToDigit(str: String): String {
     val year: String
     var month = ""
 
+    if (str.length > 16) {
 
+        return ""
+
+    }
 
     if (customStr.size == 3) {
         if (customStr[0].toInt() in 1..31) {
@@ -185,7 +189,7 @@ fun flattenPhoneNumber(phone: String): String {
 
         if (phone[0] != '+') {
 
-            if ((phone[i] in 'a'..'z') || ((phone[i] !in containerTrueSimbol) && (phone[i] !in '0'..'9'))) {
+            if ((phone[i] !in containerTrueSimbol) && (phone[i] !in '0'..'9')) {
 
                 return ""
 
@@ -199,6 +203,10 @@ fun flattenPhoneNumber(phone: String): String {
 
         }
 
+    }
+
+    if (phoneTrueStr.length in 0..1) {
+        return ""
     }
 
     return phoneTrueStr
@@ -215,7 +223,46 @@ fun flattenPhoneNumber(phone: String): String {
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+
+    val containerTrueSimbol = listOf<String>("-", "%")
+    val containerObjStr = jumps.split(" ")
+    var allNumOfStr = listOf<Int>()
+    var answer = 0
+
+    for (i in 0 until containerObjStr.size) {
+
+        if ((containerObjStr[i] !in containerTrueSimbol) && (containerObjStr[i] !in "1"..Int.MAX_VALUE.toString())) {
+
+            return -1
+
+        }
+
+        if (containerObjStr[i] in "1"..Int.MAX_VALUE.toString()) {
+
+            allNumOfStr += containerObjStr[i].toInt()
+
+        }
+    }
+
+    if (allNumOfStr.isEmpty()) {
+
+        return -1
+
+    } else {
+
+        for (i in 0 until allNumOfStr.size) {
+
+            answer = Math.max(answer, allNumOfStr[i])
+
+        }
+
+    }
+
+    return answer
+
+
+}
 
 /**
  * Сложная
