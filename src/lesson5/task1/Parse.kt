@@ -2,6 +2,27 @@
 
 package lesson5.task1
 
+import java.lang.IllegalArgumentException
+
+fun maxNumFromList(list: List<Int>): Int {
+
+    var answer = 0
+
+    for (i in 0 until list.size) {
+
+        if (list[i] > answer) {
+
+            answer = list[i]
+
+        }
+
+    }
+
+    return answer
+
+}
+
+
 /**
  * Пример
  *
@@ -94,8 +115,7 @@ fun dateStrToDigit(str: String): String {
                     month = (i + 1).toString()
                     break
 
-                }
-                else {
+                } else {
 
                     if (i == 11) return ""
 
@@ -137,7 +157,7 @@ fun dateDigitToStr(digital: String): String {
 
             if (day.toInt() in 1..9) {
 
-              day = day[1].toString()
+                day = day[1].toString()
 
             }
             if ((day.toInt() in 1..31) && (customStr[1].toInt() in 1..12)) {
@@ -145,22 +165,19 @@ fun dateDigitToStr(digital: String): String {
                 month = monthsArr[customStr[1].toInt() - 1]
                 year = customStr[2]
 
-            }
-            else {
+            } else {
 
                 return ""
 
             }
 
-        }
-        else {
+        } else {
 
             return ""
 
         }
 
-    }
-    catch (e: NumberFormatException) {
+    } catch (e: NumberFormatException) {
         return ""
     }
 
@@ -225,42 +242,36 @@ fun flattenPhoneNumber(phone: String): String {
  */
 fun bestLongJump(jumps: String): Int {
 
-    val containerTrueSimbol = listOf<String>("-", "%")
-    val containerObjStr = jumps.split(" ")
-    var allNumOfStr = listOf<Int>()
-    var answer = 0
+    val containerTrueSymbol = listOf(" ", "%", "-")
 
-    for (i in 0 until containerObjStr.size) {
+    if (jumps != "") {
 
-        if ((containerObjStr[i] !in containerTrueSimbol) && (containerObjStr[i] !in "1"..Int.MAX_VALUE.toString())) {
+        for (i in 0 until jumps.length) {
 
-            return -1
+            if ((jumps[i] !in '0'..'9') && (jumps[i].toString() !in containerTrueSymbol)) {
 
-        }
+                return -1
 
-        if (containerObjStr[i] in "1"..Int.MAX_VALUE.toString()) {
-
-            allNumOfStr += containerObjStr[i].toInt()
-
-        }
-    }
-
-    if (allNumOfStr.isEmpty()) {
-
-        return -1
-
-    } else {
-
-        for (i in 0 until allNumOfStr.size) {
-
-            answer = Math.max(answer, allNumOfStr[i])
+            }
 
         }
 
     }
 
-    return answer
+    val partStr = jumps.split(" ")
+    var preliminaryResult = listOf<Int>()
 
+    for (i in 0 until partStr.size) {
+
+        if (partStr[i] !in containerTrueSymbol) {
+
+            preliminaryResult += partStr[i].toInt()
+
+        }
+
+    }
+
+    return if (preliminaryResult != listOf<Int>()) maxNumFromList(preliminaryResult) else -1
 
 }
 
@@ -274,7 +285,41 @@ fun bestLongJump(jumps: String): Int {
  * Прочитать строку и вернуть максимальную взятую высоту (230 в примере).
  * При нарушении формата входной строки вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+
+
+    val containerTrueSymbol = listOf(" ", "%", "-", "+")
+
+    if (jumps != "") {
+
+        for (i in 0 until jumps.length) {
+
+            if ((jumps[i] !in '0'..'9') && (jumps[i].toString() !in containerTrueSymbol)) {
+
+                return -1
+
+            }
+
+        }
+
+    }
+
+    val partStr = jumps.split(" ")
+    var preliminaryResult = listOf<Int>()
+
+    for (i in 0 until partStr.size) {
+
+        if ((partStr[i] !in containerTrueSymbol) && (partStr[i + 1] == "+")) {
+
+            preliminaryResult += partStr[i].toInt()
+
+        }
+
+    }
+
+    return if (preliminaryResult != listOf<Int>()) maxNumFromList(preliminaryResult) else -1
+
+}
 
 /**
  * Сложная
@@ -285,7 +330,83 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+
+    val containerTrueOperations = listOf("+", "-", " ")
+
+    if (expression == "") {
+
+        throw IllegalArgumentException("Error >\nString not found.")
+
+    } else {
+
+        for (i in 0 until expression.length) {
+
+            if ((expression[i].toString() !in containerTrueOperations) && (expression[i] !in '0'..'9')) {
+
+                throw IllegalArgumentException("Error >\nInvalid string")
+
+            }
+
+        }
+
+    }
+
+    val containerPart = expression.split(' ')
+    var answer = 0
+    var index = 0
+
+    if (containerPart.size % 2 != 1) {
+
+        throw IllegalArgumentException("Error >\nInvalid string")
+
+    }
+
+    if ((containerPart.size == 1) && (containerPart[0] in "0"..Int.MAX_VALUE.toString())) {
+
+        return containerPart[0].toInt()
+
+    }
+
+    while (index < containerPart.size - 1) {
+
+        if ((containerPart[index] in "0"..Int.MAX_VALUE.toString()) && (containerPart[index + 1] in containerTrueOperations)) {
+
+            if (answer == 0) {
+
+                answer = containerPart[0].toInt()
+
+            }
+
+            if (containerPart[index + 1] == "+") {
+
+                answer += containerPart[index].toInt()
+
+            } else {
+
+                answer -= containerPart[index].toInt()
+
+            }
+        } else {
+
+            if (index == containerPart.size - 2) {
+
+                continue
+
+            } else {
+
+                throw IllegalArgumentException("Error >\nInvalid operator")
+
+            }
+        }
+
+        index += 2
+
+    }
+
+    return answer
+
+}
 
 /**
  * Сложная
