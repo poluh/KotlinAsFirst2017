@@ -2,9 +2,10 @@
 
 package lesson5.task1
 
+import lesson1.task1.accountInThreeYears
 import java.lang.IllegalArgumentException
 
-fun maxNumFromList(list: List<Int>): Int {
+fun maxNumIntFromList(list: List<Int>): Int {
 
     var answer = 0
 
@@ -22,6 +23,42 @@ fun maxNumFromList(list: List<Int>): Int {
 
 }
 
+fun maxIndexDoubleFromList(list: List<Double>): Int {
+
+    var answer = 0
+
+    for (i in 0 until list.size) {
+
+        if (list[i] > answer) {
+
+            answer = i - 1
+
+        }
+
+    }
+
+    return if (answer >= 0) answer else 0
+
+}
+
+fun findIndex(index: Int, str: String): Int {
+
+    var serialNum = 0
+
+    for (i in 0 until str.length) {
+
+        if (str[i] == ' ') {
+            serialNum++
+            if (serialNum == index) {
+                return i + 1
+            }
+        }
+
+    }
+
+    return -1
+
+}
 
 /**
  * Пример
@@ -271,7 +308,7 @@ fun bestLongJump(jumps: String): Int {
 
     }
 
-    return if (preliminaryResult != listOf<Int>()) maxNumFromList(preliminaryResult) else -1
+    return if (preliminaryResult != listOf<Int>()) maxNumIntFromList(preliminaryResult) else -1
 
 }
 
@@ -317,7 +354,7 @@ fun bestHighJump(jumps: String): Int {
 
     }
 
-    return if (preliminaryResult != listOf<Int>()) maxNumFromList(preliminaryResult) else -1
+    return if (preliminaryResult != listOf<Int>()) maxNumIntFromList(preliminaryResult) else -1
 
 }
 
@@ -333,79 +370,52 @@ fun bestHighJump(jumps: String): Int {
 fun plusMinus(expression: String): Int {
 
     val containerTrueOperations = listOf("+", "-", " ")
+    var answer = 0
+    var i = 0
 
-    if (expression == "") {
-
-        throw IllegalArgumentException("Error >\nString not found.")
-
-    } else {
+    if (!expression.isEmpty()) {
 
         for (i in 0 until expression.length) {
 
             if ((expression[i].toString() !in containerTrueOperations) && (expression[i] !in '0'..'9')) {
 
-                throw IllegalArgumentException("Error >\nInvalid string")
+                throw IllegalArgumentException("Error > Invalid string format")
 
             }
 
         }
 
+    } else throw IllegalArgumentException("Error > Empty string")
+
+
+    val containerPart = expression.split(" ")
+
+    if (containerPart.size % 2 == 0) {
+        throw IllegalArgumentException("Error > Invalid format imput")
     }
 
-    val containerPart = expression.split(' ')
-    var answer = 0
-    var index = 0
+    while (i < containerPart.size - 2) {
 
-    if (containerPart.size % 2 != 1) {
-
-        throw IllegalArgumentException("Error >\nInvalid string")
-
-    }
-
-    if ((containerPart.size == 1) && (containerPart[0] in "0"..Int.MAX_VALUE.toString())) {
-
-        return containerPart[0].toInt()
-
-    }
-
-    while (index < containerPart.size - 1) {
-
-        if ((containerPart[index] in "0"..Int.MAX_VALUE.toString()) && (containerPart[index + 1] in containerTrueOperations)) {
-
-            if (answer == 0) {
-
-                answer = containerPart[0].toInt()
-
-            }
-
-            if (containerPart[index + 1] == "+") {
-
-                answer += containerPart[index].toInt()
-
-            } else {
-
-                answer -= containerPart[index].toInt()
-
-            }
-        } else {
-
-            if (index == containerPart.size - 2) {
-
-                continue
-
-            } else {
-
-                throw IllegalArgumentException("Error >\nInvalid operator")
-
-            }
+        if (i == 0) {
+            answer = containerPart[0].toInt()
         }
 
-        index += 2
+
+        val operator = containerPart[i + 1]
+        val tern = containerPart[i + 2].toInt()
+
+        when (operator) {
+            "+" -> answer += tern
+            "-" -> answer -= tern
+            else -> throw IllegalArgumentException("Error > Unknow operator")
+        }
+
+
+        i += 2
 
     }
 
     return answer
-
 }
 
 /**
@@ -417,7 +427,20 @@ fun plusMinus(expression: String): Int {
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+
+    val conteinerPartStr = str.toLowerCase().split(" ")
+
+    for (i in 0 until conteinerPartStr.size - 1) {
+
+        if (conteinerPartStr[i] == conteinerPartStr[i + 1]) {
+            return findIndex(i, str)
+        }
+
+    }
+
+    return -1
+}
 
 /**
  * Сложная
@@ -430,7 +453,44 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть положительными
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+
+    var allPrices = listOf<Double>()
+    var allNameGoods = listOf<String>()
+
+    if (description == "") {
+        return description
+    }
+
+    val dampsPartStr = description.split("; ")
+
+    if (dampsPartStr.isEmpty()) {
+        return ""
+    }
+
+    for (i in 0 until dampsPartStr.size) {
+
+        val partOfdampStr = dampsPartStr[i].split(" ")
+
+        if (partOfdampStr.size == 2) {
+
+            allPrices += partOfdampStr[1].toDouble()
+            allNameGoods += partOfdampStr[0]
+
+        } else {
+            return ""
+        }
+
+    }
+
+    if (allPrices.isEmpty()) {
+        return ""
+    } else {
+        return allNameGoods[maxIndexDoubleFromList(allPrices)]
+    }
+
+
+}
 
 /**
  * Сложная
