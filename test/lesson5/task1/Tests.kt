@@ -39,6 +39,7 @@ class Tests {
         assertEquals("18.11.2018", dateStrToDigit("18 ноября 2018"))
         assertEquals("", dateStrToDigit("23"))
         assertEquals("03.04.2011", dateStrToDigit("3 апреля 2011"))
+        assertEquals("01.12.2147483647", dateStrToDigit("01 декабря 2147483647"))
     }
 
     @Test
@@ -87,6 +88,10 @@ class Tests {
         assertEquals(4, plusMinus("2 + 2"))
         assertEquals(6, plusMinus("2 + 31 - 40 + 13"))
         assertEquals(-1, plusMinus("0 - 1"))
+        assertEquals(-100110830, plusMinus("2147483647 + 1 + 2147483647 - 1178580708 + 0 - 0 + " +
+                "1773677248 - 1 - 2147483647 - 347606108 - 2147483647 + 0 + 0 - 2024127571 - 379502492 - 2147483647 " +
+                "+ 2147483647 - 231590635 - 2147483647 - 2007347862 - 0 - 2147483647"))
+        assertEquals(694333005, plusMinus("694333005"))
 
     }
 

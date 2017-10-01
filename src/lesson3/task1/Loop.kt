@@ -7,7 +7,7 @@ fun seq(n: Int): Int {
     var answer = 0
 
     for (i in 1..n)
-        answer += i * i * (Math.pow(10.0, digitNumber(i*i).toDouble())).toInt()
+        answer += i * i * (Math.pow(10.0, digitNumber(i * i).toDouble())).toInt()
 
     return answer
 
@@ -206,8 +206,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
 
             numM %= numN
 
-        }
-        else {
+        } else {
 
             numN %= numM
 
@@ -256,7 +255,6 @@ fun sin(x: Double, eps: Double): Double {        //Не понял, что сд�
     var rememberNum = 1.0
 
     while (Math.abs(rememberNum) > eps) {
-
 
 
         rememberNum = Math.pow(x, i * 2.0 + 1) / factorial(i * 2 + 1)
@@ -356,7 +354,59 @@ fun hasDifferentDigits(n: Int): Boolean = !(digitCountInNumber(n, (n % 10)) == d
  * 149162536496481100121144...
  * Например, 2-я цифра равна 4, 7-я 5, 12-я 6.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+
+    var count = 0
+    var num = 0
+    var sequence = 0
+    var exSum = 0
+    var divisor = 1
+
+
+    while (num < n) {
+
+        count += 1
+        sequence = count * count
+        exSum = 0
+
+        while (sequence > 0) {
+
+            sequence /= 10
+            exSum += 1
+
+        }
+
+        sequence = count * count
+        num += exSum
+    }
+
+    num -= exSum
+
+    while (exSum > 0) {
+
+        divisor *= 10
+        exSum -= 1
+
+    }
+
+    while (num != n) {
+
+        sequence %= divisor
+        divisor /= 10
+        num += 1
+
+    }
+
+    return when {
+
+        n == 1 -> 1
+        n == 2 -> 4
+        divisor == 0 -> sequence
+        else -> sequence / divisor
+
+    }
+}
+
 
 /**
  * Сложная

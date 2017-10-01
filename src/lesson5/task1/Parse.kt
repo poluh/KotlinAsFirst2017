@@ -125,7 +125,7 @@ fun main(args: Array<String>) {
  */
 fun dateStrToDigit(str: String): String {
 
-    val customStr = str.split(" ")
+    val customStr = str.replace("\u0020{2,}", "\u0020").split(" ")
     val monthsArr =
             listOf<String>("января", "февраля", "марта", "апреля", "мая", "июня", "июля",
                     "августа", "сентября", "октября", "ноября", "декабря")
@@ -133,14 +133,9 @@ fun dateStrToDigit(str: String): String {
     val year: String
     var month = ""
 
-    if (str.length > 16) {
-
-        return ""
-
-    }
 
     if (customStr.size == 3) {
-        if (customStr[0].toInt() in 1..31) {
+        if ((customStr[0].toInt() in 1..31) && (customStr[2].toInt() in Int.MIN_VALUE..Int.MAX_VALUE)) {
 
             day = customStr[0]
             year = customStr[2]
@@ -295,7 +290,7 @@ fun bestLongJump(jumps: String): Int {
 
     }
 
-    val partStr = jumps.split(" ")
+    val partStr = jumps.replace("\u0020{2,}", "\u0020").split(" ")
     var preliminaryResult = listOf<Int>()
 
     for (i in 0 until partStr.size) {
@@ -341,7 +336,7 @@ fun bestHighJump(jumps: String): Int {
 
     }
 
-    val partStr = jumps.split(" ")
+    val partStr = jumps.replace("\u0020{2,}", "\u0020").split(' ')
     var preliminaryResult = listOf<Int>()
 
     for (i in 0 until partStr.size) {
@@ -388,7 +383,11 @@ fun plusMinus(expression: String): Int {
     } else throw IllegalArgumentException("Error > Empty string")
 
 
-    val containerPart = expression.split(" ")
+    val containerPart = expression.replace("\u0020{2,}", "\u0020").split(" ")
+
+    if (expression.indexOf(' ') == -1) {
+        return expression.toInt()
+    }
 
     if (containerPart.size % 2 == 0) {
         throw IllegalArgumentException("Error > Invalid format imput")
@@ -429,7 +428,7 @@ fun plusMinus(expression: String): Int {
  */
 fun firstDuplicateIndex(str: String): Int {
 
-    val conteinerPartStr = str.toLowerCase().split(" ")
+    val conteinerPartStr = str.toLowerCase().replace("\u0020{2,}", "\u0020").split(" ")
 
     for (i in 0 until conteinerPartStr.size - 1) {
 
@@ -462,7 +461,7 @@ fun mostExpensive(description: String): String {
         return description
     }
 
-    val dampsPartStr = description.split("; ")
+    val dampsPartStr = description.replace("\u0020{2,}", "\u0020").split("; ")
 
     if (dampsPartStr.isEmpty()) {
         return ""
