@@ -133,31 +133,35 @@ fun dateStrToDigit(str: String): String {
     val year: String
     var month = ""
 
+    try {
 
-    if (customStr.size == 3) {
-        if ((customStr[0].toInt() in 1..31) && (customStr[2].toInt() in Int.MIN_VALUE..Int.MAX_VALUE)) {
+        if (customStr.size == 3) {
+            if ((customStr[0].toInt() in 1..31) && (customStr[2].toInt() in Int.MIN_VALUE..Int.MAX_VALUE)) {
 
-            day = customStr[0]
-            year = customStr[2]
+                day = customStr[0]
+                year = customStr[2]
 
-            for (i in 0..11) {
+                for (i in 0..11) {
 
-                if (customStr[1] == monthsArr[i]) {
+                    if (customStr[1] == monthsArr[i]) {
 
-                    month = (i + 1).toString()
-                    break
+                        month = (i + 1).toString()
+                        break
 
-                } else {
+                    } else {
 
-                    if (i == 11) return ""
+                        if (i == 11) return ""
+
+                    }
 
                 }
 
-            }
-
+            } else return ""
         } else return ""
-    } else return ""
-
+    }
+    catch (e: NumberFormatException) {
+        return ""
+    }
     return String.format("%02d.%02d.%d", day.toInt(), month.toInt(), year.toInt())
 
 }
@@ -491,6 +495,8 @@ fun mostExpensive(description: String): String {
 
 }
 
+
+
 /**
  * Сложная
  *
@@ -502,7 +508,47 @@ fun mostExpensive(description: String): String {
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int = TODO()
+fun fromRoman(roman: String): Int {
+
+    val containerRimNum = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
+    val containerArabNum = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
+
+    var answer = 0
+
+    if (roman != "") {
+
+        for (i in 0 until roman.length) {
+
+            if (roman[i].toString() !in containerRimNum) {
+                return -1
+            }
+
+        }
+
+    }
+    else {
+        return -1
+    }
+
+    val containerPart = roman.split("")
+
+    for (i in 0 until containerPart.size) {
+        for (j in 0 until containerRimNum.size) {
+            if ((i != containerPart.size - 1) && (containerPart[i] + containerPart[i + 1] == containerRimNum[j])) {
+                answer += containerArabNum[j]
+            }
+
+        }
+
+    }
+
+    /*
+    -------
+     */
+
+    return answer
+    
+}
 
 /**
  * Очень сложная

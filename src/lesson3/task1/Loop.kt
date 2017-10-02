@@ -415,4 +415,57 @@ fun squareSequenceDigit(n: Int): Int {
  * 1123581321345589144...
  * Например, 2-я цифра равна 1, 9-я 2, 14-я 5.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+
+
+    var count = 0
+    var num = 0
+    var sequence = 0
+    var exSum = 0
+    var divisor = 1
+
+
+    while (num < n) {
+
+        count += 1
+        sequence = fib(count)
+        exSum = 0
+
+        while (sequence > 0) {
+
+            sequence /= 10
+            exSum += 1
+
+        }
+
+        sequence = fib(count)
+        num += exSum
+    }
+
+    num -= exSum
+
+    while (exSum > 0) {
+
+        divisor *= 10
+        exSum -= 1
+
+    }
+
+    while (num != n) {
+
+        sequence %= divisor
+        divisor /= 10
+        num += 1
+
+    }
+
+    return when {
+
+        n == 1 -> 1
+        n == 2 -> 1
+        divisor == 0 -> sequence
+        else -> sequence / divisor
+
+    }
+
+}
