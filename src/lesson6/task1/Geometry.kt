@@ -3,6 +3,9 @@ package lesson6.task1
 
 import lesson1.task1.sqr
 
+//Дорабатываю прошлые уроки
+
+
 /**
  * Точка на плоскости
  */
@@ -72,7 +75,7 @@ data class Circle(val center: Point, val radius: Double) {
      * расстояние между их центрами минус сумма их радиусов.
      * Расстояние между пересекающимися окружностями считать равным 0.0.
      */
-    fun distance(other: Circle): Double = TODO()
+    fun distance(other: Circle): Double = if (radius >= other.radius) radius - other.radius else other.radius - radius
 
     /**
      * Тривиальная

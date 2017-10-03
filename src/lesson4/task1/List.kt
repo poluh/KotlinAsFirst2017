@@ -446,7 +446,36 @@ fun decimalFromString(str: String, base: Int): Int {
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {                             //Дорабатываю 
+
+    val containerRimNum = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
+    val containerArabNum = listOf("1000", "900", "500", "400", "100", "90", "50", "40", "10", "9", "5", "4", "1")
+    var answer = ""
+
+    val romanNumStr = n.toString()
+
+    for (i in 0 until containerArabNum.size) {
+
+        if (romanNumStr == containerArabNum[i]) {
+            return containerRimNum[i]
+        }
+    }
+
+    for (i in 0 until romanNumStr.length) {
+
+        for (j in 0 until containerArabNum.size) {
+            if ((romanNumStr[i].toDouble() * Math.pow(10.0, (romanNumStr.length - 1 - i).toDouble())).toString() == containerArabNum[j]) {
+
+                answer += containerRimNum[j]
+                break
+
+            }
+        }
+    }
+
+    return answer
+
+}
 
 /**
  * Очень сложная

@@ -71,6 +71,7 @@ class Tests {
         assertEquals(-1, bestLongJump("% - - % -"))
         assertEquals(754, bestLongJump("700 717 707 % 754"))
         assertEquals(-1, bestLongJump("700 + 700"))
+        assertEquals(747963129, bestLongJump("% % 0 0 500763914    747963129"))
 
     }
 

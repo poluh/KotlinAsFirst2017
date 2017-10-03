@@ -299,7 +299,7 @@ fun bestLongJump(jumps: String): Int {
 
     for (i in 0 until partStr.size) {
 
-        if (partStr[i] !in containerTrueSymbol) {
+        if ((partStr[i] !in containerTrueSymbol) && (partStr[i] != "")) {
 
             preliminaryResult += partStr[i].toInt()
 
@@ -345,7 +345,7 @@ fun bestHighJump(jumps: String): Int {
 
     for (i in 0 until partStr.size) {
 
-        if ((partStr[i] !in containerTrueSymbol) && (partStr[i + 1] == "+")) {
+        if ((partStr[i] != "") && (partStr[i] !in containerTrueSymbol) && (partStr[i + 1] == "+")) {
 
             preliminaryResult += partStr[i].toInt()
 
@@ -473,23 +473,26 @@ fun mostExpensive(description: String): String {
 
     for (i in 0 until dampsPartStr.size) {
 
-        val partOfdampStr = dampsPartStr[i].split(" ")
+        if (dampsPartStr[i] != "") {
 
-        if (partOfdampStr.size == 2) {
+            val partOfdampStr = dampsPartStr[i].split(" ")
 
-            allPrices += partOfdampStr[1].toDouble()
-            allNameGoods += partOfdampStr[0]
+            if (partOfdampStr.size == 2) {
 
-        } else {
-            return ""
+                allPrices += partOfdampStr[1].toDouble()
+                allNameGoods += partOfdampStr[0]
+
+            } else {
+                return ""
+            }
+
         }
-
     }
 
-    if (allPrices.isEmpty()) {
-        return ""
+    return if (allPrices.isEmpty()) {
+        ""
     } else {
-        return allNameGoods[maxIndexDoubleFromList(allPrices)]
+        allNameGoods[maxIndexDoubleFromList(allPrices)]
     }
 
 
@@ -532,11 +535,37 @@ fun fromRoman(roman: String): Int {
 
     val containerPart = roman.split("")
 
-    for (i in 0 until containerPart.size) {
-        for (j in 0 until containerRimNum.size) {
-            if ((i != containerPart.size - 1) && (containerPart[i] + containerPart[i + 1] == containerRimNum[j])) {
-                answer += containerArabNum[j]
+    if (roman.length == 1) {
+
+        for (i in 0 until containerRimNum.size) {
+
+            if (roman == containerRimNum[i]) {
+                return containerArabNum[i]
             }
+
+        }
+
+    }
+
+    for (i in 0 until roman.length) {
+        for (j in 0 until containerRimNum.size) {
+            if ((i != roman.length - 1) && (roman[i].toString() + roman[i + 1].toString() == containerRimNum[j])) {
+                answer += containerArabNum[j]
+                break
+            }
+            else if (j == containerRimNum.size - 1) {
+
+                for (k in 0 until containerRimNum.size) {
+
+                    if (roman[i].toString() == containerRimNum[k]) {
+                        answer += containerArabNum[k]
+                        break
+                    }
+
+                }
+
+            }
+
 
         }
 
@@ -547,7 +576,7 @@ fun fromRoman(roman: String): Int {
      */
 
     return answer
-    
+
 }
 
 /**
