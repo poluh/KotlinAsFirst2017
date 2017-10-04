@@ -446,7 +446,7 @@ fun decimalFromString(str: String, base: Int): Int {
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String {                             //Дорабатываю 
+fun roman(n: Int): String {                             //Дорабатываю
 
     val containerRimNum = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
     val containerArabNum = listOf("1000", "900", "500", "400", "100", "90", "50", "40", "10", "9", "5", "4", "1")
@@ -484,4 +484,18 @@ fun roman(n: Int): String {                             //Дорабатываю
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+
+    val aloneNum = listOf("од", "дв", "три", "четыре", "пять", "шесть", "семь", "восемь", "деввять")
+    val bigNum = listOf("тысяч", "миллион", "миллиард")
+    val nStr = n.toString()
+
+    for (i in 0 until nStr.length) {
+
+        //
+
+    }
+
+    return ""
+
+}

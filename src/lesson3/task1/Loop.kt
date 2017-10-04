@@ -250,24 +250,21 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
  */
 fun sin(x: Double, eps: Double): Double {        //Не понял, что сделать с cos и sin, выдает NaN при тестировании, идей нет
 
-    var i = 1
-    var sinX = 0.0
-    var rememberNum = 1.0
 
-    while (Math.abs(rememberNum) > eps) {
+    val xForNormal = x % (2 * Math.PI)
+    var i = 0
+    var sinX = xForNormal
+    var rememberNum: Double
 
-
-        rememberNum = Math.pow(x, i * 2.0 + 1) / factorial(i * 2 + 1)
-
-        if ((i % 2) == 1) {
-            sinX -= rememberNum
-        } else {
-            sinX += rememberNum
-        }
+    do {
 
         i++
 
-    }
+        rememberNum =Math.pow(-1.0, i.toDouble()) * Math.pow(xForNormal, i * 2.0 + 1) / factorial(i * 2 + 1)
+
+        sinX += rememberNum
+
+    } while (Math.abs(rememberNum) >= eps)
     return sinX
 
 }
@@ -285,22 +282,23 @@ fun cos(x: Double, eps: Double): Double {
 
     var i = 0
     var cosX = 1.0
-    var rememberNum = x
+    val xForNormal = x % (2 * Math.PI)
+    var rememberNum: Double
 
 
-    while (Math.abs(rememberNum) > eps) {
+
+    do {
 
         i++
 
-        rememberNum = Math.pow(x, i * 2.0) / factorial(i * 2)
+        rememberNum = Math.pow(-1.0, i.toDouble()) * (Math.pow(xForNormal, i * 2.0) / factorial(i * 2))
 
-        if ((i % 2) == 1) {
-            cosX = cosX - rememberNum
-        } else {
-            cosX = cosX + rememberNum
-        }
+        cosX += rememberNum
 
-    }
+    } while (Math.abs(rememberNum) >= eps)
+
+
+
     return cosX
 
 }

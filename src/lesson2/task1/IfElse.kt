@@ -121,17 +121,21 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
 
     val imaginaryX = Math.abs(kingX - bishopX)
     val imaginaryY = Math.abs(kingY - bishopY)
+    val trueKing = (kingX == rookX || kingY == rookY)
+    val imaginaryTrue = (imaginaryX == imaginaryY)
+    val imaginaryFalse = (imaginaryX != imaginaryY)
+    val kingFalse = (kingX != rookX || kingY != rookY)
 
 
-    if ((kingX == rookX || kingY == rookY) && (imaginaryX == imaginaryY))
-        return 3
+    return if (trueKing && imaginaryTrue)
+        3
     else
-        if ((kingX == rookX || kingY == rookY) && (imaginaryX != imaginaryY))
-            return 1
+        if (trueKing && imaginaryFalse)
+            1
         else
-            if ((kingX != rookX && kingY != rookY) && (imaginaryX == imaginaryY))
-                return 2
-            else return 0
+            if (kingFalse && imaginaryFalse)
+                2
+            else 0
 
 }
 
