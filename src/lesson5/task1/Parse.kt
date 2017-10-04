@@ -517,6 +517,7 @@ fun fromRoman(roman: String): Int {
     val containerArabNum = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
 
     var answer = 0
+    /*
 
     if (roman != "") {
 
@@ -570,6 +571,8 @@ fun fromRoman(roman: String): Int {
         }
 
     }
+
+*/
 
     /*
     -------

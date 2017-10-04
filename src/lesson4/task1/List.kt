@@ -108,48 +108,14 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double {
-
-    var vectorAllPar = 0.0
-
-    if (v != listOf<Double>()) {
-
-        for (i in 0 until v.size) {
-
-            vectorAllPar += sqr(v[i])
-
-        }
-    }
-
-    return Math.sqrt(vectorAllPar)
-
-
-}
+fun abs(v: List<Double>): Double = Math.sqrt(v.map { it * it }.sum())
 
 /**
  * Простая
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double {
-
-    var allParameterList = 0.0
-
-    if (list != listOf<Double>()) {
-
-        for (i in 0 until list.size) {
-
-            allParameterList += list[i]
-
-        }
-
-        allParameterList /= list.size
-
-    }
-
-    return allParameterList
-
-}
+fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0 else list.sum() / list.size.toDouble()
 
 /**
  * Средняя
@@ -161,25 +127,9 @@ fun mean(list: List<Double>): Double {
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
 
-    var averageAllElement = 0.0
+    val averageAllElement = mean(list)
 
-    if (list != listOf<Double>()) {
-
-        for (i in 0 until list.size) {
-
-            averageAllElement += list[i]
-
-        }
-
-        averageAllElement /= list.size
-
-        for (i in 0 until list.size) {
-
-            list[i] -= averageAllElement
-
-        }
-
-    }
+    (0 until list.size).forEach { i -> list[i] -= averageAllElement }
 
     return list
 
@@ -334,8 +284,7 @@ fun convert(n: Int, base: Int): List<Int> {
 
         }
 
-    }
-    else {
+    } else {
 
         list += 0
 
@@ -355,7 +304,7 @@ fun convert(n: Int, base: Int): List<Int> {
 fun convertToString(n: Int, base: Int): String {
 
     val list = convert(n, base)
-    var answerList = mutableListOf<String>()
+    val answerList = mutableListOf<String>()
 
     if (n > 0) {
 
@@ -372,8 +321,7 @@ fun convertToString(n: Int, base: Int): String {
             }
 
         }
-    }
-    else {
+    } else {
 
         answerList.add(0, "0")
 
@@ -425,8 +373,7 @@ fun decimalFromString(str: String, base: Int): Int {
 
             list += (str[i]).toInt() - 48
 
-        }
-        else {
+        } else {
 
             list += (str[i]).toInt() - 87
 
@@ -448,29 +395,24 @@ fun decimalFromString(str: String, base: Int): Int {
  */
 fun roman(n: Int): String {                             //Дорабатываю
 
-    val containerRimNum = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
-    val containerArabNum = listOf("1000", "900", "500", "400", "100", "90", "50", "40", "10", "9", "5", "4", "1")
+    val containerRimNum = listOf("I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M")
+    val containerArabNum = listOf(1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000)
     var answer = ""
+    var nForMemeber = n
+    var i = 12
 
-    val romanNumStr = n.toString()
 
-    for (i in 0 until containerArabNum.size) {
+    while (nForMemeber != 0) {
 
-        if (romanNumStr == containerArabNum[i]) {
-            return containerRimNum[i]
+        while (nForMemeber >= containerArabNum[i]) {
+
+            nForMemeber -= containerArabNum[i]
+            answer += containerRimNum[i]
+
         }
-    }
 
-    for (i in 0 until romanNumStr.length) {
+        i--
 
-        for (j in 0 until containerArabNum.size) {
-            if ((romanNumStr[i].toDouble() * Math.pow(10.0, (romanNumStr.length - 1 - i).toDouble())).toString() == containerArabNum[j]) {
-
-                answer += containerRimNum[j]
-                break
-
-            }
-        }
     }
 
     return answer
@@ -486,13 +428,14 @@ fun roman(n: Int): String {                             //Дорабатываю
  */
 fun russian(n: Int): String {
 
-    val aloneNum = listOf("од", "дв", "три", "четыре", "пять", "шесть", "семь", "восемь", "деввять")
-    val bigNum = listOf("тысяч", "миллион", "миллиард")
+    val containerAloneNum = listOf("од", "дв", "три", "четыре", "пять", "шесть", "семь", "восемь", "деввять")
+    val containerBigNum = listOf("тысяч", "миллион", "миллиард")
     val nStr = n.toString()
 
     for (i in 0 until nStr.length) {
 
-        //
+        //To be continued.........
+
 
     }
 

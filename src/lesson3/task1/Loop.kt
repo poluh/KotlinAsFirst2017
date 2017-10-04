@@ -260,7 +260,7 @@ fun sin(x: Double, eps: Double): Double {        //Не понял, что сд�
 
         i++
 
-        rememberNum =Math.pow(-1.0, i.toDouble()) * Math.pow(xForNormal, i * 2.0 + 1) / factorial(i * 2 + 1)
+        rememberNum = Math.pow(-1.0, i.toDouble()) * Math.pow(xForNormal, i * 2.0 + 1) / factorial(i * 2 + 1)
 
         sinX += rememberNum
 
@@ -354,55 +354,22 @@ fun hasDifferentDigits(n: Int): Boolean = !(digitCountInNumber(n, (n % 10)) == d
  */
 fun squareSequenceDigit(n: Int): Int {
 
-    var count = 0
+    var i = 0
     var num = 0
-    var sequence = 0
-    var exSum = 0
-    var divisor = 1
-
+    var answer: Int
 
     while (num < n) {
 
-        count += 1
-        sequence = count * count
-        exSum = 0
-
-        while (sequence > 0) {
-
-            sequence /= 10
-            exSum += 1
-
-        }
-
-        sequence = count * count
-        num += exSum
-    }
-
-    num -= exSum
-
-    while (exSum > 0) {
-
-        divisor *= 10
-        exSum -= 1
+        i++
+        num += (i * i).toString().length
 
     }
 
-    while (num != n) {
+    answer = i * i
 
-        sequence %= divisor
-        divisor /= 10
-        num += 1
+    (n until num).forEach { answer /= 10 }
 
-    }
-
-    return when {
-
-        n == 1 -> 1
-        n == 2 -> 4
-        divisor == 0 -> sequence
-        else -> sequence / divisor
-
-    }
+    return (answer % 10)
 }
 
 
@@ -416,54 +383,21 @@ fun squareSequenceDigit(n: Int): Int {
 fun fibSequenceDigit(n: Int): Int {
 
 
-    var count = 0
+    var i = 0
     var num = 0
-    var sequence = 0
-    var exSum = 0
-    var divisor = 1
-
+    var answer: Int
 
     while (num < n) {
 
-        count += 1
-        sequence = fib(count)
-        exSum = 0
-
-        while (sequence > 0) {
-
-            sequence /= 10
-            exSum += 1
-
-        }
-
-        sequence = fib(count)
-        num += exSum
-    }
-
-    num -= exSum
-
-    while (exSum > 0) {
-
-        divisor *= 10
-        exSum -= 1
+        i++
+        num += fib(i).toString().length
 
     }
 
-    while (num != n) {
+    answer = fib(i)
 
-        sequence %= divisor
-        divisor /= 10
-        num += 1
+    (n until num).forEach { answer /= 10 }
 
-    }
-
-    return when {
-
-        n == 1 -> 1
-        n == 2 -> 1
-        divisor == 0 -> sequence
-        else -> sequence / divisor
-
-    }
+    return (answer % 10)
 
 }
