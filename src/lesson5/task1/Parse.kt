@@ -517,66 +517,8 @@ fun fromRoman(roman: String): Int {
     val containerArabNum = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
 
     var answer = 0
-    /*
-
-    if (roman != "") {
-
-        for (i in 0 until roman.length) {
-
-            if (roman[i].toString() !in containerRimNum) {
-                return -1
-            }
-
-        }
-
-    }
-    else {
-        return -1
-    }
-
-    val containerPart = roman.split("")
-
-    if (roman.length == 1) {
-
-        for (i in 0 until containerRimNum.size) {
-
-            if (roman == containerRimNum[i]) {
-                return containerArabNum[i]
-            }
-
-        }
-
-    }
-
-    for (i in 0 until roman.length) {
-        for (j in 0 until containerRimNum.size) {
-            if ((i != roman.length - 1) && (roman[i].toString() + roman[i + 1].toString() == containerRimNum[j])) {
-                answer += containerArabNum[j]
-                break
-            }
-            else if (j == containerRimNum.size - 1) {
-
-                for (k in 0 until containerRimNum.size) {
-
-                    if (roman[i].toString() == containerRimNum[k]) {
-                        answer += containerArabNum[k]
-                        break
-                    }
-
-                }
-
-            }
 
 
-        }
-
-    }
-
-*/
-
-    /*
-    -------
-     */
 
     return answer
 

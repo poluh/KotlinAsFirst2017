@@ -47,9 +47,11 @@ fun isPrime(n: Int): Boolean {
 fun isPerfect(n: Int): Boolean {
     var sum = 1
     for (m in 2..n / 2) {
-        if (n % m > 0) continue
-        sum += m
-        if (sum > n) break
+        if (n % m <= 0) {
+            sum += m
+            if (sum > n) break
+        }
+        continue
     }
     return sum == n
 }
@@ -75,16 +77,16 @@ fun digitCountInNumber(n: Int, m: Int): Int =
 fun digitNumber(n: Int): Int {
 
     var buf: Int = Math.abs(n)
-    var i: Int = 0
+    var i = 0
 
     if (buf == 0) {
         return 1
     }
+
     while (buf > 0) {
 
         i += 1
         buf /= 10
-
 
     }
 
@@ -132,8 +134,8 @@ fun lcm(m: Int, n: Int): Int {
     var numN = n
     val prod = n * m
 
-    if (numM == numN) {
-        return numM
+    return if (numM == numN) {
+        numM
     } else {
 
         while (numM != numN) {
@@ -144,7 +146,7 @@ fun lcm(m: Int, n: Int): Int {
             }
         }
 
-        return prod / numM
+        prod / numM
     }
 }
 
@@ -202,13 +204,13 @@ fun isCoPrime(m: Int, n: Int): Boolean {
 
     while ((numM != 0) && (numN != 0)) {
 
-        if (numM > numN) {
+        if (numM <= numN) {
 
-            numM %= numN
+            numN %= numM
 
         } else {
 
-            numN %= numM
+            numM %= numN
 
         }
 
@@ -333,7 +335,7 @@ fun revert(n: Int): Int {
  * первая цифра равна последней, вторая -- предпоследней и так далее.
  * 15751 -- палиндром, 3653 -- нет.
  */
-fun isPalindrome(n: Int): Boolean = (revert(n) == n)
+fun isPalindrome(n: Int): Boolean = revert(n) == n
 
 
 /**
@@ -341,8 +343,8 @@ fun isPalindrome(n: Int): Boolean = (revert(n) == n)
  *
  * Для заданного числа n определить, содержит ли оно различающиеся цифры.
  * Например, 54 и 323 состоят из разных цифр, а 111 и 0 из одинаковых.
- */
-fun hasDifferentDigits(n: Int): Boolean = !(digitCountInNumber(n, (n % 10)) == digitNumber(n))
+ w*/
+fun hasDifferentDigits(n: Int): Boolean = digitCountInNumber(n, (n % 10)) != digitNumber(n)
 
 
 /**

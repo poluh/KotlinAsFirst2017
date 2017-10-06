@@ -419,6 +419,10 @@ fun roman(n: Int): String {                             //Дорабатываю
 
 }
 
+
+
+
+
 /**
  * Очень сложная
  *
@@ -428,17 +432,147 @@ fun roman(n: Int): String {                             //Дорабатываю
  */
 fun russian(n: Int): String {
 
-    val containerAloneNum = listOf("од", "дв", "три", "четыре", "пять", "шесть", "семь", "восемь", "деввять")
-    val containerBigNum = listOf("тысяч", "миллион", "миллиард")
-    val nStr = n.toString()
+    val containerOne = listOf("", "один ", "два ", "три ", "четыре ", "пять ", "шесть ", "семь ", "восемь ",
+            "девять ", "десять ", "одиннадцать ", "двенадцать ", "тринадцать ", "четырнадцать ", "пятнадцать ", "шестнадцать ",
+            "семнадцать ", "восемнадцать ", "девятнадцать ")
+    val containerTen = listOf("", "", "двадцать ", "тридцать ", "сорок ", "пятьдесят ", "шестьдесят ",
+            "семьдесят ", "восемьдесят ", "девяносто ")
+    val containerHundred = listOf("", "сто ", "двести ", "триста ", "четыреста ", "пятьсот ", "шестьсот ",
+            "семьсот ", "восемьсот ", "девятьсот ")
+    val containerThouOne = listOf("", "одна ", "две ", "три ", "четыре ", "пять ", "шесть ", "семь ", "восемь ", "девять ",
+            "десять ", "одиннадцать ", "двенадцать ", "тринадцать ", "четырнадцать ", "пятнадцать ",
+            "шестнадцать ", "семнадцать ", "восемнадцать ", "девятнадцать ")
+    val containerThousand = listOf("тысяч ", "тысяча ", "тысячи ", "тысячи ", "тысячи ", "тысяч ", "тысяч " , "тысяч ",
+            "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ")
 
-    for (i in 0 until nStr.length) {
+    var temp: Int
+    var temp2: Int
 
-        //To be continued.........
+    val nStr = n.toString().length
+    var nForMem = n
+    var answer = ""
+
+    when (nStr) {
+        in 1..2 -> if (nForMem < 20) {
+            answer = containerOne[nForMem]
+        } else if (nForMem < 100) {
+
+            answer = when {
+                nForMem % 10 == 0 -> containerTen[nForMem / 10]
+                else -> containerTen[nForMem % 10] + containerOne[nForMem % 10]
+            }
+
+        }
+        3 -> {
+
+            temp = nForMem / 100
+            nForMem -= (nForMem / 100) * 100
+
+            when {
+                nForMem < 20 -> answer = containerHundred[temp] + containerOne[nForMem]
+                nForMem < 100 -> {
+                    if (nForMem % 10 == 0) {
+                        answer = containerHundred[temp] + containerTen[nForMem / 10]
+                    } else {
+                        answer = containerHundred[temp] + containerTen[nForMem / 10] + containerOne[nForMem % 10]
+                    }
+                }
+            }
+        }
+        4 -> {
+
+            temp = nForMem / 1000
+            nForMem -= (nForMem / 1000) * 1000
+
+            answer = containerThouOne[temp] + containerThousand[temp]
+
+            temp = nForMem / 100
+            nForMem -= (nForMem / 100) * 100
+
+            if (nForMem < 20) {
+                answer += containerHundred[temp] + containerOne[nForMem]
+            } else if (nForMem < 100) {
 
 
+                if (nForMem % 10 == 0) {
+                    answer += containerHundred[temp] + containerTen[nForMem / 10]
+                } else {
+                    answer += containerHundred[temp] + containerTen[temp / 10] + containerThouOne[temp % 10]
+                }
+
+            }
+
+        }
+        5 -> {
+
+            temp = nForMem / 1000
+            nForMem -= (nForMem / 1000) * 1000
+
+            if (temp < 20) {
+                answer = containerThouOne[temp] + containerThousand[temp % 10]
+            } else if (temp < 100) {
+
+                if (temp % 10 == 0) {
+                    answer = containerTen[temp / 10] + containerThousand[temp % 10]
+                } else {
+                    answer = containerTen[temp / 10] + containerThouOne[temp % 10] + containerThousand[temp % 10]
+                }
+
+            }
+
+            temp = nForMem / 100
+            nForMem -= (nForMem / 100) * 100
+
+            if (nForMem < 20) {
+                answer += containerHundred[temp] + containerThouOne[nForMem]
+            } else if (nForMem < 100) {
+
+                if (nForMem % 10 == 0) {
+                    answer += containerHundred[temp] + containerTen[nForMem / 10]
+                } else {
+                    answer += containerHundred[temp] + containerTen[nForMem / 10] + containerThouOne[nForMem % 10]
+                }
+
+            }
+
+        }
+        6 -> {
+
+            temp2 = nForMem / 1000
+            nForMem -= (nForMem / 1000) * 1000
+
+            temp = temp2 / 100
+            temp2 -= temp * 100
+
+            if (temp2 < 20) {
+                answer = containerHundred[temp] + containerThouOne[temp2] + containerThousand[temp2]
+            } else if (temp2 < 100) {
+                if ((temp % 10) == 0) {
+                    answer = containerHundred[temp] + containerTen[temp2 / 10] + containerThousand[temp2 % 10]
+                } else {
+                    answer = containerHundred[temp] + containerTen[temp2 / 10] + containerThouOne[temp2 % 10] +
+                            containerThousand[temp2 % 10]
+                }
+            }
+            temp = nForMem / 100
+            nForMem -= (nForMem / 100) * 100
+
+            if (nForMem < 20) {
+                answer += containerHundred[temp] + containerOne[nForMem]
+
+            } else if (n < 100) {
+                if ((n % 10) == 0) {
+                    answer += containerHundred[temp] + containerTen[n / 10]
+                } else {
+                    answer += containerHundred[temp] + containerTen[n / 10] + containerOne[n % 10]
+                }
+
+            }
+        }
     }
 
-    return ""
+
+
+    return answer.substring(0, answer.length - 1)
 
 }
