@@ -4,6 +4,7 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
+import lesson3.task1.isPrime
 
 /**
  * Пример
@@ -224,6 +225,7 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
 
 }
 
+
 /**
  * Средняя
  *
@@ -235,6 +237,8 @@ fun factorize(n: Int): List<Int> {
     var nForMember = n
     val answer = mutableListOf<Int>()
     var i = 2
+
+    if (isPrime(n)) return answer + n
 
     while (i <= nForMember) {
 
@@ -354,6 +358,20 @@ fun decimal(digits: List<Int>, base: Int): Int {
     return answer.toInt()
 }
 
+
+fun convertFromLetters(str: String, i: Int): Int {
+
+    val constSingleDig = 48
+    val cosntTwoDig = 87
+
+    if (str[i] in '0'..'9') {
+        return str[i].toInt() - constSingleDig
+    } else {
+        return str[i].toInt() - cosntTwoDig
+    }
+
+}
+
 /**
  * Сложная
  *
@@ -368,17 +386,7 @@ fun decimalFromString(str: String, base: Int): Int {
     var list = listOf<Int>()
 
     for (i in 0 until str.length) {
-
-        if (str[i] in '0'..'9') {
-
-            list += (str[i]).toInt() - 48
-
-        } else {
-
-            list += (str[i]).toInt() - 87
-
-        }
-
+        list += convertFromLetters(str, i)
     }
 
     return decimal(list, base)
@@ -420,9 +428,6 @@ fun roman(n: Int): String {                             //Дорабатываю
 }
 
 
-
-
-
 /**
  * Очень сложная
  *
@@ -433,17 +438,18 @@ fun roman(n: Int): String {                             //Дорабатываю
 fun russian(n: Int): String {
 
     val containerOne = listOf("", "один ", "два ", "три ", "четыре ", "пять ", "шесть ", "семь ", "восемь ",
-            "девять ", "десять ", "одиннадцать ", "двенадцать ", "тринадцать ", "четырнадцать ", "пятнадцать ", "шестнадцать ",
-            "семнадцать ", "восемнадцать ", "девятнадцать ")
+            "девять ", "десять ", "одиннадцать ", "двенадцать ", "тринадцать ", "четырнадцать ", "пятнадцать ",
+            "шестнадцать ", "семнадцать ", "восемнадцать ", "девятнадцать ")
     val containerTen = listOf("", "", "двадцать ", "тридцать ", "сорок ", "пятьдесят ", "шестьдесят ",
             "семьдесят ", "восемьдесят ", "девяносто ")
     val containerHundred = listOf("", "сто ", "двести ", "триста ", "четыреста ", "пятьсот ", "шестьсот ",
             "семьсот ", "восемьсот ", "девятьсот ")
-    val containerThouOne = listOf("", "одна ", "две ", "три ", "четыре ", "пять ", "шесть ", "семь ", "восемь ", "девять ",
-            "десять ", "одиннадцать ", "двенадцать ", "тринадцать ", "четырнадцать ", "пятнадцать ",
-            "шестнадцать ", "семнадцать ", "восемнадцать ", "девятнадцать ")
-    val containerThousand = listOf("тысяч ", "тысяча ", "тысячи ", "тысячи ", "тысячи ", "тысяч ", "тысяч " , "тысяч ",
-            "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ")
+    val containerThouOne = listOf("", "одна ", "две ", "три ", "четыре ", "пять ", "шесть ", "семь ",
+            "восемь ", "девять ", "десять ", "одиннадцать ", "двенадцать ", "тринадцать ", "четырнадцать ",
+            "пятнадцать ", "шестнадцать ", "семнадцать ", "восемнадцать ", "девятнадцать ")
+    val containerThousand = listOf("тысяч ", "тысяча ", "тысячи ", "тысячи ", "тысячи ", "тысяч ",
+            "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ",
+            "тысяч ", "тысяч ", "тысяч ", "тысяч ")
 
     var temp: Int
     var temp2: Int
@@ -547,6 +553,7 @@ fun russian(n: Int): String {
             if (temp2 < 20) {
                 answer = containerHundred[temp] + containerThouOne[temp2] + containerThousand[temp2]
             } else if (temp2 < 100) {
+
                 if ((temp % 10) == 0) {
                     answer = containerHundred[temp] + containerTen[temp2 / 10] + containerThousand[temp2 % 10]
                 } else {
@@ -554,17 +561,18 @@ fun russian(n: Int): String {
                             containerThousand[temp2 % 10]
                 }
             }
+
             temp = nForMem / 100
             nForMem -= (nForMem / 100) * 100
 
             if (nForMem < 20) {
                 answer += containerHundred[temp] + containerOne[nForMem]
 
-            } else if (n < 100) {
-                if ((n % 10) == 0) {
-                    answer += containerHundred[temp] + containerTen[n / 10]
+            } else if (nForMem < 100) {
+                if ((nForMem % 10) == 0) {
+                    answer += containerHundred[temp] + containerTen[nForMem / 10]
                 } else {
-                    answer += containerHundred[temp] + containerTen[n / 10] + containerOne[n % 10]
+                    answer += containerHundred[temp] + containerTen[nForMem / 10] + containerOne[nForMem % 10]
                 }
 
             }

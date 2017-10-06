@@ -159,6 +159,8 @@ fun minDivisor(n: Int): Int {
 
     var total = 0
 
+    if (isPrime(n)) return n
+
     for (i in 2..n) {
 
         if ((n % i) == 0) {
@@ -180,7 +182,9 @@ fun maxDivisor(n: Int): Int {
 
     var total = 0
 
-    for (i in 1..(n - 1)) {
+    if (isPrime(n)) return 1
+
+    for (i in 1 until n) {
 
         if ((n % i) == 0) {
             total = i
@@ -201,6 +205,8 @@ fun isCoPrime(m: Int, n: Int): Boolean {
 
     var numN = n
     var numM = m
+
+    if ((isPrime(n)) && isPrime(m)) return true
 
     while ((numM != 0) && (numN != 0)) {
 
@@ -250,7 +256,7 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
  * sin(x) = x - x^3 / 3! + x^5 / 5! - x^7 / 7! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun sin(x: Double, eps: Double): Double {        //Не понял, что сделать с cos и sin, выдает NaN при тестировании, идей нет
+fun sin(x: Double, eps: Double): Double {
 
 
     val xForNormal = x % (2 * Math.PI)
@@ -363,7 +369,7 @@ fun squareSequenceDigit(n: Int): Int {
     while (num < n) {
 
         i++
-        num += (i * i).toString().length
+        num += digitNumber(i * i)
 
     }
 
@@ -392,7 +398,7 @@ fun fibSequenceDigit(n: Int): Int {
     while (num < n) {
 
         i++
-        num += fib(i).toString().length
+        num += digitNumber(fib(i))
 
     }
 

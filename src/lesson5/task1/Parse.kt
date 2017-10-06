@@ -432,7 +432,8 @@ fun plusMinus(expression: String): Int {
  */
 fun firstDuplicateIndex(str: String): Int {
 
-    val conteinerPartStr = str.toLowerCase().replace("\u0020{2,}", "\u0020").split(" ")
+    val conteinerPartStr = str.toLowerCase().replace("\u0020{2,}",
+                                        "\u0020").split(" ")
 
     for (i in 0 until conteinerPartStr.size - 1) {
 

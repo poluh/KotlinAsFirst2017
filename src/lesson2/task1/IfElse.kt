@@ -65,7 +65,9 @@ fun timeForHalfWay(t1: Double, v1: Double,
 
     return when {
         halfWay < firstWay -> halfWay / v1
-        halfWay in firstWay..(firstWay + secondWay) -> if (v2 != 0.0) t1 + (halfWay - firstWay) / v2 else t1 + (halfWay - firstWay)
+        halfWay in firstWay..(firstWay + secondWay) -> if (v2 != 0.0) t1 + (halfWay - firstWay) /
+                                                                v2 else t1 + (halfWay - firstWay)
+
         v3 > 0.0 -> t1 + t2 + (halfWay - firstWay - secondWay) / v3
         else -> t1 + t2 + (halfWay - firstWay - secondWay)
     }
