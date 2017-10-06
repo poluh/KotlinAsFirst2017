@@ -536,7 +536,7 @@ fun russian(n: Int): String {
                 if (nForMem % 10 == 0) {
                     answer += containerHundred[temp] + containerTen[nForMem / 10]
                 } else {
-                    answer += containerHundred[temp] + containerTen[nForMem / 10] + containerThouOne[nForMem % 10]
+                    answer += containerHundred[temp] + containerTen[nForMem / 10] + containerOne[nForMem % 10]
                 }
 
             }

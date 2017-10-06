@@ -206,7 +206,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
     var numN = n
     var numM = m
 
-    if ((isPrime(n)) && isPrime(m)) return true
+    if ((isPrime(n)) && isPrime(m) && (maxDivisor(n) != maxDivisor(m))) return true
 
     while ((numM != 0) && (numN != 0)) {
 
