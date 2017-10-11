@@ -2,6 +2,9 @@
 
 package lesson3.task1
 
+import lesson1.task1.main
+import lesson1.task1.sqr
+
 fun seq(n: Int): Int {
 
     var answer = 0
@@ -101,24 +104,17 @@ fun digitNumber(n: Int): Int {
  */
 fun fib(n: Int): Int {
 
+    var fibNumOne = 1
+    var fibNumTwo = 0
 
-    var fibNumFirst = 1
-    var fibNumSecond = 1
-    var fibSum = 1
+    for (i in 1 until n) {
 
-    var i = 2
-
-    while (i < n) {
-
-        fibSum = fibNumFirst + fibNumSecond
-        fibNumFirst = fibNumSecond
-        fibNumSecond = fibSum
-
-        i += 1
+        fibNumOne += fibNumTwo
+        fibNumTwo = fibNumOne - fibNumTwo
 
     }
 
-    return fibSum
+    return fibNumOne
 
 }
 
@@ -158,10 +154,11 @@ fun lcm(m: Int, n: Int): Int {
 fun minDivisor(n: Int): Int {
 
     var total = 0
+    val lim = Math.sqrt(n.toDouble()).toInt()
 
     if (isPrime(n)) return n
 
-    for (i in 2..n) {
+    for (i in 2..lim) {
 
         if ((n % i) == 0) {
             total = i
@@ -181,13 +178,15 @@ fun minDivisor(n: Int): Int {
 fun maxDivisor(n: Int): Int {
 
     var total = 0
+    val lim = n / 2
 
     if (isPrime(n)) return 1
 
-    for (i in 1 until n) {
+    for (i in lim downTo 1) {
 
         if ((n % i) == 0) {
             total = i
+            break
         }
     }
 
@@ -201,31 +200,10 @@ fun maxDivisor(n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
+fun isCoPrime(m: Int, n: Int): Boolean = m * n == lcm(m, n)
 
-    var numN = n
-    var numM = m
 
-    if ((isPrime(n)) && isPrime(m) && (maxDivisor(n) != maxDivisor(m))) return true
-
-    while ((numM != 0) && (numN != 0)) {
-
-        if (numM <= numN) {
-
-            numN %= numM
-
-        } else {
-
-            numM %= numN
-
-        }
-
-    }
-
-    return ((numM + numN) == 1)
-
-}
-
+fun sqr(x: Int): Int = x * x
 
 /**
  * Простая
@@ -234,20 +212,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean {
-
-
-    for (i in m..n) {
-
-        if ((Math.sqrt(i.toDouble()) % 1) == 0.0) {
-            return true
-        }
-
-    }
-
-    return false
-
-}
+fun squareBetweenExists(m: Int, n: Int): Boolean =  m <= sqr(Math.sqrt(n.toDouble()).toInt())
 
 /**
  * Средняя

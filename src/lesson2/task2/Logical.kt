@@ -46,7 +46,7 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean {
  */
 fun circleInside(x1: Double, y1: Double, r1: Double,
                  x2: Double, y2: Double, r2: Double): Boolean =
-        (r2 >= (Math.sqrt(Math.pow(x2 - x1, 2.0) + Math.pow(y2 - y1, 2.0))) + r1)
+        r2 >= (Math.sqrt(Math.pow(x2 - x1, 2.0) + Math.pow(y2 - y1, 2.0))) + r1
 
 
 /**
@@ -59,5 +59,5 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean =
-        ((a <= r && b <= s) || (b <= r && a <= s) || (a <= r && c <= s) ||
-                (a <= s && c <= r) || (b <= r && c <= s) || (c <= r && b <= s))
+        (a <= r && b <= s) || (b <= r && a <= s) || (a <= r && c <= s) ||
+                (a <= s && c <= r) || (b <= r && c <= s) || (c <= r && b <= s)
