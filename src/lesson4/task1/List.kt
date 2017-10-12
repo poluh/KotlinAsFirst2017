@@ -147,14 +147,10 @@ fun times(a: List<Double>, b: List<Double>): Double {
 
     var answer = 0.0
 
-    if ((a != listOf<Double>()) && (b != listOf<Double>())) {
 
-        for (i in 0 until a.size) {
+    for (i in 0 until a.size) {
 
-            answer += a[i] * b[i]
-
-        }
-
+        answer += a[i] * b[i]
 
     }
 
@@ -208,16 +204,11 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
 
     var amountOfPrevMem = 0.0
 
-    if (list != listOf<Double>()) {
+    for (i in 0 until list.size) {
 
+        amountOfPrevMem += list[i]
 
-        for (i in 0 until list.size) {
-
-            amountOfPrevMem += list[i]
-
-            list[i] = amountOfPrevMem
-
-        }
+        list[i] = amountOfPrevMem
 
     }
 
@@ -234,25 +225,29 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
  * Множители в списке должны располагаться по возрастанию.
  */
 fun factorize(n: Int): List<Int> {
+
     var nForMember = n
     val answer = mutableListOf<Int>()
-    var i = 2
+    var i = 1
 
-    if (isPrime(n)) return answer + n
+    if (isPrime(nForMember)) return answer + nForMember
 
-    while (i <= nForMember) {
+    while (i <= Math.sqrt(nForMember.toDouble()).toInt()) {
 
-        if (nForMember % i == 0) {
+        i++
 
-            answer += i
-            nForMember /= i
-
+        if (isPrime(nForMember)) {
+            answer += nForMember
+            break
         } else {
 
-            i++
+            if (nForMember % i == 0) {
+                nForMember /= i
+                answer += i
+                i = 1
+            }
 
         }
-
     }
 
     return answer.sorted()
@@ -279,20 +274,14 @@ fun convert(n: Int, base: Int): List<Int> {
     var nForMember = n
     var list = listOf<Int>()
 
-    if (n > 0) {
+    while (nForMember > 0) {
 
-        while (nForMember > 0) {
-
-            list += nForMember % base
-            nForMember /= base
-
-        }
-
-    } else {
-
-        list += 0
+        list += nForMember % base
+        nForMember /= base
 
     }
+
+
     return list.reversed()
 
 }
@@ -361,13 +350,13 @@ fun decimal(digits: List<Int>, base: Int): Int {
 
 fun convertFromLetters(str: String, i: Int): Int {
 
-    val constSingleDig = 48
-    val cosntTwoDig = 87
+    val constForSmallCharSymbol = 48
+    val constForBigCharSymbol = 87
 
     if (str[i] in '0'..'9') {
-        return str[i].toInt() - constSingleDig
+        return str[i].toInt() - constForBigCharSymbol
     } else {
-        return str[i].toInt() - cosntTwoDig
+        return str[i].toInt() - constForSmallCharSymbol
     }
 
 }
