@@ -382,6 +382,46 @@ fun decimalFromString(str: String, base: Int): Int {
 
 }
 
+
+fun createIndicesRomanNum(str: String, len: Int): List<Int> { //все еще дорабатываю
+
+    var list = listOf<Int>()
+    val containerArabNum = listOf(1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000)
+    var n = listOf<Int>()
+
+    for (i in 0 until str.length) {
+
+        n += (str[str.length - i].toInt() * Math.pow(10.0, i.toDouble())).toInt()
+
+        for (j in 0 until containerArabNum.size) {
+
+            if (n[i] == containerArabNum[j]) {
+
+                list += j
+
+            } else {
+
+                for (k in (1 * Math.pow(10.0, i.toDouble()).toInt())..(4 * Math.pow(10.0, i.toDouble())).toInt()) {
+
+                    if (n[i] - k == containerArabNum[j]) {
+
+                        list += j
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    return list
+}
+
+
 /**
  * Сложная
  *
@@ -393,29 +433,59 @@ fun decimalFromString(str: String, base: Int): Int {
 fun roman(n: Int): String {                             //Дорабатываю
 
     val containerRimNum = listOf("I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M")
-    val containerArabNum = listOf(1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000)
     var answer = ""
     var nForMemeber = n
     var i = 12
 
-
-    while (nForMemeber != 0) {
-
-        while (nForMemeber >= containerArabNum[i]) {
-
-            nForMemeber -= containerArabNum[i]
-            answer += containerRimNum[i]
-
-        }
-
-        i--
-
+    for (part in createIndicesRomanNum(n.toString(), n.toString().length)) {
+        answer += containerRimNum[part]
     }
 
     return answer
 
 }
 
+
+fun translationOfTripleOfNum(n: Int, len: Int, order: Int): String {
+
+    val containerOne = listOf("", "один ", "два ", "три ", "четыре ", "пять ", "шесть ", "семь ", "восемь ",
+            "девять ", "десять ", "одиннадцать ", "двенадцать ", "тринадцать ", "четырнадцать ", "пятнадцать ",
+            "шестнадцать ", "семнадцать ", "восемнадцать ", "девятнадцать ", "одна ", "две ")
+    val containerTen = listOf("", "", "двадцать ", "тридцать ", "сорок ", "пятьдесят ", "шестьдесят ",
+            "семьдесят ", "восемьдесят ", "девяносто ")
+    val containerHundred = listOf("", "сто ", "двести ", "триста ", "четыреста ", "пятьсот ", "шестьсот ",
+            "семьсот ", "восемьсот ", "девятьсот ")
+    var doping = 0
+
+    when (len) {
+        1 -> {
+
+            if ((order == 2) && (n % 10 in 1..2)) doping = 19
+            return containerOne[n + doping]
+
+        }
+        2 -> {
+
+            when {
+                n in 10..19 -> return containerOne[n]
+                (order == 2) && (n % 10 in 1..2) -> doping = 19
+            }
+
+            return containerTen[n / 10] + containerOne[n % 10 + doping]
+
+        }
+        3 -> {
+
+            return when {
+                n % 100 == 0 -> containerHundred[n / 100]
+                else -> containerHundred[n / 100] + translationOfTripleOfNum(n % 100, 2, order)   //РЕКУРШЕН
+            }
+        }
+    }
+
+    return ""
+
+}
 
 /**
  * Очень сложная
@@ -426,150 +496,38 @@ fun roman(n: Int): String {                             //Дорабатываю
  */
 fun russian(n: Int): String {
 
-    val containerOne = listOf("", "один ", "два ", "три ", "четыре ", "пять ", "шесть ", "семь ", "восемь ",
-            "девять ", "десять ", "одиннадцать ", "двенадцать ", "тринадцать ", "четырнадцать ", "пятнадцать ",
-            "шестнадцать ", "семнадцать ", "восемнадцать ", "девятнадцать ")
-    val containerTen = listOf("", "", "двадцать ", "тридцать ", "сорок ", "пятьдесят ", "шестьдесят ",
-            "семьдесят ", "восемьдесят ", "девяносто ")
-    val containerHundred = listOf("", "сто ", "двести ", "триста ", "четыреста ", "пятьсот ", "шестьсот ",
-            "семьсот ", "восемьсот ", "девятьсот ")
-    val containerThouOne = listOf("", "одна ", "две ", "три ", "четыре ", "пять ", "шесть ", "семь ",
-            "восемь ", "девять ", "десять ", "одиннадцать ", "двенадцать ", "тринадцать ", "четырнадцать ",
-            "пятнадцать ", "шестнадцать ", "семнадцать ", "восемнадцать ", "девятнадцать ")
-    val containerThousand = listOf("тысяч ", "тысяча ", "тысячи ", "тысячи ", "тысячи ", "тысяч ",
-            "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ", "тысяч ",
-            "тысяч ", "тысяч ", "тысяч ", "тысяч ")
+    val containerThousand = listOf("тысяча ", "тысячи ", "тысяч ")
 
-    var temp: Int
-    var temp2: Int
+    val order: Int
+    val lenN = n.toString().length
 
-    val nStr = n.toString().length
-    var nForMem = n
-    var answer = ""
+    var answer: String
 
-    when (nStr) {
-        in 1..2 -> if (nForMem < 20) {
-            answer = containerOne[nForMem]
-        } else if (nForMem < 100) {
-
-            answer = when {
-                nForMem % 10 == 0 -> containerTen[nForMem / 10]
-                else -> containerTen[nForMem % 10] + containerOne[nForMem % 10]
-            }
-
-        }
-        3 -> {
-
-            temp = nForMem / 100
-            nForMem -= (nForMem / 100) * 100
-
-            when {
-                nForMem < 20 -> answer = containerHundred[temp] + containerOne[nForMem]
-                nForMem < 100 -> {
-                    if (nForMem % 10 == 0) {
-                        answer = containerHundred[temp] + containerTen[nForMem / 10]
-                    } else {
-                        answer = containerHundred[temp] + containerTen[nForMem / 10] + containerOne[nForMem % 10]
-                    }
-                }
-            }
-        }
-        4 -> {
-
-            temp = nForMem / 1000
-            nForMem -= (nForMem / 1000) * 1000
-
-            answer = containerThouOne[temp] + containerThousand[temp]
-
-            temp = nForMem / 100
-            nForMem -= (nForMem / 100) * 100
-
-            if (nForMem < 20) {
-                answer += containerHundred[temp] + containerOne[nForMem]
-            } else if (nForMem < 100) {
-
-
-                if (nForMem % 10 == 0) {
-                    answer += containerHundred[temp] + containerTen[nForMem / 10]
-                } else {
-                    answer += containerHundred[temp] + containerTen[temp / 10] + containerThouOne[temp % 10]
-                }
-
-            }
-
-        }
-        5 -> {
-
-            temp = nForMem / 1000
-            nForMem -= (nForMem / 1000) * 1000
-
-            if (temp < 20) {
-                answer = containerThouOne[temp] + containerThousand[temp % 10]
-            } else if (temp < 100) {
-
-                if (temp % 10 == 0) {
-                    answer = containerTen[temp / 10] + containerThousand[temp % 10]
-                } else {
-                    answer = containerTen[temp / 10] + containerThouOne[temp % 10] + containerThousand[temp % 10]
-                }
-
-            }
-
-            temp = nForMem / 100
-            nForMem -= (nForMem / 100) * 100
-
-            if (nForMem < 20) {
-                answer += containerHundred[temp] + containerThouOne[nForMem]
-            } else if (nForMem < 100) {
-
-                if (nForMem % 10 == 0) {
-                    answer += containerHundred[temp] + containerTen[nForMem / 10]
-                } else {
-                    answer += containerHundred[temp] + containerTen[nForMem / 10] + containerOne[nForMem % 10]
-                }
-
-            }
-
-        }
-        6 -> {
-
-            temp2 = nForMem / 1000
-            nForMem -= (nForMem / 1000) * 1000
-
-            temp = temp2 / 100
-            temp2 -= temp * 100
-
-            if (temp2 < 20) {
-                answer = containerHundred[temp] + containerThouOne[temp2] + containerThousand[temp2]
-            } else if (temp2 < 100) {
-
-                if ((temp % 10) == 0) {
-                    answer = containerHundred[temp] + containerTen[temp2 / 10] + containerThousand[temp2 % 10]
-                } else {
-                    answer = containerHundred[temp] + containerTen[temp2 / 10] + containerThouOne[temp2 % 10] +
-                            containerThousand[temp2 % 10]
-                }
-            }
-
-            temp = nForMem / 100
-            nForMem -= (nForMem / 100) * 100
-
-            if (nForMem < 20) {
-                answer += containerHundred[temp] + containerOne[nForMem]
-
-            } else if (nForMem < 100) {
-                if ((nForMem % 10) == 0) {
-                    answer += containerHundred[temp] + containerTen[nForMem / 10]
-                } else {
-                    answer += containerHundred[temp] + containerTen[nForMem / 10] + containerOne[nForMem % 10]
-                }
-
-            }
-        }
+    order = when (lenN) {
+        in 1..3 -> 1
+        in 4..6 -> 2
+        else -> throw IllegalAccessError("This format is not supported (for now)")
     }
 
+    if (order == 1) {
+        return translationOfTripleOfNum(n, lenN, order).trim()
+    } else {
 
+        val nStr = n.toString()
+        val partOneNum = nStr.substring(0, lenN - 3).toInt()
 
-    return answer.substring(0, answer.length - 1)
+        answer =  translationOfTripleOfNum(partOneNum, partOneNum.toString().length, order)
+        answer += when (nStr[lenN - 4]) {
+            '1' -> containerThousand[0]
+            in '2'..'4' -> containerThousand[1]
+            else -> containerThousand[2]
+        }
+
+        val partTwoNum = nStr.substring(lenN - 3, lenN).toInt()
+
+        answer += translationOfTripleOfNum(partTwoNum, partTwoNum.toString().length, order - 1)
+    }
+
+    return answer.trim()
 
 }
