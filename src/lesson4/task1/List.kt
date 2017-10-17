@@ -404,7 +404,7 @@ fun roman(n: Int): String {
               i--
          }
 
-    return answer
+    return if (answer != "") answer else "-1"
 
 }
 

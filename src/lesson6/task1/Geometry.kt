@@ -77,9 +77,10 @@ data class Circle(val center: Point, val radius: Double) {
      * расстояние между их центрами минус сумма их радиусов.
      * Расстояние между пересекающимися окружностями считать равным 0.0.
      */
-    fun distance(other: Circle): Double = if (center.distance(other.center) > radius + other.radius) {
-        (center.distance(other.center) - radius - other.radius)
-    } else 0.0
+    fun distance(other: Circle): Double =
+            if (center.distance(other.center) > radius + other.radius) {
+                (center.distance(other.center) - radius - other.radius)
+            } else 0.0
 
     /**
      * Тривиальная
@@ -94,7 +95,7 @@ data class Circle(val center: Point, val radius: Double) {
  */
 data class Segment(val begin: Point, val end: Point) {
     override fun equals(other: Any?) =
-            other is Segment && (begin == other.begin && end == other.end || end == other.begin && begin == other.end)
+            (other is Segment) && (begin == other.begin && end == other.end || end == other.begin && begin == other.end)
 
     override fun hashCode() =
             begin.hashCode() + end.hashCode()
@@ -141,8 +142,8 @@ fun diameter(vararg points: Point): Segment {
  * Центр её должен находиться посередине между точками, а радиус составлять половину расстояния между ними
  */
 fun circleByDiameter(diameter: Segment): Circle = Circle(center = Point((diameter.begin.x + diameter.end.x) / 2.0,
-                                                (diameter.begin.y + diameter.end.y) / 2.0),
-                                                radius = diameter.begin.distance(diameter.end) / 2.0)
+        (diameter.begin.y + diameter.end.y) / 2.0),
+        radius = diameter.begin.distance(diameter.end) / 2.0)
 
 /**
  * Прямая, заданная точкой point и углом наклона angle (в радианах) по отношению к оси X.
@@ -181,7 +182,24 @@ class Line private constructor(val b: Double, val angle: Double) {
  *
  * Построить прямую по отрезку
  */
-fun lineBySegment(s: Segment): Line = TODO()
+fun lineBySegment(s: Segment): Line {
+
+    val grad: Double = if (s.begin != s.end) {
+        Math.atan((s.begin.y - s.end.y) / (s.begin.x - s.end.y))
+    } else 0.0
+
+    return if (((s.end.x >= s.begin.x) && (s.end.y >= s.begin.y)) ||
+            ((s.end.x <= s.begin.x) && (s.end.y <= s.begin.y))) {
+
+        (Line(s.begin, Math.abs(grad)))
+
+    } else {
+
+        (Line(s.begin, -Math.abs(grad)))
+
+    }
+
+}
 
 /**
  * Средняя
@@ -203,7 +221,30 @@ fun bisectorByPoints(a: Point, b: Point): Line = TODO()
  * Задан список из n окружностей на плоскости. Найти пару наименее удалённых из них.
  * Если в списке менее двух окружностей, бросить IllegalArgumentException
  */
-fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> = TODO()
+fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
+
+    if (circles.size < 2) {
+        throw IllegalArgumentException("In the list of less than two circles\n")
+    }
+
+
+    var minDistance = circles[0].distance(circles[1])
+    var answer = Pair(circles[0], circles[1])
+
+    for (i in 0.until(circles.size)) {
+
+        for (j in (i + 1).until(circles.size)) {
+
+            if (circles[i].distance(circles[j]) < minDistance) {
+
+                answer = Pair(circles[i], circles[j])
+                minDistance = circles[i].distance(circles[j])
+            }
+        }
+    }
+    return answer
+
+}
 
 /**
  * Сложная
