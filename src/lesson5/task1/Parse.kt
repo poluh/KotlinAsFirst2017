@@ -2,6 +2,7 @@
 
 package lesson5.task1
 
+import com.sun.org.apache.bcel.internal.generic.IFEQ
 import lesson1.task1.accountInThreeYears
 import java.lang.IllegalArgumentException
 
@@ -158,8 +159,7 @@ fun dateStrToDigit(str: String): String {
 
             } else return ""
         } else return ""
-    }
-    catch (e: NumberFormatException) {
+    } catch (e: NumberFormatException) {
         return ""
     }
     return String.format("%02d.%02d.%d", day.toInt(), month.toInt(), year.toInt())
@@ -178,7 +178,7 @@ fun dateDigitToStr(digital: String): String {
     val customStr = digital.split(".")
 
     val monthsArr =
-            listOf<String>("января", "февраля", "марта", "апреля", "мая", "июня", "июля",
+            listOf("января", "февраля", "марта", "апреля", "мая", "июня", "июля",
                     "августа", "сентября", "октября", "ноября", "декабря")
 
     var day: String
@@ -236,13 +236,13 @@ fun dateDigitToStr(digital: String): String {
 fun flattenPhoneNumber(phone: String): String {
 
     var phoneTrueStr = "+"
-    val containerTrueSimbol = listOf<Char>('(', ')', '-', ' ')
+    val containerTrueSymbol = listOf('(', ')', '-', ' ')
 
     for (i in 0 until phone.length) {
 
         if (phone[0] != '+') {
 
-            if ((phone[i] !in containerTrueSimbol) && (phone[i] !in '0'..'9')) {
+            if ((phone[i] !in containerTrueSymbol) && (phone[i] !in '0'..'9')) {
 
                 return ""
 
@@ -278,36 +278,31 @@ fun flattenPhoneNumber(phone: String): String {
  */
 fun bestLongJump(jumps: String): Int {
 
-    val containerTrueSymbol = listOf(" ", "%", "-")
+    val containerTrueSymbol = listOf(' ', '%', '-')
 
-    if (jumps != "") {
+    for (i in 0 until jumps.length) {
 
-        for (i in 0 until jumps.length) {
-
-            if ((jumps[i] !in '0'..'9') && (jumps[i].toString() !in containerTrueSymbol)) {
-
-                return -1
-
-            }
+        if ((jumps == "") || (jumps[i] !in containerTrueSymbol && (jumps[i] !in '0'..'9'))) {
+            return -1
 
         }
-
     }
 
-    val partStr = jumps.replace("\u0020{2,}", "\u0020").split(" ")
-    var preliminaryResult = listOf<Int>()
+    val resultJumps = jumps.filter { (it in '0'..'9') || (it == ' ') }
+    val containerParts = resultJumps.split(" ")
+    var containerTrueParts = listOf<Int>()
 
-    for (i in 0 until partStr.size) {
-
-        if ((partStr[i] !in containerTrueSymbol) && (partStr[i] != "")) {
-
-            preliminaryResult += partStr[i].toInt()
-
-        }
-
+    for (i in 0 until containerParts.size) {
+        if (containerParts[i] != "") containerTrueParts += containerParts[i].toInt()
     }
 
-    return if (preliminaryResult != listOf<Int>()) maxNumIntFromList(preliminaryResult) else -1
+    val result = (0 until containerTrueParts.size)
+            .asSequence()
+            .map { containerTrueParts[it] }
+            .max()
+            ?: -1
+
+    return result
 
 }
 
@@ -323,37 +318,33 @@ fun bestLongJump(jumps: String): Int {
  */
 fun bestHighJump(jumps: String): Int {
 
+    val containerTrueSymbol = listOf(' ', '%', '-', '+')
 
-    val containerTrueSymbol = listOf(" ", "%", "-", "+")
+    for (i in 0 until jumps.length) {
 
-    if (jumps != "") {
-
-        for (i in 0 until jumps.length) {
-
-            if ((jumps[i] !in '0'..'9') && (jumps[i].toString() !in containerTrueSymbol)) {
-
-                return -1
-
-            }
+        if ((jumps == "") || ((jumps[i] !in containerTrueSymbol) && (jumps[i] !in '0'..'9'))) {
+            return -1
 
         }
-
     }
 
-    val partStr = jumps.replace("\u0020{2,}", "\u0020").split(' ')
-    var preliminaryResult = listOf<Int>()
+    val resultJumps = jumps.filter { (it in '0'..'9') || (it == ' ') || (it == '+') }
+    val containerParts = resultJumps.split(" ")
+    var containerTrueParts = listOf<Int>()
 
-    for (i in 0 until partStr.size) {
-
-        if ((partStr[i] != "") && (partStr[i] !in containerTrueSymbol) && (partStr[i + 1] == "+")) {
-
-            preliminaryResult += partStr[i].toInt()
-
+    for (i in 0 until containerParts.size - 1) {
+        if ((containerParts[i] != "") && (containerParts[i + 1] == "+")) {
+            containerTrueParts += containerParts[i].toInt()
         }
-
     }
 
-    return if (preliminaryResult != listOf<Int>()) maxNumIntFromList(preliminaryResult) else -1
+    val result = (0 until containerTrueParts.size)
+            .asSequence()
+            .map { containerTrueParts[it] }
+            .max()
+            ?: -1
+
+    return result
 
 }
 
@@ -387,7 +378,7 @@ fun plusMinus(expression: String): Int {
     } else throw IllegalArgumentException("Error > Empty string")
 
 
-    val containerPart = expression.replace("\u0020{2,}", "\u0020").split(" ")
+    val containerPart = expression.split(" ")
 
     if (expression.indexOf(' ') == -1) {
         return expression.toInt()
@@ -432,12 +423,11 @@ fun plusMinus(expression: String): Int {
  */
 fun firstDuplicateIndex(str: String): Int {
 
-    val conteinerPartStr = str.toLowerCase().replace("\u0020{2,}",
-                                        "\u0020").split(" ")
+    val containerPartStr = str.toLowerCase().split(" ")
 
-    for (i in 0 until conteinerPartStr.size - 1) {
+    for (i in 0 until containerPartStr.size - 1) {
 
-        if (conteinerPartStr[i] == conteinerPartStr[i + 1]) {
+        if (containerPartStr[i] == containerPartStr[i + 1]) {
             return findIndex(i, str)
         }
 
@@ -466,7 +456,7 @@ fun mostExpensive(description: String): String {
         return description
     }
 
-    val dampsPartStr = description.replace("\u0020{2,}", "\u0020").split("; ")
+    val dampsPartStr = description.split("; ")
 
     if (dampsPartStr.isEmpty()) {
         return ""
@@ -499,6 +489,8 @@ fun mostExpensive(description: String): String {
 
 }
 
+fun charPlus(char1: Char, char2: Char): String = char1.toString() + char2.toString()
+
 
 
 /**
@@ -516,10 +508,27 @@ fun fromRoman(roman: String): Int {
 
     val containerRimNum = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
     val containerArabNum = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
+    var couple = false
 
     var answer = 0
 
+    for (i in 0 until roman.length) {
+        for (j in 0 until containerRimNum.size) {
 
+            if (i < roman.length - 1) {
+                if ((charPlus(roman[i], roman[i + 1]) == containerRimNum[j]) && (couple)) {
+                    answer += containerArabNum[j]
+                    couple = true
+                    break
+
+                } else couple = false
+            }
+            if ((roman[i].toString() == containerRimNum[j]) && (!couple)) {
+                answer += containerArabNum[j]
+                break
+            }
+        }
+    }
 
     return answer
 

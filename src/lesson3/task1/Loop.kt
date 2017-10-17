@@ -104,17 +104,11 @@ fun digitNumber(n: Int): Int {
  */
 fun fib(n: Int): Int {
 
-    var fibNumOne = 1
-    var fibNumTwo = 0
+    val sqrtFive = Math.sqrt(5.0)
+    val constF1 = Math.pow((1 + sqrtFive) / 2, n.toDouble())
+    val constF2 = Math.pow((1 - sqrtFive) / 2, n.toDouble())
 
-    for (i in 1 until n) {
-
-        fibNumOne += fibNumTwo
-        fibNumTwo = fibNumOne - fibNumTwo
-
-    }
-
-    return fibNumOne
+    return ((constF1 - constF2) / sqrtFive).toInt()
 
 }
 

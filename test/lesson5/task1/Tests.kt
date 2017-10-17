@@ -81,6 +81,8 @@ class Tests {
         assertEquals(226, bestHighJump("226 +"))
         assertEquals(-1, bestHighJump("???"))
         assertEquals(230, bestHighJump("220 + 224 %+ 228 %- 230 + 232 %%- 234 %"))
+        assertEquals(649379131, bestHighJump("1 %- 0 %+ 0 %%- 1 %- 0 %%+ 947299348 %- 147483647 %%- 0 %- 147483648 %%+ 1 +" +
+                " 59315341 %+ 147483648 %+ 0 + 406805183 %- 599540544 %- 0 + 111044756 %+ 649379131 %+"))
     }
 
     @Test
@@ -123,6 +125,7 @@ class Tests {
         assertEquals(694, fromRoman("DCXCIV"))
         assertEquals(49, fromRoman("XLIX"))
         assertEquals(-1, fromRoman("Z"))
+        assertEquals(3600, fromRoman("CMCMCMCM"))
     }
 
     @Test

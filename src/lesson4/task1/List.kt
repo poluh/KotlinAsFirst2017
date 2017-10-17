@@ -147,13 +147,11 @@ fun times(a: List<Double>, b: List<Double>): Double {
 
     var answer = 0.0
 
-
     for (i in 0 until a.size) {
 
         answer += a[i] * b[i]
 
     }
-
 
     return answer
 
@@ -173,7 +171,6 @@ fun polynom(p: List<Double>, x: Double): Double {
 
     if (p != listOf<Double>()) {
 
-
         answer += p[0]
 
         for (i in 1 until p.size) {
@@ -181,12 +178,9 @@ fun polynom(p: List<Double>, x: Double): Double {
             answer += p[i] * Math.pow(x, i.toDouble())
 
         }
-
-
     }
 
     return answer
-
 
 }
 
@@ -274,6 +268,8 @@ fun convert(n: Int, base: Int): List<Int> {
     var nForMember = n
     var list = listOf<Int>()
 
+    if (nForMember == 0) return listOf(0)
+
     while (nForMember > 0) {
 
         list += nForMember % base
@@ -353,10 +349,10 @@ fun convertFromLetters(str: String, i: Int): Int {
     val constForSmallCharSymbol = 48
     val constForBigCharSymbol = 87
 
-    if (str[i] in '0'..'9') {
-        return str[i].toInt() - constForBigCharSymbol
+    return if (str[i] in '0'..'9') {
+        str[i].toInt() - constForBigCharSymbol
     } else {
-        return str[i].toInt() - constForSmallCharSymbol
+        str[i].toInt() - constForSmallCharSymbol
     }
 
 }
@@ -375,7 +371,7 @@ fun decimalFromString(str: String, base: Int): Int {
     var list = listOf<Int>()
 
     for (i in 0 until str.length) {
-        list += convertFromLetters(str, i)
+        list += str[i].toInt() - 48
     }
 
     return decimal(list, base)
@@ -433,13 +429,18 @@ fun createIndicesRomanNum(str: String, len: Int): List<Int> { //все еще д
 fun roman(n: Int): String {                             //Дорабатываю
 
     val containerRimNum = listOf("I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M")
-    var answer = ""
-    var nForMemeber = n
+    val containerArabNum = listOf(1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000)
+    var nForMem = n
     var i = 12
+    var answer = ""
 
-    for (part in createIndicesRomanNum(n.toString(), n.toString().length)) {
-        answer += containerRimNum[part]
-    }
+    while (nForMem > 0) {
+            while (nForMem >= containerArabNum[i]) {
+                nForMem -= containerArabNum[i]
+                answer += containerRimNum[i]
+            }
+              i--
+         }
 
     return answer
 
@@ -497,10 +498,8 @@ fun translationOfTripleOfNum(n: Int, len: Int, order: Int): String {
 fun russian(n: Int): String {
 
     val containerThousand = listOf("тысяча ", "тысячи ", "тысяч ")
-
     val order: Int
     val lenN = n.toString().length
-
     var answer: String
 
     order = when (lenN) {
@@ -515,16 +514,14 @@ fun russian(n: Int): String {
 
         val nStr = n.toString()
         val partOneNum = nStr.substring(0, lenN - 3).toInt()
+        val partTwoNum = nStr.substring(lenN - 3, lenN).toInt()
 
-        answer =  translationOfTripleOfNum(partOneNum, partOneNum.toString().length, order)
-        answer += when (nStr[lenN - 4]) {
+        answer = translationOfTripleOfNum(partOneNum, partOneNum.toString().length, order)
+        answer += when (partOneNum.toString()[partOneNum.toString().length - 1]) {
             '1' -> containerThousand[0]
             in '2'..'4' -> containerThousand[1]
             else -> containerThousand[2]
         }
-
-        val partTwoNum = nStr.substring(lenN - 3, lenN).toInt()
-
         answer += translationOfTripleOfNum(partTwoNum, partTwoNum.toString().length, order - 1)
     }
 
