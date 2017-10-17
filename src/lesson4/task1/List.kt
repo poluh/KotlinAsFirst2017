@@ -294,6 +294,7 @@ fun convertToString(n: Int, base: Int): String {
 
     val list = convert(n, base)
     val answerList = mutableListOf<String>()
+    val constConvertChar = 87
 
     if (n > 0) {
 
@@ -301,7 +302,7 @@ fun convertToString(n: Int, base: Int): String {
 
             if (list[i] > 9) {
 
-                answerList.add(i, (87 + list[i]).toChar().toString())
+                answerList.add(i, (constConvertChar + list[i]).toChar().toString())
 
             } else {
 
@@ -344,15 +345,15 @@ fun decimal(digits: List<Int>, base: Int): Int {
 }
 
 
-fun convertFromLetters(str: String, i: Int): Int {
+fun convertCharFromDigit(char: Char): Int {
 
-    val constForSmallCharSymbol = 48
-    val constForBigCharSymbol = 87
+    val constForNumSymbol = 48
+    val constForLetterSymbol = 87
 
-    return if (str[i] in '0'..'9') {
-        str[i].toInt() - constForBigCharSymbol
+    return if (char in '0'..'9') {
+        char.toInt() - constForNumSymbol
     } else {
-        str[i].toInt() - constForSmallCharSymbol
+        char.toInt() - constForLetterSymbol
     }
 
 }
@@ -371,50 +372,11 @@ fun decimalFromString(str: String, base: Int): Int {
     var list = listOf<Int>()
 
     for (i in 0 until str.length) {
-        list += str[i].toInt() - 48
+        list += convertCharFromDigit(str[i])
     }
 
     return decimal(list, base)
 
-}
-
-
-fun createIndicesRomanNum(str: String, len: Int): List<Int> { //все еще дорабатываю
-
-    var list = listOf<Int>()
-    val containerArabNum = listOf(1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000)
-    var n = listOf<Int>()
-
-    for (i in 0 until str.length) {
-
-        n += (str[str.length - i].toInt() * Math.pow(10.0, i.toDouble())).toInt()
-
-        for (j in 0 until containerArabNum.size) {
-
-            if (n[i] == containerArabNum[j]) {
-
-                list += j
-
-            } else {
-
-                for (k in (1 * Math.pow(10.0, i.toDouble()).toInt())..(4 * Math.pow(10.0, i.toDouble())).toInt()) {
-
-                    if (n[i] - k == containerArabNum[j]) {
-
-                        list += j
-
-                    }
-
-                }
-
-            }
-
-        }
-
-    }
-
-
-    return list
 }
 
 
@@ -426,7 +388,7 @@ fun createIndicesRomanNum(str: String, len: Int): List<Int> { //все еще д
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String {                             //Дорабатываю
+fun roman(n: Int): String {
 
     val containerRimNum = listOf("I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M")
     val containerArabNum = listOf(1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000)
@@ -499,22 +461,22 @@ fun russian(n: Int): String {
 
     val containerThousand = listOf("тысяча ", "тысячи ", "тысяч ")
     val order: Int
-    val lenN = n.toString().length
+    val lengthN = n.toString().length
     var answer: String
 
-    order = when (lenN) {
+    order = when (lengthN) {
         in 1..3 -> 1
         in 4..6 -> 2
         else -> throw IllegalAccessError("This format is not supported (for now)")
     }
 
     if (order == 1) {
-        return translationOfTripleOfNum(n, lenN, order).trim()
+        return translationOfTripleOfNum(n, lengthN, order).trim()
     } else {
 
         val nStr = n.toString()
-        val partOneNum = nStr.substring(0, lenN - 3).toInt()
-        val partTwoNum = nStr.substring(lenN - 3, lenN).toInt()
+        val partOneNum = nStr.substring(0, lengthN - 3).toInt()
+        val partTwoNum = nStr.substring(lengthN - 3, lengthN).toInt()
 
         answer = translationOfTripleOfNum(partOneNum, partOneNum.toString().length, order)
         answer += when (partOneNum.toString()[partOneNum.toString().length - 1]) {
