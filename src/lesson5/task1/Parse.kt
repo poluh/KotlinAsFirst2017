@@ -365,9 +365,9 @@ fun plusMinus(expression: String): Int {
 
     if (!expression.isEmpty()) {
 
-        for (i in 0 until expression.length) {
+        for (j in 0 until expression.length) {
 
-            if ((expression[i].toString() !in containerTrueOperations) && (expression[i] !in '0'..'9')) {
+            if ((expression[j].toString() !in containerTrueOperations) && (expression[j] !in '0'..'9')) {
 
                 throw IllegalArgumentException("Error > Invalid string format")
 
@@ -449,48 +449,31 @@ fun firstDuplicateIndex(str: String): Int {
  */
 fun mostExpensive(description: String): String {
 
-    var allPrices = listOf<Double>()
-    var allNameGoods = listOf<String>()
+    val containerPart = description.split(";")
+    var answer = ""
+    var price = 0.0
 
-    if (description == "") {
-        return description
-    }
+    return try {
+        for (i in 0 until containerPart.size) {
 
-    val dampsPartStr = description.split("; ")
+            val parts = containerPart[i].trim().split(" ")
 
-    if (dampsPartStr.isEmpty()) {
-        return ""
-    }
+            if (parts[1].toDouble() >= price) {
 
-    for (i in 0 until dampsPartStr.size) {
+                price = parts[1].toDouble()
+                answer = parts[0].trim()
 
-        if (dampsPartStr[i] != "") {
-
-            val partOfdampStr = dampsPartStr[i].split(" ")
-
-            if (partOfdampStr.size == 2) {
-
-                allPrices += partOfdampStr[1].toDouble()
-                allNameGoods += partOfdampStr[0]
-
-            } else {
-                return ""
             }
-
         }
-    }
-
-    return if (allPrices.isEmpty()) {
+        answer
+    } catch (e: IndexOutOfBoundsException) {
         ""
-    } else {
-        allNameGoods[maxIndexDoubleFromList(allPrices)]
     }
 
 
 }
 
 fun charPlus(char1: Char, char2: Char): String = char1.toString() + char2.toString()
-
 
 
 /**
@@ -508,30 +491,34 @@ fun fromRoman(roman: String): Int {
 
     val containerRimNum = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
     val containerArabNum = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
-    var couple = false
-
     var answer = 0
+    var i = 0
 
-    for (i in 0 until roman.length) {
-        for (j in 0 until containerRimNum.size) {
+    while (i < roman.length) {
+        val romanNum = if (i + 1 < roman.length) {
+            charPlus(roman[i], roman[i + 1])
+        } else roman[i].toString()
 
-            if (i < roman.length - 1) {
-                if ((charPlus(roman[i], roman[i + 1]) == containerRimNum[j]) && (couple)) {
+
+
+        if (romanNum in containerRimNum) {
+            for (j in 0 until containerRimNum.size) {
+                if (romanNum == containerRimNum[j]) {
                     answer += containerArabNum[j]
-                    couple = true
-                    break
-
-                } else couple = false
-            }
-            if ((roman[i].toString() == containerRimNum[j]) && (!couple)) {
-                answer += containerArabNum[j]
-                break
+                    i++
+                }
             }
         }
+        else if (romanNum[0].toString() in containerRimNum) {
+            for (j in 0 until containerRimNum.size) {
+                if (romanNum[0].toString() == containerRimNum[j]) {
+                    answer += containerArabNum[j]
+                }
+            }
+        }
+        i++
     }
-
-    return answer
-
+    return if (answer != 0) answer else -1
 }
 
 /**
