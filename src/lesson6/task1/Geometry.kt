@@ -184,20 +184,10 @@ class Line private constructor(val b: Double, val angle: Double) {
  */
 fun lineBySegment(s: Segment): Line {
 
-    val grad: Double = if (s.begin != s.end) {
-        Math.atan((s.begin.y - s.end.y) / (s.begin.x - s.end.y))
-    } else 0.0
+    val grad: Double = 0.0
 
-    return if (((s.end.x >= s.begin.x) && (s.end.y >= s.begin.y)) ||
-            ((s.end.x <= s.begin.x) && (s.end.y <= s.begin.y))) {
-
-        (Line(s.begin, Math.abs(grad)))
-
-    } else {
-
-        (Line(s.begin, -Math.abs(grad)))
-
-    }
+    return if (s.begin.y == s.end.y) Line(s.begin, grad)
+    else (Line(s.begin, -Math.abs(grad)))
 
 }
 

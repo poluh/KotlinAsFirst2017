@@ -126,6 +126,7 @@ class Tests {
         assertEquals(49, fromRoman("XLIX"))
         assertEquals(-1, fromRoman("Z"))
         assertEquals(3600, fromRoman("CMCMCMCM"))
+        assertEquals(-1, fromRoman("P\$.t\\\\F%Z]4frL^OY"))
     }
 
     @Test

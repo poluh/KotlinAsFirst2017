@@ -515,7 +515,7 @@ fun fromRoman(roman: String): Int {
                     answer += containerArabNum[j]
                 }
             }
-        }
+        } else return -1
         i++
     }
     return if (answer != 0) answer else -1
