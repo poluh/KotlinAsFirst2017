@@ -238,6 +238,8 @@ fun flattenPhoneNumber(phone: String): String {
     var phoneTrueStr = "+"
     val containerTrueSymbol = listOf('(', ')', '-', ' ', '+')
 
+    if (phone.length == 1) return phone
+
     if (phone.indexOf('+') != phone.lastIndexOf('+')) {
         return ""
     }
