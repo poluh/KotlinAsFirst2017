@@ -236,26 +236,23 @@ fun dateDigitToStr(digital: String): String {
 fun flattenPhoneNumber(phone: String): String {
 
     var phoneTrueStr = "+"
-    val containerTrueSymbol = listOf('(', ')', '-', ' ')
+    val containerTrueSymbol = listOf('(', ')', '-', ' ', '+')
+
+    if (phone.indexOf('+') != phone.lastIndexOf('+')) {
+        return ""
+    }
 
     for (i in 0 until phone.length) {
 
-        if (phone[0] != '+') {
+        if ((phone[i] !in containerTrueSymbol) && (phone[i] !in '0'..'9')) {
 
-            if ((phone[i] !in containerTrueSymbol) && (phone[i] !in '0'..'9')) {
-
-                return ""
-
-            }
+            return ""
 
         }
 
         if (phone[i] in '0'..'9') {
-
             phoneTrueStr += phone[i].toString()
-
         }
-
     }
 
     if (phoneTrueStr.length in 0..1) {
@@ -508,8 +505,7 @@ fun fromRoman(roman: String): Int {
                     i++
                 }
             }
-        }
-        else if (romanNum[0].toString() in containerRimNum) {
+        } else if (romanNum[0].toString() in containerRimNum) {
             for (j in 0 until containerRimNum.size) {
                 if (romanNum[0].toString() == containerRimNum[j]) {
                     answer += containerArabNum[j]
