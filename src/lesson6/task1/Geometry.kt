@@ -184,10 +184,11 @@ class Line private constructor(val b: Double, val angle: Double) {
  */
 fun lineBySegment(s: Segment): Line {
 
-    val grad: Double = 0.0
+    val distanceOfX = s.end.x - s.begin.x
+    val distanceOfY = s.end.y - s.begin.y
+    val grad = Math.atan(distanceOfY / distanceOfX)
 
-    return if (s.begin.y == s.end.y) Line(s.begin, grad)
-    else (Line(s.begin, -Math.abs(grad)))
+    return Line(Point(s.begin.x, s.begin.y), grad)
 
 }
 
@@ -196,7 +197,7 @@ fun lineBySegment(s: Segment): Line {
  *
  * Построить прямую по двум точкам
  */
-fun lineByPoints(a: Point, b: Point): Line = TODO()
+fun lineByPoints(a: Point, b: Point): Line = lineBySegment(Segment(a, b))
 
 /**
  * Сложная

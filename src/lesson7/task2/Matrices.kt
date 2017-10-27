@@ -103,7 +103,24 @@ fun generateSnake(height: Int, width: Int): Matrix<Int> = TODO()
  * 4 5 6      8 5 2
  * 7 8 9      9 6 3
  */
-fun <E> rotate(matrix: Matrix<E>): Matrix<E> = TODO()
+fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
+
+    if (matrix.width != matrix.height) throw IllegalArgumentException("Invalid matrix")
+
+    val answerMatrix = createMatrix(matrix.height, matrix.width, matrix[0, 0])
+
+    for (i in 0 until matrix.height) {
+        for (j in 0 until matrix.height) {
+
+            answerMatrix[i, j] = matrix[matrix.height - 1 - j, i]
+
+        }
+    }
+
+    return answerMatrix
+
+
+}
 
 /**
  * Сложная
@@ -118,7 +135,34 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> = TODO()
  * 1 2 3
  * 3 1 2
  */
-fun isLatinSquare(matrix: Matrix<Int>): Boolean = TODO()
+
+fun isLatinSquare(matrix: Matrix<Int>): Boolean {
+
+    var containerTrueNum = listOf<Int>()
+    var containerMatrixNum = listOf<Int>()
+
+    if (matrix.height != matrix.width) throw IllegalArgumentException("Invalid matrix")
+
+    if (matrix.height == 1 && matrix[0, 0] == 1) return true
+
+    for (i in 1 until matrix.height) {
+        containerTrueNum += i
+    }
+
+    for (i in 0 until matrix.height) {
+        for (j in 0 until matrix.width) {
+            containerMatrixNum += matrix[i, j]
+        }
+        if (containerMatrixNum.sorted() != containerTrueNum) {
+            return false
+        } else {
+            containerMatrixNum = listOf()
+        }
+    }
+
+    return true
+
+}
 
 /**
  * Средняя

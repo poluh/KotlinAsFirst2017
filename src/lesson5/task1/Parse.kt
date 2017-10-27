@@ -6,41 +6,7 @@ import com.sun.org.apache.bcel.internal.generic.IFEQ
 import lesson1.task1.accountInThreeYears
 import java.lang.IllegalArgumentException
 
-fun maxNumIntFromList(list: List<Int>): Int {
 
-    var answer = 0
-
-    for (i in 0 until list.size) {
-
-        if (list[i] > answer) {
-
-            answer = list[i]
-
-        }
-
-    }
-
-    return answer
-
-}
-
-fun maxIndexDoubleFromList(list: List<Double>): Int {
-
-    var answer = 0
-
-    for (i in 0 until list.size) {
-
-        if (list[i] > answer) {
-
-            answer = i - 1
-
-        }
-
-    }
-
-    return if (answer >= 0) answer else 0
-
-}
 
 fun findIndex(index: Int, str: String): Int {
 
@@ -128,11 +94,11 @@ fun dateStrToDigit(str: String): String {
 
     val customStr = str.replace("\u0020{2,}", "\u0020").split(" ")
     val monthsArr =
-            listOf<String>("января", "февраля", "марта", "апреля", "мая", "июня", "июля",
+            listOf("января", "февраля", "марта", "апреля", "мая", "июня", "июля",
                     "августа", "сентября", "октября", "ноября", "декабря")
     val day: String
     val year: String
-    var month = ""
+    val month: String
 
     try {
 
@@ -142,19 +108,10 @@ fun dateStrToDigit(str: String): String {
                 day = customStr[0]
                 year = customStr[2]
 
-                for (i in 0..11) {
-
-                    if (customStr[1] == monthsArr[i]) {
-
-                        month = (i + 1).toString()
-                        break
-
-                    } else {
-
-                        if (i == 11) return ""
-
-                    }
-
+                if (customStr[1] in monthsArr) {
+                    month = (monthsArr.indexOf(customStr[1]) + 1).toString()
+                } else {
+                    return ""
                 }
 
             } else return ""
@@ -162,6 +119,7 @@ fun dateStrToDigit(str: String): String {
     } catch (e: NumberFormatException) {
         return ""
     }
+
     return String.format("%02d.%02d.%d", day.toInt(), month.toInt(), year.toInt())
 
 }
@@ -235,12 +193,10 @@ fun dateDigitToStr(digital: String): String {
  */
 fun flattenPhoneNumber(phone: String): String {
 
-    var phoneTrueStr = "+"
+    val phoneTrueStr = StringBuilder("+")
     val containerTrueSymbol = listOf('(', ')', '-', ' ', '+')
 
-    if (phone.length == 1) return phone
-
-    if (phone.indexOf('+') != phone.lastIndexOf('+')) {
+    if (phone.indexOf('+') != phone.lastIndexOf('+') || phone == " ") {
         return ""
     }
 
@@ -253,15 +209,11 @@ fun flattenPhoneNumber(phone: String): String {
         }
 
         if (phone[i] in '0'..'9') {
-            phoneTrueStr += phone[i].toString()
+            phoneTrueStr.append(phone[i].toString())
         }
     }
 
-    if (phoneTrueStr.length in 0..1) {
-        return ""
-    }
-
-    return phoneTrueStr
+    return phoneTrueStr.toString()
 
 }
 

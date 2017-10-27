@@ -245,7 +245,62 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> { //дораба�
      *          kingTrajectory(Square(3, 5), Square(6, 2)) = listOf(Square(3, 5), Square(4, 4), Square(5, 3), Square(6, 2))
      * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
      */
-    fun kingTrajectory(start: Square, end: Square): List<Square> = TODO()
+
+    /*
+    * Думал сделать "универсальный" алгоритм завязанный на коэфициентах,
+    * чтобы заместо +-1 использовать "row + 1 * coefficient",
+    * но код оказался довольно громоздким и неказистым.
+    * Пока таким топорным методом, но работает.
+    * Переменные на всякий случай оставлю, надеюсь,
+    * что через время взглянув на код появится идея
+    * все-таки сделать что-то более красивое.
+    */
+
+    fun kingTrajectory(start: Square, end: Square): List<Square> {
+
+        if (!start.inside() || !end.inside()) throw IllegalArgumentException()
+        if (start == end) return listOf(start)
+
+        var startForMem = start
+        var i = 0
+        var answer = listOf(start)
+        val coefficientDiagonals = listOf(1, -1)
+        val coefficientRectilinearMotion = listOf(1, -1, 1, -1)
+
+        while (startForMem != end) {
+
+            startForMem = when {
+                (startForMem.row < end.row) && (startForMem.column < end.column) ->
+                    Square(startForMem.column + 1, startForMem.row + 1)
+
+                (startForMem.row > end.row) && (startForMem.column > end.column) ->
+                    Square(startForMem.column - 1, startForMem.row - 1)
+
+                (startForMem.row < end.row) && (startForMem.column > end.column) ->
+                    Square(startForMem.column - 1, startForMem.row + 1)
+
+                (startForMem.row > end.row) && (startForMem.column < end.column) ->
+                    Square(startForMem.column + 1, startForMem.row - 1)
+
+                (startForMem.row < end.row) && (startForMem.column == end.column) ->
+                    Square(startForMem.column, startForMem.row + 1)
+
+                (startForMem.row > end.row) && (startForMem.column == end.column) ->
+                    Square(startForMem.column, startForMem.row - 1)
+
+                (startForMem.row == end.row) && (startForMem.column < end.column) ->
+                    Square(startForMem.column + 1, startForMem.row)
+
+                else -> Square(startForMem.column - 1, startForMem.row)
+            }
+
+            answer += startForMem
+        }
+
+
+        return answer
+
+    }
 
     /**
      * Сложная

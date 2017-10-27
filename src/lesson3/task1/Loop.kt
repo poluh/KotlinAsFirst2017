@@ -226,9 +226,7 @@ fun sin(x: Double, eps: Double): Double {
     do {
 
         i++
-
         rememberNum = Math.pow(-1.0, i.toDouble()) * Math.pow(xForNormal, i * 2.0 + 1) / factorial(i * 2 + 1)
-
         sinX += rememberNum
 
     } while (Math.abs(rememberNum) >= eps)
@@ -252,14 +250,10 @@ fun cos(x: Double, eps: Double): Double {
     val xForNormal = x % (2 * Math.PI)
     var rememberNum: Double
 
-
-
     do {
 
         i++
-
         rememberNum = Math.pow(-1.0, i.toDouble()) * (Math.pow(xForNormal, i * 2.0) / factorial(i * 2))
-
         cosX += rememberNum
 
     } while (Math.abs(rememberNum) >= eps)
@@ -284,7 +278,6 @@ fun revert(n: Int): Int {
     while (nForChange > 0) {
 
         total = total * 10 + nForChange % 10
-
         nForChange /= 10
 
     }
