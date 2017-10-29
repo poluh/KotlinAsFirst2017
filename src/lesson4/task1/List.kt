@@ -457,12 +457,12 @@ fun translationOfTripleOfNum(n: Int, len: Int, order: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String {
+fun russian(n: Int): String { //Дорабатвываю
 
     val containerThousand = listOf("тысяча ", "тысячи ", "тысяч ")
     val order: Int
     val lengthN = n.toString().length
-    var answer: String
+    val answer = StringBuilder()
 
     order = when (lengthN) {
         in 1..3 -> 1
@@ -478,15 +478,36 @@ fun russian(n: Int): String {
         val partOneNum = nStr.substring(0, lengthN - 3).toInt()
         val partTwoNum = nStr.substring(lengthN - 3, lengthN).toInt()
 
-        answer = translationOfTripleOfNum(partOneNum, partOneNum.toString().length, order)
-        answer += when (partOneNum.toString()[partOneNum.toString().length - 1]) {
-            '1' -> containerThousand[0]
-            in '2'..'4' -> containerThousand[1]
+        /*for (i in 0..2) {
+
+            val part = when (i) {
+                0 -> translationOfTripleOfNum(partOneNum, partOneNum.toString().length, order)
+                1 -> {
+                    if (partOneNum !in 10..19) {
+                        when ((partOneNum.toString()[partOneNum.toString().length - 1]).toInt()) {
+                            1 -> containerThousand[0]
+                            in 2..4 -> containerThousand[1]
+                            else -> containerThousand[2]
+                        }
+                    }
+                    else containerThousand[2]
+                    }
+                else -> translationOfTripleOfNum(partTwoNum, partTwoNum.toString().length, order - 1)
+            }
+
+            answer.append(part)
+        } */
+
+        answer.append( translationOfTripleOfNum(partOneNum, partOneNum.toString().length, order))
+        val middlePart = when (partOneNum) {
+            1 -> containerThousand[0]
+            in 2..4 -> containerThousand[1]
             else -> containerThousand[2]
         }
-        answer += translationOfTripleOfNum(partTwoNum, partTwoNum.toString().length, order - 1)
+        answer.append(middlePart)
+        answer.append(translationOfTripleOfNum(partTwoNum, partTwoNum.toString().length, order - 1))
     }
 
-    return answer.trim()
+    return answer.toString().trim()
 
 }

@@ -193,27 +193,9 @@ fun dateDigitToStr(digital: String): String {
  */
 fun flattenPhoneNumber(phone: String): String {
 
-    val phoneTrueStr = StringBuilder("+")
-    val containerTrueSymbol = listOf('(', ')', '-', ' ', '+')
+    val dampPhone = Regex("""\++|\s+|\(+|\)+|-+""").replace(phone, "")
 
-    if (phone.indexOf('+') != phone.lastIndexOf('+') || phone == " ") {
-        return ""
-    }
-
-    for (i in 0 until phone.length) {
-
-        if ((phone[i] !in containerTrueSymbol) && (phone[i] !in '0'..'9')) {
-
-            return ""
-
-        }
-
-        if (phone[i] in '0'..'9') {
-            phoneTrueStr.append(phone[i].toString())
-        }
-    }
-
-    return phoneTrueStr.toString()
+    return if (dampPhone.matches(Regex("""\d+"""))) "+" + dampPhone else ""
 
 }
 
@@ -507,4 +489,83 @@ fun fromRoman(roman: String): Int {
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+
+fun findIndex(str: String, direction: Boolean): Int { //Хотел было сделать регуляркой, но пока руки не дошли
+
+    var bracket = 0
+
+
+    if (direction) {
+        for (i in 0 until str.length) {
+
+            if (str[i] == '[') {
+                bracket++
+                if (bracket == 0) return i
+            }
+
+            if (str[i] == ']') bracket--
+        }
+    } else {
+        for (i in str.length - 1 downTo 0) {
+
+            if (str[i] == ']') {
+                bracket++
+                if (bracket == 0) return i
+            }
+
+            if (str[i] == '[') bracket--
+        }
+    }
+    return -1
+}
+
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+
+    val containerTrueCommands = listOf('>', '<', '+', '-', '[', ']', ' ')
+    var thisLoop = true
+    val answerList = mutableListOf<Int>()
+
+    //Ищем ошибки в коммандах
+
+    for (i in 0 until commands.length) {
+        if (commands[i] !in containerTrueCommands) throw IllegalArgumentException("Invalid command. Index $i")
+        if (commands[i] == '[' || commands[i] == ']') thisLoop = !thisLoop
+    }
+    if (!thisLoop) throw IllegalArgumentException("Invalid command.(missing closing parenthesis)")
+
+    (0 until cells).forEach { answerList.add(0) }
+
+    //+++++++++++++++++++++++++++
+
+    var cellIndex = Math.round(cells.toDouble() / 2).toInt()
+    var indexCommand = 0
+    var indexCarriedOutComands = 0
+
+     while (indexCarriedOutComands in 0 until limit) {
+
+        if (cellIndex !in 0 until cells)
+            throw IllegalArgumentException("Exit the conveyor. Index command = $indexCommand")
+        if (indexCommand == commands.length) break
+
+        when (commands[indexCommand]) {
+
+            '+' -> answerList[cellIndex]++
+            '-' -> answerList[cellIndex]--
+            '>' -> cellIndex++
+            '<' -> cellIndex--
+
+            '[' -> if (answerList[cellIndex] == 0 && cellIndex in 0 until cells) {
+                        indexCommand = findIndex(commands, true)
+                    }
+            ']' -> if (answerList[cellIndex] != 0)
+                indexCommand = commands.substring(0, indexCommand - 1).lastIndexOf('[')
+        }
+
+         indexCommand++
+         indexCarriedOutComands++
+
+    }
+
+    return answerList
+
+}
