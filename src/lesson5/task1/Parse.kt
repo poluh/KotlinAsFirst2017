@@ -92,7 +92,8 @@ fun main(args: Array<String>) {
  */
 fun dateStrToDigit(str: String): String {
 
-    val customStr = str.replace("\u0020{2,}", "\u0020").split(" ")
+    val customStr =
+            Regex("""\s{2,}""").replace(str, "").split(" ")
     val monthsArr =
             listOf("января", "февраля", "марта", "апреля", "мая", "июня", "июля",
                     "августа", "сентября", "октября", "ноября", "декабря")
@@ -133,50 +134,26 @@ fun dateStrToDigit(str: String): String {
  */
 fun dateDigitToStr(digital: String): String {
 
-    val customStr = digital.split(".")
-
+    val isDate = digital.matches(Regex("""\d{2}\.\d{2}\.\d+"""))
     val monthsArr =
             listOf("января", "февраля", "марта", "апреля", "мая", "июня", "июля",
                     "августа", "сентября", "октября", "ноября", "декабря")
+    val answer = StringBuilder("")
 
-    var day: String
-    val month: String
-    val year: String
+    if (isDate && digital.substring(3, 5).toInt() in 1..12 &&
+            digital.substring(0, 2).toInt() in 1..31) {
 
-    try {
-
-        if (customStr.size == 3) {
-
-            day = customStr[0]
-
-            if (day.toInt() in 1..9) {
-
-                day = day[1].toString()
-
+        for (i in 0..2) {
+            val partAnswer = when (i){
+                0 -> digital.substring(0, 2).toInt().toString()
+                1 -> " " + monthsArr[digital.substring(3, 5).toInt() - 1] + " "
+                else -> digital.substring(6)
             }
-            if ((day.toInt() in 1..31) && (customStr[1].toInt() in 1..12)) {
-
-                month = monthsArr[customStr[1].toInt() - 1]
-                year = customStr[2]
-
-            } else {
-
-                return ""
-
-            }
-
-        } else {
-
-            return ""
-
+            answer.append(partAnswer)
         }
-
-    } catch (e: NumberFormatException) {
-        return ""
     }
 
-    return String.format("%s %s %s", day, month, year)
-
+    return answer.toString()
 }
 
 /**
@@ -194,7 +171,6 @@ fun dateDigitToStr(digital: String): String {
 fun flattenPhoneNumber(phone: String): String {
 
     val dampPhone = Regex("""\++|\s+|\(+|\)+|-+""").replace(phone, "")
-
     return if (dampPhone.matches(Regex("""\d+"""))) "+" + dampPhone else ""
 
 }
@@ -214,29 +190,23 @@ fun bestLongJump(jumps: String): Int {
     val containerTrueSymbol = listOf(' ', '%', '-')
 
     for (i in 0 until jumps.length) {
-
         if ((jumps == "") || (jumps[i] !in containerTrueSymbol && (jumps[i] !in '0'..'9'))) {
             return -1
-
         }
     }
 
-    val resultJumps = jumps.filter { (it in '0'..'9') || (it == ' ') }
-    val containerParts = resultJumps.split(" ")
+    val containerParts = jumps.filter { (it in '0'..'9') || (it == ' ') }.split(" ")
     var containerTrueParts = listOf<Int>()
 
     for (i in 0 until containerParts.size) {
         if (containerParts[i] != "") containerTrueParts += containerParts[i].toInt()
     }
 
-    val result = (0 until containerTrueParts.size)
+    return (0 until containerTrueParts.size)
             .asSequence()
             .map { containerTrueParts[it] }
             .max()
             ?: -1
-
-    return result
-
 }
 
 /**
@@ -254,15 +224,13 @@ fun bestHighJump(jumps: String): Int {
     val containerTrueSymbol = listOf(' ', '%', '-', '+')
 
     for (i in 0 until jumps.length) {
-
         if ((jumps == "") || ((jumps[i] !in containerTrueSymbol) && (jumps[i] !in '0'..'9'))) {
             return -1
-
         }
     }
 
-    val resultJumps = jumps.filter { (it in '0'..'9') || (it == ' ') || (it == '+') }
-    val containerParts = resultJumps.split(" ")
+    val containerParts =
+            jumps.filter { (it in '0'..'9') || (it == ' ') || (it == '+') }.split(" ")
     var containerTrueParts = listOf<Int>()
 
     for (i in 0 until containerParts.size - 1) {
@@ -271,14 +239,11 @@ fun bestHighJump(jumps: String): Int {
         }
     }
 
-    val result = (0 until containerTrueParts.size)
+    return (0 until containerTrueParts.size)
             .asSequence()
             .map { containerTrueParts[it] }
             .max()
             ?: -1
-
-    return result
-
 }
 
 /**
@@ -434,20 +399,20 @@ fun fromRoman(roman: String): Int {
 
 
 
-        if (romanNum in containerRimNum) {
-            for (j in 0 until containerRimNum.size) {
+        when {
+            romanNum in containerRimNum -> for (j in 0 until containerRimNum.size) {
                 if (romanNum == containerRimNum[j]) {
                     answer += containerArabNum[j]
                     i++
                 }
             }
-        } else if (romanNum[0].toString() in containerRimNum) {
-            for (j in 0 until containerRimNum.size) {
+            romanNum[0].toString() in containerRimNum -> for (j in 0 until containerRimNum.size) {
                 if (romanNum[0].toString() == containerRimNum[j]) {
                     answer += containerArabNum[j]
                 }
             }
-        } else return -1
+            else -> return -1
+        }
         i++
     }
     return if (answer != 0) answer else -1
