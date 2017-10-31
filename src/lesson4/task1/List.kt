@@ -483,7 +483,7 @@ fun russian(n: Int): String { //Дорабатвываю
                 0 -> translationOfTripleOfNum(partOneNum, partOneNum.toString().length, order)
                 1 -> {
 
-                    if (partOneNum in 10..19) containerThousand[2]
+                    if (partOneNum in 10..19 || partOneNum % 100 in 10..19) containerThousand[2]
                     else if (partOneNum % 10 in 2..4 || partOneNum % 100 in 2..4) containerThousand[1]
                     else if (partOneNum % 10 == 1 || partOneNum % 100 == 1) containerThousand[0]
                     else containerThousand[2]
