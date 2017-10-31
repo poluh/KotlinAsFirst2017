@@ -150,9 +150,7 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
 
     for (i in 0 until matrix.height) {
         for (j in 0 until matrix.height) {
-
             answerMatrix[i, j] = matrix[matrix.height - 1 - j, i]
-
         }
     }
 
@@ -178,20 +176,31 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
 fun isLatinSquare(matrix: Matrix<Int>): Boolean {
 
     if (matrix.height != matrix.width) throw IllegalArgumentException("Invalid matrix")
-    //if (matrix.height == 1) return true
+    if (matrix.height == 1 && matrix[0, 0] == 1) {
+        return true
+    } else if (matrix.height == 1) return false
 
-    var composition = 1
-    val buf = factorial(matrix.width).toInt()
+    var compositionX = 0
+    var compositionY = compositionX
+    val buf = if (matrix.width > 2) factorial(matrix.width).toInt()
+    else factorial(matrix.width).toInt() + 1
+
+    val rotateMatrix = rotate(matrix)
 
     for (i in 0 until matrix.width) {
         for (j in 0 until matrix.width) {
-            composition *= matrix[i, j]
+            compositionX += matrix[i, j]
+            compositionY += rotateMatrix[i, j]
         }
-        if (composition != buf) return false
+        if (compositionX != compositionY || compositionX != buf) return false
+
+        compositionX = 0
+        compositionY = compositionX
     }
 
     return true
 }
+
 
 /**
  * Средняя
@@ -210,7 +219,32 @@ fun isLatinSquare(matrix: Matrix<Int>): Boolean {
  *
  * 42 ===> 0
  */
-fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> = TODO()
+fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> {
+
+    if (matrix.width == 1 && matrix.height == 1) return MatrixImpl(1, 1, 0)
+
+    val matrixForChange = createMatrix(matrix.height + 2, matrix.width + 2, 0)
+
+    for (i in 0 until matrix.height) {
+        for (j in 0 until matrix.width) {
+            matrixForChange[i + 1, j + 1] = matrix[i, j]
+        }
+    }
+
+    for (i in 1..matrix.height) {
+        for (j in 1..matrix.width) {
+
+            val sumElement = matrixForChange[i - 1, j - 1] + matrixForChange[i - 1, j] +
+                                  matrixForChange[i - 1, j + 1] + matrixForChange[i, j - 1] +
+                                  matrixForChange[i, j + 1] + matrixForChange[i + 1, j - 1] +
+                                  matrixForChange[i + 1, j] + matrixForChange[i + 1, j + 1]
+            matrix[i - 1, j - 1] = sumElement
+        }
+    }
+
+    return matrix
+
+}
 
 /**
  * Средняя
@@ -248,7 +282,27 @@ data class Holes(val rows: List<Int>, val columns: List<Int>)
  *
  * К примеру, центральный элемент 12 = 1 + 2 + 4 + 5, элемент в левом нижнем углу 12 = 1 + 4 + 7 и так далее.
  */
-fun sumSubMatrix(matrix: Matrix<Int>): Matrix<Int> = TODO()
+fun sumSubMatrix(matrix: Matrix<Int>): Matrix<Int> {
+
+    val matrixForChange = createMatrix(matrix.height + 1, matrix.width + 1, 0)
+
+    for (i in 1..matrix.height) {
+        for (j in 1..matrix.width) {
+            matrixForChange[i, j] = matrix[i - 1, j - 1] + matrixForChange[i - 1, j] +
+                                    matrixForChange[i, j - 1] - matrixForChange[i - 1, j - 1]
+
+        }
+    }
+
+    for (i in 0 until matrix.height) {
+        for (j in 0 until matrix.width) {
+            matrix[i, j] = matrixForChange[i + 1, j + 1]
+        }
+    }
+
+    return matrix
+
+}
 
 /**
  * Сложная
@@ -270,7 +324,44 @@ fun sumSubMatrix(matrix: Matrix<Int>): Matrix<Int> = TODO()
  * Вернуть тройку (Triple) -- (да/нет, требуемый сдвиг по высоте, требуемый сдвиг по ширине).
  * Если наложение невозможно, то первый элемент тройки "нет" и сдвиги могут быть любыми.
  */
-fun canOpenLock(key: Matrix<Int>, lock: Matrix<Int>): Triple<Boolean, Int, Int> = TODO()
+
+fun transformable(matrix: Matrix<Int>): Matrix<Int> {
+
+    val invertedMatrix = createMatrix(matrix.height, matrix.width, 0)
+
+    for (i in 0 until matrix.width) {
+        for (j in 0 until matrix.height) {
+            if (matrix[i, j] == 0) invertedMatrix[i, j] = 1
+            else invertedMatrix[i, j] = 0
+        }
+    }
+    return invertedMatrix
+
+}
+
+fun canOpenLock(key: Matrix<Int>, lock: Matrix<Int>): Triple<Boolean, Int, Int> {
+
+    for (i in 0 until key.height) {
+        for (j in 0 until key.width) {
+            if (key[i, j] !in 0..1) return Triple(false, 0, 0)
+        }
+    }
+
+    val invertedKey = transformable(key)
+
+    for (i in 0..lock.height - key.height) {
+        for (j in 0..lock.width - key.width) {
+            for (k in 0 until key.height) {
+                for (l in 0 until key.width) {
+                    key[k, l] = lock[i + k, j + l]
+                }
+            }
+            if (key == invertedKey) return Triple(true, i, j)
+        }
+    }
+
+    return Triple(false, 0, 0)
+}
 
 /**
  * Простая
@@ -278,7 +369,17 @@ fun canOpenLock(key: Matrix<Int>, lock: Matrix<Int>): Triple<Boolean, Int, Int> 
  * Инвертировать заданную матрицу.
  * При инвертировании знак каждого элемента матрицы следует заменить на обратный
  */
-operator fun Matrix<Int>.unaryMinus(): Matrix<Int> = TODO(this.toString())
+operator fun Matrix<Int>.unaryMinus(): Matrix<Int> {
+
+    for (i in 0 until this.height) {
+        for (j in 0 until this.width) {
+            this[i, j] = -this[i, j]
+        }
+    }
+
+    return this
+
+}
 
 /**
  * Средняя
