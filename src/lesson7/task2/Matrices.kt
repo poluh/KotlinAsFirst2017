@@ -1,7 +1,10 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson7.task2
 
+import lesson3.task1.factorial
 import lesson7.task1.Matrix
+import lesson7.task1.MatrixImpl
 import lesson7.task1.createMatrix
 
 // Все задачи в этом файле требуют наличия реализации интерфейса "Матрица" в Matrix.kt
@@ -59,7 +62,43 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
  * 10 11 12  5
  *  9  8  7  6
  */
-fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateSpiral(height: Int, width: Int): Matrix<Int> {
+
+    if (height < 1 || width < 1) throw IllegalArgumentException("Invalid matrix")
+
+    val matrix: Matrix<Int> = MatrixImpl(height, width, e = 1)
+
+    val sum = height * width
+    var correctY = 0
+    var correctX = 0
+    var count = 1
+    var sizeX = width
+    var sizeY = height
+
+    while (sizeX > 0) {
+        for (y in 0..3) {
+            for (x in 0..Math.max(sizeY, sizeX)) {
+
+                if ((y == 0) && (x < sizeX - correctX) && (count <= sum))
+                    matrix[y + correctY, x + correctX] = count++
+
+                if ((y == 1) && (x < sizeY - correctY) && (x != 0) && (count <= sum))
+                    matrix[x + correctY, sizeX - 1] = count++
+
+                if ((y == 2) && (x < sizeX - correctX) && (x != 0) && (count <= sum))
+                    matrix[sizeY - 1, sizeX - (x + 1)] = count++
+
+                if ((y == 3) && x < (sizeY - correctY + 1) && (x != 0) && (count <= sum))
+                    matrix[sizeY - x + 1, correctY] = count++
+            }
+        }
+        sizeY--
+        sizeX--
+        correctY++
+        correctX++
+    }
+    return matrix
+}
 
 /**
  * Сложная
@@ -138,30 +177,20 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
 
 fun isLatinSquare(matrix: Matrix<Int>): Boolean {
 
-    var containerTrueNum = listOf<Int>()
-    var containerMatrixNum = listOf<Int>()
-
     if (matrix.height != matrix.width) throw IllegalArgumentException("Invalid matrix")
+    //if (matrix.height == 1) return true
 
-    if (matrix.height == 1 && matrix[0, 0] == 1) return true
+    var composition = 1
+    val buf = factorial(matrix.width).toInt()
 
-    for (i in 1 until matrix.height) {
-        containerTrueNum += i
-    }
-
-    for (i in 0 until matrix.height) {
+    for (i in 0 until matrix.width) {
         for (j in 0 until matrix.width) {
-            containerMatrixNum += matrix[i, j]
+            composition *= matrix[i, j]
         }
-        if (containerMatrixNum.sorted() != containerTrueNum) {
-            return false
-        } else {
-            containerMatrixNum = listOf()
-        }
+        if (composition != buf) return false
     }
 
     return true
-
 }
 
 /**

@@ -478,34 +478,31 @@ fun russian(n: Int): String { //Дорабатвываю
         val partOneNum = nStr.substring(0, lengthN - 3).toInt()
         val partTwoNum = nStr.substring(lengthN - 3, lengthN).toInt()
 
-        /*for (i in 0..2) {
-
+        for (i in 0..2) {
             val part = when (i) {
                 0 -> translationOfTripleOfNum(partOneNum, partOneNum.toString().length, order)
                 1 -> {
-                    if (partOneNum !in 10..19) {
-                        when ((partOneNum.toString()[partOneNum.toString().length - 1]).toInt()) {
-                            1 -> containerThousand[0]
-                            in 2..4 -> containerThousand[1]
-                            else -> containerThousand[2]
-                        }
-                    }
+
+                    if (partOneNum in 10..19) containerThousand[2]
+                    else if (partOneNum % 10 in 2..4 || partOneNum % 100 in 2..4) containerThousand[1]
+                    else if (partOneNum % 10 == 1 || partOneNum % 100 == 1) containerThousand[0]
                     else containerThousand[2]
+
                     }
                 else -> translationOfTripleOfNum(partTwoNum, partTwoNum.toString().length, order - 1)
             }
 
             answer.append(part)
-        } */
+        }
 
-        answer.append( translationOfTripleOfNum(partOneNum, partOneNum.toString().length, order))
+        /*answer.append( translationOfTripleOfNum(partOneNum, partOneNum.toString().length, order))
         val middlePart = when (partOneNum) {
             1 -> containerThousand[0]
             in 2..4 -> containerThousand[1]
             else -> containerThousand[2]
         }
         answer.append(middlePart)
-        answer.append(translationOfTripleOfNum(partTwoNum, partTwoNum.toString().length, order - 1))
+        answer.append(translationOfTripleOfNum(partTwoNum, partTwoNum.toString().length, order - 1))*/
     }
 
     return answer.toString().trim()
