@@ -422,23 +422,17 @@ fun translationOfTripleOfNum(n: Int, len: Int, order: Int): String {
 
     when (len) {
         1 -> {
-
             if ((order == 2) && (n % 10 in 1..2)) doping = 19
             return containerOne[n + doping]
-
         }
         2 -> {
-
             when {
                 n in 10..19 -> return containerOne[n]
                 (order == 2) && (n % 10 in 1..2) -> doping = 19
             }
-
             return containerTen[n / 10] + containerOne[n % 10 + doping]
-
         }
         3 -> {
-
             return when {
                 n % 100 == 0 -> containerHundred[n / 100]
                 else -> containerHundred[n / 100] + translationOfTripleOfNum(n % 100, 2, order)   //РЕКУРШЕН
@@ -459,16 +453,15 @@ fun translationOfTripleOfNum(n: Int, len: Int, order: Int): String {
  */
 fun russian(n: Int): String { //Дорабатвываю
 
-    val containerThousand = listOf("тысяча ", "тысячи ", "тысяч ")
-    val order: Int
     val lengthN = n.toString().length
-    val answer = StringBuilder()
 
-    order = when (lengthN) {
+    val order = when (lengthN) {
         in 1..3 -> 1
         in 4..6 -> 2
         else -> throw IllegalAccessError("This format is not supported (for now)")
     }
+
+    val answer = StringBuilder()
 
     if (order == 1) {
         return translationOfTripleOfNum(n, lengthN, order).trim()
@@ -477,12 +470,12 @@ fun russian(n: Int): String { //Дорабатвываю
         val nStr = n.toString()
         val partOneNum = nStr.substring(0, lengthN - 3).toInt()
         val partTwoNum = nStr.substring(lengthN - 3, lengthN).toInt()
+        val containerThousand = listOf("тысяча ", "тысячи ", "тысяч ")
 
         for (i in 0..2) {
             val part = when (i) {
                 0 -> translationOfTripleOfNum(partOneNum, partOneNum.toString().length, order)
                 1 -> {
-
                     if (partOneNum in 10..19 || partOneNum % 100 in 10..19) containerThousand[2]
                     else if (partOneNum % 10 in 2..4 || partOneNum % 100 in 2..4) containerThousand[1]
                     else if (partOneNum % 10 == 1 || partOneNum % 100 == 1) containerThousand[0]
@@ -491,18 +484,9 @@ fun russian(n: Int): String { //Дорабатвываю
                     }
                 else -> translationOfTripleOfNum(partTwoNum, partTwoNum.toString().length, order - 1)
             }
-
             answer.append(part)
         }
 
-        /*answer.append( translationOfTripleOfNum(partOneNum, partOneNum.toString().length, order))
-        val middlePart = when (partOneNum) {
-            1 -> containerThousand[0]
-            in 2..4 -> containerThousand[1]
-            else -> containerThousand[2]
-        }
-        answer.append(middlePart)
-        answer.append(translationOfTripleOfNum(partTwoNum, partTwoNum.toString().length, order - 1))*/
     }
 
     return answer.toString().trim()

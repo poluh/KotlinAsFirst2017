@@ -456,82 +456,65 @@ fun fromRoman(roman: String): Int {
  *
  */
 
-fun findIndex(str: String, direction: Boolean): Int { //Хотел было сделать регуляркой, но пока руки не дошли
+fun findIndex(str: String): MutableList<Pair<Int, Int>> { //Хотел было сделать регуляркой, но пока руки не дошли
 
+    val answer = mutableListOf<Pair<Int, Int>>()
     var bracket = 0
+    for (i in 0 until str.length) {
+        if (str[i] == '[') {
 
+            bracket++
+            var temp = i + 1
 
-    if (direction) {
-        for (i in 0 until str.length) {
+            while (bracket > 0 && temp < str.length) {
 
-            if (str[i] == '[') {
-                bracket++
-                if (bracket == 0) return i
+                if (str[temp] == '[') bracket++
+                if (str[temp] == ']') bracket--
+
+                temp++
             }
 
-            if (str[i] == ']') bracket--
-        }
-    } else {
-        for (i in str.length - 1 downTo 0) {
-
-            if (str[i] == ']') {
-                bracket++
-                if (bracket == 0) return i
-            }
-
-            if (str[i] == '[') bracket--
+            answer.add(Pair(i, temp - 1))
         }
     }
-    return -1
+
+    return answer
 }
 
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
 
-    val containerTrueCommands = listOf('>', '<', '+', '-', '[', ']', ' ')
-    var thisLoop = true
-    val answerList = mutableListOf<Int>()
+    val answerList = MutableList(cells, { 0 })
 
-    //Ищем ошибки в коммандах
-
-    for (i in 0 until commands.length) {
-        if (commands[i] !in containerTrueCommands) throw IllegalArgumentException("Invalid command. Index $i")
-        if (commands[i] == '[' || commands[i] == ']') thisLoop = !thisLoop
+    if (commands.isEmpty()) return answerList
+    if ((!commands.matches(Regex("""[\[><+\-\] ]+"""))) ||
+            (commands.count { it == '[' } != commands.count { it == ']' })) {
+        throw IllegalArgumentException("Invalid command")
     }
-    if (!thisLoop) throw IllegalArgumentException("Invalid command.(missing closing parenthesis)")
 
-    (0 until cells).forEach { answerList.add(0) }
-
-    //+++++++++++++++++++++++++++
-
-    var cellIndex = Math.round(cells.toDouble() / 2).toInt()
+    val bracketIndex = findIndex(commands)
+    var indexSensor = cells / 2
     var indexCommand = 0
-    var indexCarriedOutComands = 0
+    var limitCommand = 0
 
-     while (indexCarriedOutComands in 0 until limit) {
-
-        if (cellIndex !in 0 until cells)
-            throw IllegalArgumentException("Exit the conveyor. Index command = $indexCommand")
-        if (indexCommand == commands.length) break
-
+    while (limitCommand < limit && indexCommand < commands.length) {
         when (commands[indexCommand]) {
 
-            '+' -> answerList[cellIndex]++
-            '-' -> answerList[cellIndex]--
-            '>' -> cellIndex++
-            '<' -> cellIndex--
-
-            '[' -> if (answerList[cellIndex] == 0 && cellIndex in 0 until cells) {
-                        indexCommand = findIndex(commands, true)
-                    }
-            ']' -> if (answerList[cellIndex] != 0)
-                indexCommand = commands.substring(0, indexCommand - 1).lastIndexOf('[')
+            '+' -> answerList[indexSensor]++
+            '-' -> answerList[indexSensor]--
+            '>' -> indexSensor++
+            '<' -> indexSensor--
+            '[' ->
+                if (answerList[indexSensor] == 0) {
+                    indexCommand = bracketIndex.find { it.first == indexCommand }?.second!!
+                }
+            ']' ->
+                if (answerList[indexSensor] != 0) {
+                    indexCommand = bracketIndex.find { it.second == indexCommand }?.first!!
+                }
         }
 
-         indexCommand++
-         indexCarriedOutComands++
-
+        limitCommand++
+        indexCommand++
     }
-
     return answerList
-
 }
