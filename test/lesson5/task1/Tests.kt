@@ -41,6 +41,7 @@ class Tests {
         assertEquals("03.04.2011", dateStrToDigit("3 апреля 2011"))
         assertEquals("01.12.2147483647", dateStrToDigit("01 декабря 2147483647"))
         assertEquals("", dateStrToDigit("FDFDF DFDFDAE DFEFFEFEFEFEFEFEFEFEFEFEFE"))
+        assertEquals("15.07.-10", dateStrToDigit("15 июля -10"))
     }
 
     @Test
@@ -90,7 +91,7 @@ class Tests {
     @Tag("Hard")
     fun plusMinus() {
         assertEquals(0, plusMinus("0"))
-        assertEquals(4, plusMinus("2 + 2"))
+        assertEquals(4, plusMinus("2 +   2"))
         assertEquals(6, plusMinus("2 + 31 - 40 + 13"))
         assertEquals(-1, plusMinus("0 - 1"))
         assertEquals(-100110830, plusMinus("2147483647 + 1 + 2147483647 - 1178580708 + 0 - 0 + " +

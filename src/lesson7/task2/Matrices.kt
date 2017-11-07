@@ -66,9 +66,9 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
 
     if (height < 1 || width < 1) throw IllegalArgumentException("Invalid matrix")
 
-    val matrix: Matrix<Int> = MatrixImpl(height, width, e = 1)
+    val matrix = MatrixImpl(height, width, 1)
 
-    val sum = height * width
+    val notSum = height * width
     var correctY = 0
     var correctX = 0
     var count = 1
@@ -77,19 +77,24 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
 
     while (sizeX > 0) {
         for (y in 0..3) {
-            for (x in 0..Math.max(sizeY, sizeX)) {
 
-                if ((y == 0) && (x < sizeX - correctX) && (count <= sum))
-                    matrix[y + correctY, x + correctX] = count++
-
-                if ((y == 1) && (x < sizeY - correctY) && (x != 0) && (count <= sum))
-                    matrix[x + correctY, sizeX - 1] = count++
-
-                if ((y == 2) && (x < sizeX - correctX) && (x != 0) && (count <= sum))
-                    matrix[sizeY - 1, sizeX - (x + 1)] = count++
-
-                if ((y == 3) && x < (sizeY - correctY + 1) && (x != 0) && (count <= sum))
-                    matrix[sizeY - x + 1, correctY] = count++
+            when (y) {
+                0 -> for (x in 0..Math.max(sizeY, sizeX)) {
+                    if ((x < sizeX - correctX) && (count <= notSum))
+                        matrix[y + correctY, x + correctX] = count++
+                }
+                1 -> for (x in 0..Math.max(sizeY, sizeX)) {
+                    if ((x < sizeY - correctY) && (x != 0) && (count <= notSum))
+                        matrix[x + correctY, sizeX - 1] = count++
+                }
+                2 -> for (x in 0..Math.max(sizeY, sizeX)) {
+                    if ((x < sizeX - correctX) && (x != 0) && (count <= notSum))
+                        matrix[sizeY - 1, sizeX - (x + 1)] = count++
+                }
+                else -> for (x in 0..Math.max(sizeY, sizeX)) {
+                    if (x < (sizeY - correctY + 1) && (x != 0) && (count <= notSum))
+                        matrix[sizeY - x + 1, correctY] = count++
+                }
             }
         }
         sizeY--
@@ -235,9 +240,9 @@ fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> {
         for (j in 1..matrix.width) {
 
             val sumElement = matrixForChange[i - 1, j - 1] + matrixForChange[i - 1, j] +
-                                  matrixForChange[i - 1, j + 1] + matrixForChange[i, j - 1] +
-                                  matrixForChange[i, j + 1] + matrixForChange[i + 1, j - 1] +
-                                  matrixForChange[i + 1, j] + matrixForChange[i + 1, j + 1]
+                    matrixForChange[i - 1, j + 1] + matrixForChange[i, j - 1] +
+                    matrixForChange[i, j + 1] + matrixForChange[i + 1, j - 1] +
+                    matrixForChange[i + 1, j] + matrixForChange[i + 1, j + 1]
             matrix[i - 1, j - 1] = sumElement
         }
     }
@@ -289,7 +294,7 @@ fun sumSubMatrix(matrix: Matrix<Int>): Matrix<Int> {
     for (i in 1..matrix.height) {
         for (j in 1..matrix.width) {
             matrixForChange[i, j] = matrix[i - 1, j - 1] + matrixForChange[i - 1, j] +
-                                    matrixForChange[i, j - 1] - matrixForChange[i - 1, j - 1]
+                    matrixForChange[i, j - 1] - matrixForChange[i - 1, j - 1]
 
         }
     }
@@ -332,7 +337,6 @@ fun transformable(matrix: Matrix<Int>): Matrix<Int> {
     for (i in 0 until matrix.width) {
         for (j in 0 until matrix.height) {
             if (matrix[i, j] == 0) invertedMatrix[i, j] = 1
-            else invertedMatrix[i, j] = 0
         }
     }
     return invertedMatrix
@@ -349,14 +353,16 @@ fun canOpenLock(key: Matrix<Int>, lock: Matrix<Int>): Triple<Boolean, Int, Int> 
 
     val invertedKey = transformable(key)
 
-    for (i in 0..lock.height - key.height) {
-        for (j in 0..lock.width - key.width) {
-            for (k in 0 until key.height) {
-                for (l in 0 until key.width) {
-                    key[k, l] = lock[i + k, j + l]
+    val keyForChange = key
+
+    for (i in 0..lock.height - keyForChange.height) {
+        for (j in 0..lock.width - keyForChange.width) {
+            for (k in 0 until keyForChange.height) {
+                for (l in 0 until keyForChange.width) {
+                    keyForChange[k, l] = lock[i + k, j + l]
                 }
             }
-            if (key == invertedKey) return Triple(true, i, j)
+            if (keyForChange == invertedKey) return Triple(true, i, j)
         }
     }
 

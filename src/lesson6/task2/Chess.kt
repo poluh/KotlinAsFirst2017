@@ -2,6 +2,8 @@
 
 package lesson6.task2
 
+import java.lang.Math.*
+
 /**
  * Клетка шахматной доски. Шахматная доска квадратная и имеет 8 х 8 клеток.
  * Поэтому, обе координаты клетки (горизонталь row, вертикаль column) могут находиться в пределах от 1 до 8.
@@ -83,8 +85,7 @@ fun rookMoveNumber(start: Square, end: Square): Int {
     return when {
 
         start == end -> 0
-        start.row == end.row -> 1
-        start.column == end.column -> 1
+        start.row == end.row || start.column == end.column -> 1
         else -> 2
 
     }
@@ -191,11 +192,13 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> { //дораба�
 
             for (i in 1..8) {
                 for (j in 1..8) {
-                    if ((Math.abs(end.column - i) == Math.abs(end.row - j)) &&
-                            (Math.abs(start.column - i) == Math.abs(start.row - j))) {
+                    if ((abs(end.column - i) == abs(end.row - j)) &&
+                            (abs(start.column - i) == abs(start.row - j))) {
                         answer = listOf(start, Square(i, j), end)
+                        break
                     }
                 }
+                if (answer.isNotEmpty()) break
             }
         }
 
@@ -227,7 +230,7 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> { //дораба�
 
         if (!start.inside() || !end.inside()) throw IllegalArgumentException()
 
-        return Math.max(Math.abs(start.column - end.column), Math.abs(start.row - end.row))
+        return max(abs(start.column - end.column), abs(start.row - end.row))
 
     }
 

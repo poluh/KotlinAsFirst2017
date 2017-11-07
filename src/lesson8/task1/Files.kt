@@ -164,13 +164,20 @@ fun createGaps(n: Int): String {
     return answer
 }
 
-fun centerFile(inputName: String, outputName: String) {
+fun longestString(inputName: String): Int {
 
     var max = 0
 
     for (line in File(inputName).readLines()) {
         max = Math.max(line.length, max)
     }
+
+    return max
+}
+
+fun centerFile(inputName: String, outputName: String) {
+
+    val max = longestString(inputName)
 
     val outputStream = File(outputName).bufferedWriter()
 
@@ -213,7 +220,10 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
+
+    val max = longestString(inputName)
+
+
 }
 
 /**

@@ -137,22 +137,18 @@ fun dateDigitToStr(digital: String): String {
     val monthsArr =
             listOf("января", "февраля", "марта", "апреля", "мая", "июня", "июля",
                     "августа", "сентября", "октября", "ноября", "декабря")
-    val answer = StringBuilder("")
 
     if (isDate && digital.substring(3, 5).toInt() in 1..12 &&
             digital.substring(0, 2).toInt() in 1..31) {
 
-        for (i in 0..2) {
-            val partAnswer = when (i) {
-                0 -> digital.substring(0, 2).toInt().toString()
-                1 -> " " + monthsArr[digital.substring(3, 5).toInt() - 1] + " "
-                else -> digital.substring(6)
-            }
-            answer.append(partAnswer)
-        }
+        val day = digital.substring(0, 2).toInt().toString()
+        val month = monthsArr[digital.substring(3, 5).toInt() - 1]
+        val year = digital.substring(6)
+
+        return "$day $month $year"
     }
 
-    return answer.toString()
+    return ""
 }
 
 /**
@@ -187,26 +183,17 @@ fun flattenPhoneNumber(phone: String): String {
  */
 fun bestLongJump(jumps: String): Int {
 
-    val containerTrueSymbol = listOf(' ', '%', '-')
+    val ifTrueStr = jumps.matches(Regex("""[\s\d-%]+"""))
+    if (!ifTrueStr) return -1
 
-    for (i in 0 until jumps.length) {
-        if ((jumps == "") || (jumps[i] !in containerTrueSymbol && (jumps[i] !in '0'..'9'))) {
-            return -1
-        }
+    val containerParts = Regex("\\s+").replace(jumps, " ").split(" ")
+    var answer = -1
+
+    for (part in containerParts) {
+        if (part.matches(Regex("\\d+"))) answer = maxOf(answer, part.toInt())
     }
 
-    val containerParts = jumps.filter { (it in '0'..'9') || (it == ' ') }.split(" ")
-    var containerTrueParts = listOf<Int>()
-
-    for (i in 0 until containerParts.size) {
-        if (containerParts[i] != "") containerTrueParts += containerParts[i].toInt()
-    }
-
-    return (0 until containerTrueParts.size)
-            .asSequence()
-            .map { containerTrueParts[it] }
-            .max()
-            ?: -1
+    return answer
 }
 
 /**
@@ -221,29 +208,23 @@ fun bestLongJump(jumps: String): Int {
  */
 fun bestHighJump(jumps: String): Int {
 
-    val containerTrueSymbol = listOf(' ', '%', '-', '+')
-
-    for (i in 0 until jumps.length) {
-        if ((jumps == "") || ((jumps[i] !in containerTrueSymbol) && (jumps[i] !in '0'..'9'))) {
-            return -1
-        }
-    }
+    val ifTrueStr = jumps.matches(Regex("""[\s\d-%+]+"""))
+    if (!ifTrueStr) return -1
 
     val containerParts =
-            jumps.filter { (it in '0'..'9') || (it == ' ') || (it == '+') }.split(" ")
-    var containerTrueParts = listOf<Int>()
+            Regex("\\s+").replace(jumps, " ").filter {
+                                                                (it in '0'..'9') ||
+                                                                (it == ' ') ||
+                                                                (it == '+') }.split(" ")
+    var answer = -1
 
-    for (i in 0 until containerParts.size - 1) {
-        if ((containerParts[i] != "") && (containerParts[i + 1] == "+")) {
-            containerTrueParts += containerParts[i].toInt()
+    for (index in 0 until containerParts.size - 1) {
+        if (containerParts[index].matches(Regex("\\d+")) && containerParts[index + 1] == "+") {
+            answer = maxOf(answer, containerParts[index].toInt())
         }
     }
 
-    return (0 until containerTrueParts.size)
-            .asSequence()
-            .map { containerTrueParts[it] }
-            .max()
-            ?: -1
+    return answer
 }
 
 /**
@@ -257,57 +238,34 @@ fun bestHighJump(jumps: String): Int {
  */
 fun plusMinus(expression: String): Int {
 
-    val containerTrueOperations = listOf("+", "-", " ")
+    val isExpression = expression.matches(Regex("""[\d\s-+]+"""))
+    if (!isExpression) throw IllegalArgumentException("Сheck the presence of the brain (at least for yourself)")
+
+    if (expression.matches(Regex("\\d+"))) return expression.toInt()
+
+    val containerExp = Regex("\\s+").replace(expression, " ").split(" ")
     var answer = 0
     var i = 0
 
-    if (!expression.isEmpty()) {
-
-        for (j in 0 until expression.length) {
-
-            if ((expression[j].toString() !in containerTrueOperations) && (expression[j] !in '0'..'9')) {
-
-                throw IllegalArgumentException("Error > Invalid string format")
-
-            }
-
-        }
-
-    } else throw IllegalArgumentException("Error > Empty string")
-
-
-    val containerPart = expression.split(" ")
-
-    if (expression.indexOf(' ') == -1) {
-        return expression.toInt()
-    }
-
-    if (containerPart.size % 2 == 0) {
-        throw IllegalArgumentException("Error > Invalid format imput")
-    }
-
-    while (i < containerPart.size - 2) {
+    while (i < containerExp.size - 2) {
 
         if (i == 0) {
-            answer = containerPart[0].toInt()
+            answer = containerExp[0].toInt()
         }
 
-
-        val operator = containerPart[i + 1]
-        val tern = containerPart[i + 2].toInt()
+        val operator = containerExp[i + 1]
+        val tern = containerExp[i + 2].toInt()
 
         when (operator) {
             "+" -> answer += tern
             "-" -> answer -= tern
             else -> throw IllegalArgumentException("Error > Unknow operator")
         }
-
-
         i += 2
-
     }
 
     return answer
+
 }
 
 /**
@@ -324,11 +282,9 @@ fun firstDuplicateIndex(str: String): Int {
     val containerPartStr = str.toLowerCase().split(" ")
 
     for (i in 0 until containerPartStr.size - 1) {
-
         if (containerPartStr[i] == containerPartStr[i + 1]) {
             return findIndex(i, str)
         }
-
     }
 
     return -1
@@ -359,7 +315,7 @@ fun mostExpensive(description: String): String {
             if (parts[1].toDouble() >= price) {
 
                 price = parts[1].toDouble()
-                answer = parts[0].trim()
+                answer = parts[0]
 
             }
         }

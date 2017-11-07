@@ -1,7 +1,6 @@
 @file:Suppress("UNUSED_PARAMETER", "unused")
 package lesson7.task1
 
-import lesson5.task1.bestHighJump
 
 /**
  * Ячейка матрицы: row = ряд, column = колонка
@@ -44,17 +43,8 @@ fun <E> createMatrix(height: Int, width: Int, e: E): Matrix<E> {
 
     if (height <= 0 || width <= 0) throw IllegalArgumentException("Invalid options for matrix")
 
-    val matrix = MatrixImpl(height, width, e)
+    return MatrixImpl(height, width, e)
 
-    for (i in 0 until height) {
-        for (j in 0 until width) {
-
-            matrix[i, j] = e
-
-        }
-    }
-
-    return matrix
 
 }
 
