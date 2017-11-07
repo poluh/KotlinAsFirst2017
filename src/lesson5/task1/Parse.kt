@@ -7,7 +7,6 @@ import lesson1.task1.accountInThreeYears
 import java.lang.IllegalArgumentException
 
 
-
 fun findIndex(index: Int, str: String): Int {
 
     var serialNum = 0
@@ -144,7 +143,7 @@ fun dateDigitToStr(digital: String): String {
             digital.substring(0, 2).toInt() in 1..31) {
 
         for (i in 0..2) {
-            val partAnswer = when (i){
+            val partAnswer = when (i) {
                 0 -> digital.substring(0, 2).toInt().toString()
                 1 -> " " + monthsArr[digital.substring(3, 5).toInt() - 1] + " "
                 else -> digital.substring(6)
@@ -460,6 +459,7 @@ fun findIndex(str: String): MutableList<Pair<Int, Int>> { //Хотел было 
 
     val answer = mutableListOf<Pair<Int, Int>>()
     var bracket = 0
+
     for (i in 0 until str.length) {
         if (str[i] == '[') {
 
