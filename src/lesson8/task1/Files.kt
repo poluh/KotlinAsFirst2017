@@ -3,6 +3,7 @@
 package lesson8.task1
 
 import java.io.File
+import java.util.Collections.*
 
 /**
  * Пример
@@ -59,10 +60,8 @@ fun String.findOccurrences(substrings: String): Int {
     var answer = 0
     var pos = 0
 
-
     if (indexOf(substrings) != -1) {
         while (true) {
-
             val foundPos = indexOf(substrings, pos)
             if (foundPos == -1) break
 
@@ -107,31 +106,28 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  */
 fun sibilants(inputName: String, outputName: String) {
 
-    val outputStream = File(outputName).bufferedWriter()
     val containerTrueSymbol = listOf('и', 'а', 'у', 'И', 'А', 'У')
     val containerBadSymbol = listOf('ы', 'я', 'ю', 'Ы', 'Я', 'Ю')
     val containerCheckSymbol = listOf('ж', 'ч', 'ш', 'щ', 'Ж', 'Ч', 'Ш', 'Щ')
     var index = 0
     val file = File(inputName).readText()
 
-    while (index < file.length){
+    File(outputName).bufferedWriter().use {
+        while (index < file.length) {
+            if (index < file.length - 1 &&
+                    file[index] in containerCheckSymbol &&
+                    file[index + 1] in containerBadSymbol) {
 
-        if (index < file.length - 1 &&
-                file[index] in containerCheckSymbol &&
-                file[index + 1] in containerBadSymbol){
+                it.append(file[index])
+                it.append(containerTrueSymbol[containerBadSymbol.indexOf(file[index + 1])])
 
-            outputStream.append(file[index])
-            outputStream.append(containerTrueSymbol[containerBadSymbol.indexOf(file[index + 1])])
+                index += 2
 
-            index += 2
+            } else it.append(file[index])
 
+            index++
         }
-
-        outputStream.append(file[index])
-        index++
     }
-
-    outputStream.close()
 
 }
 
@@ -156,7 +152,6 @@ fun sibilants(inputName: String, outputName: String) {
 fun createGaps(n: Int): String {
 
     var answer = ""
-
     for (i in 0..n) {
         answer += " "
     }
@@ -167,7 +162,6 @@ fun createGaps(n: Int): String {
 fun longestString(inputName: String): Int {
 
     var max = 0
-
     for (line in File(inputName).readLines()) {
         max = Math.max(line.length, max)
     }
@@ -179,16 +173,13 @@ fun centerFile(inputName: String, outputName: String) {
 
     val max = longestString(inputName)
 
-    val outputStream = File(outputName).bufferedWriter()
-
-    for (line in File(inputName).readLines()) {
-
-        outputStream.append(createGaps((max - line.trim().length) / 2 - 1))
-        outputStream.append(line.trim())
-        outputStream.newLine()
+    File(outputName).bufferedWriter().use {
+        for (line in File(inputName).readLines()) {
+            it.append(createGaps((max - line.trim().length) / 2 - 1))
+            it.append(line.trim())
+            it.newLine()
+        }
     }
-
-    outputStream.close()
 
 }
 
@@ -221,8 +212,7 @@ fun centerFile(inputName: String, outputName: String) {
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
 
-    val max = longestString(inputName)
-
+    TODO()
 
 }
 
@@ -240,7 +230,49 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  * Ключи в ассоциативном массиве должны быть в нижнем регистре.
  *
  */
-fun top20Words(inputName: String): Map<String, Int> = TODO()
+fun sortedMap(map: MutableMap<String, Int>, words: List<String>): Map<String, Int> {
+
+    for (i in words.size - 1 downTo 0) {
+        for (j in 0 until i) {
+            if (map[words[j]]!! > map[words[j + 1]]!!) {
+                val tmp = map[words[j]]
+                map[words[j]] = map[words[j + 1]]!!
+                map[words[j + 1]] = tmp!!
+                map[words[j]] = map[words[j + 1]]!!
+
+            }
+        }
+    }
+
+    return map
+}
+
+fun top20Words(inputName: String): Map<String, Int> {
+
+    val answer = mutableMapOf<String, Int>()
+    val dampAnswer = mutableMapOf<String, Int>()
+    val containerWord = mutableListOf<String>()
+
+    for (line in File(inputName).readLines()) {
+        for (word in line.toLowerCase().split(Regex("\\s+"))) {
+            val plus = dampAnswer[word]
+            if (plus != null) {
+                dampAnswer[word] = plus + 1
+            } else {
+                if (word.matches(Regex("[а-яА-Я]+"))) {
+                    dampAnswer[word] = 1
+                    containerWord += word
+                }
+            }
+
+        }
+    }
+
+    if (dampAnswer.size <= 20) return dampAnswer
+
+    return sortedMap(dampAnswer, containerWord)
+
+}
 
 /**
  * Средняя
@@ -269,7 +301,33 @@ fun top20Words(inputName: String): Map<String, Int> = TODO()
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
-    TODO()
+
+    var lines = ""
+
+
+    for (line in File(inputName).readLines()) {
+        for (index in 0 until line.length) {
+            lines += if (dictionary[line[index].toLowerCase()] != null) {
+                (dictionary[line[index].toLowerCase()])
+            } else if (dictionary[line[index].toUpperCase()] != null) {
+                (dictionary[line[index].toUpperCase()])
+            } else {
+                (line[index])
+            }
+        }
+        lines += "\n"
+    }
+
+    File(outputName).bufferedWriter().use {
+        for (index in 0 until lines.length) {
+            if (index == 0) {
+                it.append(lines[index].toUpperCase())
+            } else {
+                it.append(lines[index])
+            }
+        }
+    }
+
 }
 
 /**
@@ -296,8 +354,37 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  *
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
+
+fun String.ifDifferentLetters(): Boolean {
+    val line = this.toLowerCase()
+    val containerLetter = mutableListOf<Char>()
+    for (letter in line) {
+        if (containerLetter.indexOf(letter) == -1) {
+            containerLetter += letter
+        }
+    }
+    return (containerLetter.size == line.length)
+}
+
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    TODO()
+
+    val containerWord = mutableListOf<String>()
+
+    for (line in File(inputName).readLines()) {
+        if (line.ifDifferentLetters()) {
+            containerWord += line
+        }
+    }
+
+    File(outputName).bufferedWriter().use {
+        if (containerWord.size > 1) {
+            for (word in containerWord) {
+                it.append(word + ", ")
+            }
+        } else {
+            it.append(containerWord[0])
+        }
+    }
 }
 
 /**
