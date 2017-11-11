@@ -68,40 +68,34 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
 
     val matrix = MatrixImpl(height, width, 1)
 
-    val notSum = height * width
-    var correctY = 0
-    var correctX = 0
     var count = 1
-    var sizeX = width
-    var sizeY = height
+    val notSum = height * width
+    var x = 1
+    while (count <= notSum) {
 
-    while (sizeX > 0) {
-        for (y in 0..3) {
-
-            when (y) {
-                0 -> for (x in 0..Math.max(sizeY, sizeX)) {
-                    if ((x < sizeX - correctX) && (count <= notSum))
-                        matrix[y + correctY, x + correctX] = count++
-                }
-                1 -> for (x in 0..Math.max(sizeY, sizeX)) {
-                    if ((x < sizeY - correctY) && (x != 0) && (count <= notSum))
-                        matrix[x + correctY, sizeX - 1] = count++
-                }
-                2 -> for (x in 0..Math.max(sizeY, sizeX)) {
-                    if ((x < sizeX - correctX) && (x != 0) && (count <= notSum))
-                        matrix[sizeY - 1, sizeX - (x + 1)] = count++
-                }
-                else -> for (x in 0..Math.max(sizeY, sizeX)) {
-                    if (x < (sizeY - correctY + 1) && (x != 0) && (count <= notSum))
-                        matrix[sizeY - x + 1, correctY] = count++
-                }
-            }
+        for (i in (x - 1) until (width - x + 1)) {
+            if (count > notSum) break
+            matrix[x - 1, i] = count++
         }
-        sizeY--
-        sizeX--
-        correctY++
-        correctX++
+
+        for (i in x until (height - x + 1)) {
+            if (count > notSum) break
+            matrix[i, width - x] = count++
+        }
+
+        for (i in (width - x - 1) downTo (x - 1)) {
+            if (count > notSum) break
+            matrix[height - x, i] = count++
+        }
+
+        for (i in (height - x - 1) downTo x) {
+            if (count > notSum) break
+            matrix[i, x - 1] = count++
+        }
+
+        x++
     }
+
     return matrix
 }
 
@@ -119,7 +113,42 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
  *  1  2  2  2  2  1
  *  1  1  1  1  1  1
  */
-fun generateRectangles(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateRectangles(height: Int, width: Int): Matrix<Int> {
+
+    var count = 1
+    val matrix = createMatrix(height, width, 1)
+    var argument = 1
+    while (count <= height * width) {
+
+        for (j in (argument - 1) until (width - argument + 1)) {
+            if (count > height * width) break
+            matrix[argument - 1, j] = argument
+            count++
+        }
+
+        for (j in argument until (height - argument + 1)) {
+            if (count > height * width) break
+            matrix[j, width - argument] = argument
+            count++
+        }
+
+        for (j in (width - argument - 1) downTo (argument - 1)) {
+            if (count > height * width) break
+            matrix[height - argument, j] = argument
+            count++
+        }
+
+        for (j in (height - argument - 1) downTo argument) {
+            if (count > height * width) break
+            matrix[j, argument - 1] = argument
+            count++
+        }
+
+        argument++
+    }
+    return matrix
+
+}
 
 /**
  * Сложная
@@ -188,7 +217,7 @@ fun isLatinSquare(matrix: Matrix<Int>): Boolean {
     var compositionX = 0
     var compositionY = compositionX
     val buf = if (matrix.width > 2) factorial(matrix.width).toInt()
-    else factorial(matrix.width).toInt() + 1
+                    else factorial(matrix.width).toInt() + 1
 
     val rotateMatrix = rotate(matrix)
 
@@ -266,12 +295,38 @@ fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> {
  * 0 0 1 0
  * 0 0 0 0
  */
-fun findHoles(matrix: Matrix<Int>): Holes = TODO()
+fun findHoles(matrix: Matrix<Int>): Holes {
+
+    val containerHolesRows = mutableListOf<Int>()
+    val containerHolesColumns = mutableListOf<Int>()
+    val answer = Holes(listOf(), listOf())
+
+    for (i in 0 until matrix.height) {
+        for (j in 0 until matrix.width) {
+            containerHolesRows += matrix[i, j]
+        }
+        if (containerHolesRows.sorted()[matrix.width - 1] != 1) {
+            answer.rows += i
+        }
+        containerHolesRows.clear()
+    }
+
+    for (i in 0 until matrix.width) {
+        for (j in 0 until matrix.height) {
+            containerHolesColumns += matrix[j, i]
+        }
+        if (containerHolesColumns.sorted()[matrix.height - 1] != 1) {
+            answer.columns += i
+        }
+        containerHolesColumns.clear()
+    }
+    return answer
+}
 
 /**
  * Класс для описания местонахождения "дырок" в матрице
  */
-data class Holes(val rows: List<Int>, val columns: List<Int>)
+data class Holes(var rows: List<Int>, var columns: List<Int>)
 
 /**
  * Средняя
@@ -395,7 +450,23 @@ operator fun Matrix<Int>.unaryMinus(): Matrix<Int> {
  * В противном случае бросить IllegalArgumentException.
  * Подробно про порядок умножения см. статью Википедии "Умножение матриц".
  */
-operator fun Matrix<Int>.times(other: Matrix<Int>): Matrix<Int> = TODO(this.toString())
+operator fun Matrix<Int>.times(other: Matrix<Int>): Matrix<Int> {
+
+    if (this.width != other.height) throw IllegalArgumentException("Invalid input matrix")
+
+    val matrix = MatrixImpl(this.width, other.height, 0)
+
+    for (i in 0 until this.height) {
+        for (j in 0 until other.width) {
+            for (k in 0 until other.height) {
+                matrix[i, j] = this[i, k] * other[k, j]
+            }
+        }
+    }
+
+    return matrix
+
+}
 
 /**
  * Сложная
