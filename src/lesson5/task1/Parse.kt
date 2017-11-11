@@ -12,14 +12,12 @@ fun findIndex(index: Int, str: String): Int {
     var serialNum = 0
 
     for (i in 0 until str.length) {
-
         if (str[i] == ' ') {
             serialNum++
             if (serialNum == index) {
                 return i + 1
             }
         }
-
     }
 
     return -1
