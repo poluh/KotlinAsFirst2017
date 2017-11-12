@@ -109,10 +109,10 @@ fun sibilants(inputName: String, outputName: String) {
 
     File(outputName).bufferedWriter().use {
         val containerLitter = mapOf("Ы" to "И", "ы" to "и", "Я" to "А", "я" to "а", "Ю" to "У", "ю" to "у")
-        for (line in File(inputName).readLines()) {
+        for ((index, line) in File(inputName).readLines().withIndex()) {
 
             if (line.length <= 1) {
-                it.write("$line\n")
+                it.write(line)
             } else {
                 it.append(line[0])
 
@@ -122,7 +122,8 @@ fun sibilants(inputName: String, outputName: String) {
                     } else {
                         it.append(line[symbol])
                     }
-                it.newLine()
+                if (index != File(inputName).readLines().size - 1)
+                    it.newLine()
             }
         }
     }
@@ -227,8 +228,53 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  *
  */
 
+fun Map<String, Int>.max(words: List<String>): Pair<String, Int> {
+    var max = 0
+    var keyWord = ""
+    for (word in words) {
+        if (this[word]!! > max) {
+            max = this[word]!!
+            keyWord = word
+        }
+    }
+    return Pair(keyWord, max)
+}
+
+fun MutableMap<String, Int>.sorted(words: List<String>): Map<String, Int> {
+
+    val map = mutableMapOf<String, Int>()
+
+    for (i in 0..19) {
+        val max = this.max(words)
+        map[max.first] = max.second
+        this[max.first] = -1
+    }
+    return map
+}
+
 fun top20Words(inputName: String): Map<String, Int> {
-    TODO()
+
+    val containerWords = mutableListOf<String>()
+    val map = mutableMapOf<String, Int>()
+
+    for (line in File(inputName).readLines()) {
+        for (wordDamp in line.split(Regex("\\s+"))) {
+            val word = wordDamp.toLowerCase()
+            if (word.matches(Regex("[а-я]+"))) {
+
+                if (map[word] == null) {
+                    containerWords += word
+                    map[word] = 1
+                } else {
+                    val plus = map[word]!! + 1
+                    map[word] = plus
+                }
+            }
+        }
+    }
+
+    return map.sorted(containerWords)
+
 }
 
 /**
@@ -260,9 +306,10 @@ fun top20Words(inputName: String): Map<String, Int> {
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
 
     var lines = ""
+    val fileInput = File(inputName).readLines()
 
 
-    for (line in File(inputName).readLines()) {
+    for ((indexLine, line) in fileInput.withIndex()) {
         for (index in 0 until line.length) {
             lines += when {
                 dictionary[line[index].toLowerCase()] != null -> dictionary[line[index].toLowerCase()]
@@ -270,7 +317,9 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
                 else -> line[index]
             }
         }
-        lines += "\n"
+        if (indexLine != fileInput.size - 1) {
+            lines += "\n"
+        }
     }
 
     File(outputName).bufferedWriter().use {

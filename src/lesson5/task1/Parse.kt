@@ -451,20 +451,25 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     var limitCommand = 0
 
     while (limitCommand < limit && indexCommand < commands.length) {
-        when (commands[indexCommand]) {
+        try {
+            when (commands[indexCommand]) {
 
-            '+' -> answerList[indexSensor]++
-            '-' -> answerList[indexSensor]--
-            '>' -> indexSensor++
-            '<' -> indexSensor--
-            '[' ->
-                if (answerList[indexSensor] == 0) {
-                    indexCommand = bracketIndex.find { it.first == indexCommand }?.second!!
-                }
-            ']' ->
-                if (answerList[indexSensor] != 0) {
-                    indexCommand = bracketIndex.find { it.second == indexCommand }?.first!!
-                }
+                '+' -> answerList[indexSensor]++
+                '-' -> answerList[indexSensor]--
+                '>' -> indexSensor++
+                '<' -> indexSensor--
+                '[' ->
+                    if (answerList[indexSensor] == 0) {
+                        indexCommand = bracketIndex.find { it.first == indexCommand }?.second!!
+                    }
+                ']' ->
+                    if (answerList[indexSensor] != 0) {
+                        indexCommand = bracketIndex.find { it.second == indexCommand }?.first!!
+                    }
+            }
+        }
+        catch (e: ArrayIndexOutOfBoundsException) {
+            throw IllegalArgumentException("Exit the conveyor.")
         }
 
         limitCommand++
