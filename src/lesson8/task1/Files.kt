@@ -2,9 +2,8 @@
 
 package lesson8.task1
 
-import lesson5.task1.charPlus
 import java.io.File
-import java.util.Collections.*
+
 
 /**
  * Пример
@@ -563,17 +562,17 @@ fun markdownToHtml(inputName: String, outputName: String) {
  * Вывести в выходной файл процесс умножения столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 111):
-19935
+    19935
  *    111
 --------
-19935
+   19935
 + 19935
 +19935
 --------
 2212785
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  * Нули в множителе обрабатывать так же, как и остальные цифры:
-235
+   235
  *  10
 -----
 0
@@ -582,9 +581,41 @@ fun markdownToHtml(inputName: String, outputName: String) {
 2350
  *
  */
+
+fun Int.createDelimiter(): String{
+    var answer = ""
+    for (i in 1..this) {
+        answer += "-"
+    }
+
+    return answer
+}
+
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 
+    val delimiter = (lhv.toString().length + rhv.toString().length).createDelimiter()
+    var secondFactor = rhv
+
     File(outputName).bufferedWriter().use {
+        it.append((rhv.toString().length - 1).createGaps() + "$lhv\n")
+        it.append("*" + (delimiter.length - rhv.toString().length - 2).createGaps() + "$rhv\n")
+        it.append(delimiter + "\n")
+
+        for (i in 1..(secondFactor.toString().length)) {
+
+            val space = if (i != 1) {
+                it.append("\n+")
+                (secondFactor.toString().length - 2).createGaps()
+            } else {
+                (secondFactor.toString().length - 1).createGaps()
+            }
+
+            it.append(space + "${lhv * (secondFactor % 10)}")
+            secondFactor /= 10
+        }
+
+        it.append("\n" + delimiter + "\n")
+        it.append((delimiter.length - (lhv * rhv).toString().length - 1).createGaps() + "${lhv * rhv}")
 
 
     }
