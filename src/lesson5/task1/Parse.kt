@@ -2,8 +2,6 @@
 
 package lesson5.task1
 
-import com.sun.org.apache.bcel.internal.generic.IFEQ
-import lesson1.task1.accountInThreeYears
 import java.lang.IllegalArgumentException
 
 
@@ -89,8 +87,7 @@ fun main(args: Array<String>) {
  */
 fun dateStrToDigit(str: String): String {
 
-    val customStr =
-            Regex("""\s{2,}""").replace(str, "").split(" ")
+    val customStr = str.split(" ")
     val monthsArr =
             listOf("января", "февраля", "марта", "апреля", "мая", "июня", "июля",
                     "августа", "сентября", "октября", "ноября", "декабря")
@@ -236,8 +233,12 @@ fun bestHighJump(jumps: String): Int {
  */
 fun plusMinus(expression: String): Int {
 
-    val isExpression = expression.matches(Regex("""[\d\s-+]+"""))
-    if (!isExpression) throw IllegalArgumentException("Сheck the presence of the brain (at least for yourself)")
+    val isExpression =
+            (expression.matches(Regex("""(?:\d+\s*[-+]\s*)+\d+""")) ||
+                    expression.matches(Regex("\\d+")))
+    if (!isExpression) {
+        throw IllegalArgumentException("Сheck the presence of the brain.\n(at least for yourself)")
+    }
 
     if (expression.matches(Regex("\\d+"))) return expression.toInt()
 
@@ -252,12 +253,12 @@ fun plusMinus(expression: String): Int {
         }
 
         val operator = containerExp[i + 1]
-        val tern = containerExp[i + 2].toInt()
+        val term = containerExp[i + 2].toInt()
 
         when (operator) {
-            "+" -> answer += tern
-            "-" -> answer -= tern
-            else -> throw IllegalArgumentException("Error > Unknow operator")
+            "+" -> answer += term
+            "-" -> answer -= term
+            else -> throw IllegalArgumentException("Error > Unknown operator")
         }
         i += 2
     }
@@ -277,14 +278,14 @@ fun plusMinus(expression: String): Int {
  */
 fun firstDuplicateIndex(str: String): Int {
 
-    val containerPartStr = str.toLowerCase().split(" ")
-
-    for (i in 0 until containerPartStr.size - 1) {
-        if (containerPartStr[i] == containerPartStr[i + 1]) {
-            return findIndex(i, str)
+    val containerWord = str.toLowerCase().split(" ")
+    var index = 0
+    for (i in 0 until containerWord.size - 1) {
+        if (containerWord[i] == containerWord[i + 1]) {
+            return index
         }
+        index += containerWord[i].length + 1
     }
-
     return -1
 }
 
@@ -341,8 +342,10 @@ fun charPlus(char1: Char, char2: Char): String = char1.toString() + char2.toStri
  */
 fun fromRoman(roman: String): Int {
 
-    val containerRimNum = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
-    val containerArabNum = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
+    val containerRimNum =
+            listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
+    val containerArabNum =
+            listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
     var answer = 0
     var i = 0
 
@@ -350,8 +353,6 @@ fun fromRoman(roman: String): Int {
         val romanNum = if (i + 1 < roman.length) {
             charPlus(roman[i], roman[i + 1])
         } else roman[i].toString()
-
-
 
         when {
             romanNum in containerRimNum -> for (j in 0 until containerRimNum.size) {
@@ -413,21 +414,15 @@ fun findIndex(str: String): MutableList<Pair<Int, Int>> { //Хотел было 
 
     val answer = mutableListOf<Pair<Int, Int>>()
     var bracket = 0
-
     for (i in 0 until str.length) {
         if (str[i] == '[') {
-
             bracket++
             var temp = i + 1
-
             while (bracket > 0 && temp < str.length) {
-
                 if (str[temp] == '[') bracket++
                 if (str[temp] == ']') bracket--
-
                 temp++
             }
-
             answer.add(Pair(i, temp - 1))
         }
     }
@@ -466,6 +461,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                     if (answerList[indexSensor] != 0) {
                         indexCommand = bracketIndex.find { it.second == indexCommand }?.first!!
                     }
+
             }
         }
         catch (e: ArrayIndexOutOfBoundsException) {

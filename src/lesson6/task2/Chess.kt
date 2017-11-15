@@ -16,7 +16,7 @@ data class Square(val column: Int, val row: Int) {
      *
      * Возвращает true, если клетка находится в пределах доски
      */
-    fun inside(): Boolean = column in 0..7 && row in 0..7
+    fun inside(): Boolean = column in 1..8 && row in 1..8
 
     /**
      * Простая
@@ -27,13 +27,8 @@ data class Square(val column: Int, val row: Int) {
      */
     fun notation(): String {
 
-        if (!inside()) return ""
-
-        val containerLetter = listOf('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')
-        val answer = containerLetter[column]
-
-
-        return "$answer$row"
+        if (((column + 'a'.toInt() - 1) !in 'a'.toInt()..'h'.toInt()) || (!inside())) return ""
+        return "${(column + 'a'.toInt() - 1).toChar()}$row"
     }
 }
 
@@ -46,13 +41,11 @@ data class Square(val column: Int, val row: Int) {
  */
 fun square(notation: String): Square {
 
-    if ((notation.length != 2) || (notation[0] !in 'a'..'h') || (notation[1] !in '0'..'7')) {
+    if ((notation.length != 2) || (notation[0] !in 'a'..'h') || (notation[1] !in '1'..'8')) {
         throw IllegalArgumentException("Invalid string")
     }
 
-    val containerLetter = listOf('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')
-
-    return Square(containerLetter.indexOf(notation[0]), notation[1].toString().toInt())
+    return Square(notation[0].toInt() + 1 - 'a'.toInt(), notation[1].toInt() - '0'.toInt())
 
 }
 
@@ -250,61 +243,47 @@ fun kingMoveNumber(start: Square, end: Square): Int {
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
 
-/*
-* Думал сделать "универсальный" алгоритм завязанный на коэфициентах,
-* чтобы заместо +-1 использовать "row + 1 * coefficient",
-* но код оказался довольно громоздким и неказистым.
-* Пока таким топорным методом, но работает.
-* Переменные на всякий случай оставлю, надеюсь,
-* что через время взглянув на код появится идея
-* все-таки сделать что-то более красивое.
-*/
+fun Square.isApproached(start: Square, termination: Square): Boolean {
 
-fun kingTrajectory(start: Square, end: Square): List<Square> {
+    val boundaryColumn = if (start.column < termination.column) {
+        Pair(start.column, termination.column)
+    } else Pair(termination.column, start.column)
+    val boundaryRow = if (start.row < termination.row) {
+        Pair(start.row, termination.row)
+    } else Pair(termination.row, start.row)
 
-    if (!start.inside() || !end.inside()) throw IllegalArgumentException()
-    if (start == end) return listOf(start)
+    return this.column in boundaryColumn.first..boundaryColumn.second &&
+            this.row in boundaryRow.first..boundaryRow.second
+}
 
-    var startForMem = start
-    var i = 0
-    var answer = listOf(start)
-    val coefficientDiagonals = listOf(1, -1)
-    val coefficientRectilinearMotion = listOf(1, -1, 1, -1)
 
-    while (startForMem != end) {
+fun Square.thoseSameMoves(termination: Square): List<Square> {
 
-        startForMem = when {
-            (startForMem.row < end.row) && (startForMem.column < end.column) ->
-                Square(startForMem.column + 1, startForMem.row + 1)
+    val containerMoves = listOf(Pair(1, 1), Pair(-1, -1), Pair(1, -1), Pair(-1, 1),
+            Pair(1, 0), Pair(0, 1), Pair(0, -1), Pair(-1, 0))
 
-            (startForMem.row > end.row) && (startForMem.column > end.column) ->
-                Square(startForMem.column - 1, startForMem.row - 1)
+    val answer = mutableListOf(this)
+    var startS = this
+    if (!this.inside() || !termination.inside()) throw IllegalArgumentException("THIS SQUARE BAD")
 
-            (startForMem.row < end.row) && (startForMem.column > end.column) ->
-                Square(startForMem.column - 1, startForMem.row + 1)
-
-            (startForMem.row > end.row) && (startForMem.column < end.column) ->
-                Square(startForMem.column + 1, startForMem.row - 1)
-
-            (startForMem.row < end.row) && (startForMem.column == end.column) ->
-                Square(startForMem.column, startForMem.row + 1)
-
-            (startForMem.row > end.row) && (startForMem.column == end.column) ->
-                Square(startForMem.column, startForMem.row - 1)
-
-            (startForMem.row == end.row) && (startForMem.column < end.column) ->
-                Square(startForMem.column + 1, startForMem.row)
-
-            else -> Square(startForMem.column - 1, startForMem.row)
+    while (startS != termination) {
+        for ((first, second) in containerMoves) {
+            val newMove = Square(startS.column + first, startS.row + second)
+            if (newMove.inside() && newMove.isApproached(startS, termination)) {
+                startS = newMove
+                answer += newMove
+                break
+            }
         }
-
-        answer += startForMem
     }
-
 
     return answer
 
 }
+
+
+
+fun kingTrajectory(start: Square, end: Square): List<Square> = start.thoseSameMoves(end)
 
 /**
  * Сложная
@@ -330,83 +309,31 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
  * Конь может последовательно пройти через клетки (5, 2) и (4, 4) к клетке (6, 3).
  */
 
-fun Square.inNotation(): String {
-    val containerLetter = listOf('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')
-    val answer = containerLetter[column]
-    return "$answer$row"
-}
-fun String.inSquare(): Square {
-    val containerLetter = listOf('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')
-    return Square(containerLetter.indexOf(this[0]), this[1].toString().toInt())
+fun Graph.fillDesk(): Graph {
+    (1..8).forEach { column -> (1..8)
+            .forEach{ row -> this.addVertex(Square(column, row).notation()) } }
+    return this.createLine()
 }
 
-fun Graph.fill(start: Square, moves: List<Pair<Int, Int>>, facet: Int) {
-
-    var startS = start
-
-    for (i in 1..7) {
-
-        for ((first, second) in moves) {
-
-            while (true) {
-                if (!Square(startS.column + first, startS.row + second).inside()) break
-
-                val addName = Square(startS.column + first, startS.row + second).inNotation()
-                val connectName = startS.inNotation()
-
-                this.addVertex(addName)
-                this.connect(connectName, addName)
-                startS = addName.inSquare()
-            }
-
-            startS = when (facet) {
-                0 -> Square(0, i)
-                1 -> Square(7, i)
-                2 -> Square(i, 0)
-                else -> Square(i, 7)
-            }
-
-        }
-    }
-
-}
-
-
-fun knightMoveNumber(start: Square, end: Square): Int {
-
-    if (start == end) return 0
-
-    val moveKnight = listOf(Pair(2, 1), Pair(2, -1), Pair(-2, 1),
+fun Graph.createLine(): Graph {
+    val containerKnightMoves = listOf(Pair(2, 1), Pair(2, -1), Pair(-2, 1),
             Pair(-2, -1), Pair(1, 2), Pair(1, -2), Pair(-1, 2), Pair(-1, -2))
 
-    val graphDesk = Graph()
-    for (i in 0..7) {
-        for (j in 0..7) {
-            if (i == 0 || i == 7) {
-                val addName = Square(i, j).inNotation()
-                graphDesk.addVertex(addName)
-
-                val facet = if (i == 0) 0 else 1
-
-                graphDesk.fill(addName.inSquare(), moveKnight, facet)
-
-            } else {
-                if (j == 0 || j == 7) {
-                    val addName = Square(i, j).inNotation()
-                    graphDesk.addVertex(addName)
-
-                    val facet = if (j == 0) 2 else 3
-
-                    graphDesk.fill(addName.inSquare(), moveKnight, facet)
+    (1..8).forEach { column -> (1..8).forEach { row ->
+            for ((first, second) in containerKnightMoves) {
+                if (Square(column + first, row + second).inside()) {
+                    val firstSquare = Square(column, row).notation()
+                    val secondSquare = Square(column + first, row + second).notation()
+                    this.connect(firstSquare, secondSquare)
                 }
             }
         }
     }
 
-
-    return graphDesk.dfs(start.notation(), end.notation())
-
+    return this
 }
+
+fun knightMoveNumber(start: Square, end: Square): Int = Graph().fillDesk().bfs(start.notation(), end.notation())
 
 /**
  * Очень сложная

@@ -5,16 +5,7 @@ package lesson3.task1
 import lesson1.task1.main
 import lesson1.task1.sqr
 
-fun seq(n: Int): Int {
 
-    var answer = 0
-
-    for (i in 1..n)
-        answer += i * i * (Math.pow(10.0, digitNumber(i * i).toDouble())).toInt()
-
-    return answer
-
-}
 
 /**
  * Пример
@@ -324,9 +315,7 @@ fun squareSequenceDigit(n: Int): Int {
         num += digitNumber(i * i)
 
     }
-
     answer = i * i
-
     (n until num).forEach { answer /= 10 }
 
     return (answer % 10)
@@ -342,18 +331,13 @@ fun squareSequenceDigit(n: Int): Int {
  */
 fun fibSequenceDigit(n: Int): Int {
 
-
     var i = 0
     var num = 0
     var answer: Int
-
     while (num < n) {
-
         i++
         num += digitNumber(fib(i))
-
     }
-
     answer = fib(i)
 
     (n until num).forEach { answer /= 10 }
