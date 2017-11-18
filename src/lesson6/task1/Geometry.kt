@@ -309,7 +309,7 @@ fun minContainingCircle(vararg points: Point): Circle {
     if (points.count() == 1) return Circle(points[0], 0.0)
     if (points.count() == 2) return circleByDiameter(Segment(points[0], points[1]))
 
-    var bigCircle = Circle(Point(0.0, 0.0), Double.MAX_VALUE)
+    var bigCircle = Circle(Point(0.0, 0.0), Int.MAX_VALUE.toDouble())
 
     points.forEach { first -> points.filter { it != first }.forEach { second ->
         points.filter { it != first && it != second }.forEach { third ->
