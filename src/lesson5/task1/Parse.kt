@@ -437,6 +437,8 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         }
     }
 
+    if (commands == "") return MutableList(cells, { 0 })
+
     if (!isCommand || bracket != 0) {
         throw IllegalArgumentException("Invalid commands")
     }
