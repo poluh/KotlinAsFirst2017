@@ -463,6 +463,8 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                 if (answer[positionDevice] != 0) {
                     commandIndex = containerPosBrackets.find { it.second == commandIndex }?.first!!
                 }
+            ' ' -> {}
+            else -> throw IllegalArgumentException("Invalid command.")
         }
 
         if (positionDevice !in 0 until cells) throw IllegalStateException("Overseas container exit\n")
