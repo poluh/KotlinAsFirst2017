@@ -2,7 +2,10 @@
 
 package lesson7.task2
 
+import com.sun.org.apache.xpath.internal.operations.Bool
 import lesson3.task1.factorial
+import lesson6.task2.Square
+import lesson7.task1.Cell
 import lesson7.task1.Matrix
 import lesson7.task1.MatrixImpl
 import lesson7.task1.createMatrix
@@ -495,7 +498,51 @@ operator fun Matrix<Int>.times(other: Matrix<Int>): Matrix<Int> {
  * 0  4 13  6
  * 3 10 11  8
  */
-fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> = TODO()
+
+fun Matrix<Int>.swapElement(mineIndex: Cell, minorIndex: Cell) {
+    this[mineIndex] = this[minorIndex]
+    this[minorIndex] = 0
+}
+
+fun <E> Matrix<E>.indexOf(element: E): Cell {
+    for (i in 0 until this.height) {
+        for (j in 0 until this.width) {
+            if (this[i, j] == element) {
+                return Cell(i, j)
+            }
+        }
+    }
+    return Cell(-1, -1)
+}
+
+fun Cell.isValidIndex(): Boolean = this.column in 0..3 && this.row in 0..3
+
+fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> {
+
+    moves
+            .filter { it !in 1..15 }
+            .forEach { throw IllegalStateException("Invalid move. Check rule.") }
+
+    val containerMoveZero =
+            listOf(Pair(0, 1), Pair(1, 0), Pair(-1, 0), Pair(0, -1))
+
+    for (move in moves) {
+        for ((first, second) in containerMoveZero) {
+            val positionZero = matrix.indexOf(0)
+            if (positionZero.column == -1) throw IllegalStateException("Invalid zero.")
+
+            val movePosition =
+                    Cell(positionZero.row + first, positionZero.column + second)
+            if (movePosition.isValidIndex() && matrix[movePosition] == move) {
+                matrix.swapElement(positionZero, movePosition)
+                break
+            }
+        }
+    }
+
+    return matrix
+
+}
 
 /**
  * Очень сложная
@@ -536,4 +583,54 @@ fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> = TODO(
  *
  * Перед решением этой задачи НЕОБХОДИМО решить предыдущую
  */
-fun fifteenGameSolution(matrix: Matrix<Int>): List<Int> = TODO()
+
+fun Matrix<Int>.swapElement2(mineIndex: Cell, minorIndex: Cell): Matrix<Int> {
+    this[mineIndex] = this[minorIndex]
+    this[minorIndex] = 0
+    return this
+}
+
+fun Matrix<Int>.isValid(): Boolean {
+    val start1 = createMatrix(4, 4, listOf(listOf(1, 2, 3, 4), listOf(5, 6, 7, 8),
+            listOf(9, 10, 11, 12), listOf(13, 14, 15, 0)))
+    val start2 = createMatrix(4, 4, listOf(listOf(1, 2, 3, 4), listOf(5, 6, 7, 8),
+            listOf(9, 10, 11, 12), listOf(13, 15, 14, 0)))
+
+    return this == start1 || this == start2
+}
+
+fun fifteenGameSolution(matrix: Matrix<Int>): List<Int> {
+
+    val collectionDesk = mutableListOf(matrix)
+    val containerMoveZero =
+            listOf(Pair(0, 1), Pair(1, 0), Pair(-1, 0), Pair(0, -1))
+    var i = 0
+    var changeMatrix = matrix
+
+    while (i < 100000) {
+        for ((first, second) in containerMoveZero) {
+            var locationZero = changeMatrix.indexOf(0)
+            var newMove = Cell(locationZero.row + first, locationZero.column + second)
+            if (newMove.isValidIndex()) changeMatrix = changeMatrix.swapElement2(locationZero, newMove)
+
+            for ((first2, second2) in containerMoveZero) {
+                newMove = Cell(locationZero.row + first2, locationZero.column + second2)
+                if (newMove.isValidIndex()) {
+                    locationZero = changeMatrix.indexOf(0)
+                    val newMatrix = changeMatrix.swapElement2(locationZero, newMove)
+                    if (newMatrix !in collectionDesk) {
+                        collectionDesk += newMatrix
+                    } else {
+                        if (newMatrix.isValid()) return listOf(1, 2, 3)
+                    }
+                }
+            }
+            if (changeMatrix.isValid()) return listOf(4, 2, 3)
+        }
+        i++
+
+    }
+
+    return listOf(0, 0, 0 )
+
+}

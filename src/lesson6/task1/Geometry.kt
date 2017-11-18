@@ -163,7 +163,22 @@ class Line private constructor(val b: Double, val angle: Double) {
      * Найти точку пересечения с другой линией.
      * Для этого необходимо составить и решить систему из двух уравнений (каждое для своей прямой)
      */
-    fun crossPoint(other: Line): Point = TODO()
+    fun crossPoint(other: Line): Point = when {
+        this.angle == Math.PI / 2 -> Point(-this.b,
+                (-this.b) * tan(other.angle) + other.b / cos(other.angle))
+
+        other.angle == Math.PI / 2 -> Point(-other.b,
+                (-other.b) * tan(this.angle) + this.b / cos(this.angle))
+
+        else -> {
+            val argument1 = -(this.b / cos(this.angle) - other.b / cos(other.angle)) /
+                    (tan(this.angle) - tan(other.angle))
+            val argument2 = (-(this.b / cos(this.angle) - other.b / cos(other.angle)) /
+                    (tan(this.angle) - tan(other.angle))) *
+                    tan(this.angle) + this.b / cos(this.angle)
+            Point(argument1, argument2)
+        }
+    }
 
     override fun equals(other: Any?) = other is Line && angle == other.angle && b == other.b
 
@@ -288,5 +303,26 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
  * три точки данного множества, либо иметь своим диаметром отрезок,
  * соединяющий две самые удалённые точки в данном множестве.
  */
-fun minContainingCircle(vararg points: Point): Circle = TODO()
+fun minContainingCircle(vararg points: Point): Circle {
+
+    if (points.isEmpty()) throw IllegalArgumentException("Invalid container points.")
+    if (points.count() == 1) return Circle(points[0], 0.0)
+    if (points.count() == 2) return circleByDiameter(Segment(points[0], points[1]))
+
+    var bigCircle = Circle(Point(0.0, 0.0), Double.MAX_VALUE)
+
+    points.forEach { first -> points.filter { it != first }.forEach { second ->
+        points.filter { it != first && it != second }.forEach { third ->
+                val createCircle = circleByThreePoints(first, second, third)
+
+                if (points.all { createCircle.contains(it) }) {
+                    if (createCircle.radius < bigCircle.radius)
+                        bigCircle = createCircle
+                }
+            }
+        }
+    }
+
+    return bigCircle
+}
 

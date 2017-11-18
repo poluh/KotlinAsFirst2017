@@ -451,7 +451,7 @@ fun translationOfTripleOfNum(n: Int, len: Int, order: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String { //Дорабатвываю
+fun russian(n: Int): String {
 
     val lengthN = n.toString().length
 

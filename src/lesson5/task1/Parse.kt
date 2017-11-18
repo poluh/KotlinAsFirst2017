@@ -246,6 +246,7 @@ fun plusMinus(expression: String): Int {
     var answer = 0
     var i = 0
 
+
     while (i < containerExp.size - 2) {
 
         if (i == 0) {
@@ -301,29 +302,22 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть положительными
  */
 fun mostExpensive(description: String): String {
-
     val containerPart = description.split(";")
     var answer = ""
     var price = 0.0
 
     return try {
         for (i in 0 until containerPart.size) {
-
             val parts = containerPart[i].trim().split(" ")
-
             if (parts[1].toDouble() >= price) {
-
                 price = parts[1].toDouble()
                 answer = parts[0]
-
             }
         }
         answer
     } catch (e: IndexOutOfBoundsException) {
         ""
     }
-
-
 }
 
 fun charPlus(char1: Char, char2: Char): String = char1.toString() + char2.toString()
@@ -410,66 +404,70 @@ fun fromRoman(roman: String): Int {
  *
  */
 
-fun findIndex(str: String): MutableList<Pair<Int, Int>> { //Хотел было сделать регуляркой, но пока руки не дошли
+fun String.findIndex(): MutableList<Pair<Int, Int>> {
 
-    val answer = mutableListOf<Pair<Int, Int>>()
-    var bracket = 0
-    for (i in 0 until str.length) {
-        if (str[i] == '[') {
-            bracket++
-            var temp = i + 1
-            while (bracket > 0 && temp < str.length) {
-                if (str[temp] == '[') bracket++
-                if (str[temp] == ']') bracket--
-                temp++
+    val containerPosBrackets = mutableListOf<Pair<Int, Int>>()
+    var checkPos = 0
+    for (i in 0 until this.length) {
+        if (this[i] == '[') {
+            checkPos++
+
+            var indexBracket = i + 1
+            while (!(checkPos <= 0 || indexBracket >= this.length)) {
+
+                if (this[indexBracket] == '[') checkPos++
+                if (this[indexBracket] == ']') checkPos--
+                indexBracket++
             }
-            answer.add(Pair(i, temp - 1))
+
+            containerPosBrackets.add(Pair(i, indexBracket - 1))
         }
     }
-
-    return answer
+    return containerPosBrackets
 }
 
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
 
-    val answerList = MutableList(cells, { 0 })
-
-    if (commands.isEmpty()) return answerList
-    if ((!commands.matches(Regex("""[\[><+\-\] ]+"""))) ||
-            (commands.count { it == '[' } != commands.count { it == ']' })) {
-        throw IllegalArgumentException("Invalid command")
+    val isCommand = commands.matches(Regex("""[\[><+\-\] ]+"""))
+    var bracket = 0
+    commands.forEach { i ->
+        when (i) {
+            '[' -> bracket++
+            ']' -> bracket--
+        }
     }
 
-    val bracketIndex = findIndex(commands)
-    var indexSensor = cells / 2
-    var indexCommand = 0
-    var limitCommand = 0
-
-    while (limitCommand < limit && indexCommand < commands.length) {
-        try {
-            when (commands[indexCommand]) {
-
-                '+' -> answerList[indexSensor]++
-                '-' -> answerList[indexSensor]--
-                '>' -> indexSensor++
-                '<' -> indexSensor--
-                '[' ->
-                    if (answerList[indexSensor] == 0) {
-                        indexCommand = bracketIndex.find { it.first == indexCommand }?.second!!
-                    }
-                ']' ->
-                    if (answerList[indexSensor] != 0) {
-                        indexCommand = bracketIndex.find { it.second == indexCommand }?.first!!
-                    }
-
-            }
-        }
-        catch (e: ArrayIndexOutOfBoundsException) {
-            throw IllegalArgumentException("Exit the conveyor.")
-        }
-
-        limitCommand++
-        indexCommand++
+    if (!isCommand || bracket != 0) {
+        throw IllegalArgumentException("Invalid commands")
     }
-    return answerList
+
+    val answer = MutableList(cells, { 0 })
+    val containerPosBrackets = commands.findIndex()
+    var positionDevice = cells / 2
+    var commandIndex = 0
+    var limitCommands = 0
+
+    while (limitCommands < limit && commandIndex < commands.length) {
+        when (commands[commandIndex]) {
+            '+' -> answer[positionDevice]++
+            '-' -> answer[positionDevice]--
+            '>' -> positionDevice++
+            '<' -> positionDevice--
+            '[' ->
+                if (answer[positionDevice] == 0) {
+                    commandIndex = containerPosBrackets.find { it.first == commandIndex }?.second!!
+                }
+            ']' ->
+                if (answer[positionDevice] != 0) {
+                    commandIndex = containerPosBrackets.find { it.second == commandIndex }?.first!!
+                }
+        }
+
+        if (positionDevice !in 0 until cells) throw IllegalStateException("Overseas container exit\n")
+
+        limitCommands++
+        commandIndex++
+    }
+
+    return answer
 }
