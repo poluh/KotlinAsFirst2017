@@ -309,7 +309,19 @@ fun minContainingCircle(vararg points: Point): Circle {
     if (points.count() == 1) return Circle(points[0], 0.0)
     if (points.count() == 2) return circleByDiameter(Segment(points[0], points[1]))
 
-    var bigCircle = Circle(Point(0.0, 0.0), round(Int.MAX_VALUE.toDouble()).toDouble())
+    var bigCircle = Circle(Point(0.0, 0.0), 10000.0)
+
+    /*  Как я не старался сделать более "гибкий" наиболее большой конечный
+     *  радиус сжимаемой окружности через Double.MAX_VALUE, Int.MAX_VALUE.toDouble()
+     *  и даже (простите) round(Int.MAX_VALUE.toDouble).toDouble ничего не вышло.
+     *  Почитав пару статей на хабре/вики я понял, как все это должно работать,
+     *  и чтобы избежать погрешностей в больших числах необходимо создать новый
+     *  тип данных, либо использовть высокоуровневые языки, либо библиотеки etc.
+     *  Но, думаю, в рамках этой задачи подобного решение не столь необходимо.
+     *  Я надеюсь, что если существует какой-то другой более удобный способ
+     *  выражения больших чисел с плавающей запятой через встроеные языковые
+      *  константы, Вы мне об этом скажете.
+     */
 
     points.forEach { first -> points.filter { it != first }.forEach { second ->
         points.filter { it != first && it != second }.forEach { third ->

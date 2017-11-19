@@ -5,7 +5,7 @@ package lesson5.task1
 import java.lang.IllegalArgumentException
 
 
-fun findIndex(index: Int, str: String): Int {
+fun findIndexBrackets(index: Int, str: String): Int {
 
     var serialNum = 0
 
@@ -401,17 +401,15 @@ fun fromRoman(roman: String): Int {
  *
  */
 
-fun String.findIndex(): MutableList<Pair<Int, Int>> {
+fun String.findIndexBrackets(): MutableList<Pair<Int, Int>> {
 
     val containerPosBrackets = mutableListOf<Pair<Int, Int>>()
     var checkPos = 0
     for (i in 0 until this.length) {
         if (this[i] == '[') {
             checkPos++
-
             var indexBracket = i + 1
             while (!(checkPos <= 0 || indexBracket >= this.length)) {
-
                 if (this[indexBracket] == '[') checkPos++
                 if (this[indexBracket] == ']') checkPos--
                 indexBracket++
@@ -434,42 +432,44 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         }
     }
 
-    if (commands == "") return MutableList(cells, { 0 })
+    when {
+        commands.indexOf(']') < commands.indexOf('[') -> throw IllegalArgumentException("Invalid parentheses\n")
+        commands == "" -> return MutableList(cells, { 0 })
+        !isCommand || bracket != 0 -> throw IllegalArgumentException("Invalid commands")
+        else -> {
+            val answer = MutableList(cells, { 0 })
+            val containerPosBrackets = commands.findIndexBrackets()
+            var positionDevice = cells / 2
+            var commandIndex = 0
+            var limitCommands = 0
 
-    if (!isCommand || bracket != 0) {
-        throw IllegalArgumentException("Invalid commands")
-    }
-
-    val answer = MutableList(cells, { 0 })
-    val containerPosBrackets = commands.findIndex()
-    var positionDevice = cells / 2
-    var commandIndex = 0
-    var limitCommands = 0
-
-    while (limitCommands < limit && commandIndex < commands.length) {
-        when (commands[commandIndex]) {
-            '+' -> answer[positionDevice]++
-            '-' -> answer[positionDevice]--
-            '>' -> positionDevice++
-            '<' -> positionDevice--
-            '[' ->
-                if (answer[positionDevice] == 0) {
-                    commandIndex = containerPosBrackets.find { it.first == commandIndex }?.second!!
+            while (limitCommands < limit && commandIndex < commands.length) {
+                when (commands[commandIndex]) {
+                    '+' -> answer[positionDevice]++
+                    '-' -> answer[positionDevice]--
+                    '>' -> positionDevice++
+                    '<' -> positionDevice--
+                    '[' ->
+                        if (answer[positionDevice] == 0) {
+                            commandIndex = containerPosBrackets.find { it.first == commandIndex }?.second!!
+                        }
+                    ']' ->
+                        if (answer[positionDevice] != 0) {
+                            commandIndex = containerPosBrackets.find { it.second == commandIndex }?.first!!
+                        }
+                    ' ' -> {
+                    }
+                    else -> throw IllegalArgumentException("Invalid command.")
                 }
-            ']' ->
-                if (answer[positionDevice] != 0) {
-                    commandIndex = containerPosBrackets.find { it.second == commandIndex }?.first!!
-                }
-            ' ' -> {
+
+                if (positionDevice !in 0 until cells) throw IllegalStateException("Overseas container exit\n")
+
+                limitCommands++
+                commandIndex++
             }
-            else -> throw IllegalArgumentException("Invalid command.")
+
+            return answer
         }
-
-        if (positionDevice !in 0 until cells) throw IllegalStateException("Overseas container exit\n")
-
-        limitCommands++
-        commandIndex++
     }
 
-    return answer
 }
