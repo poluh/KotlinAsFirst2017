@@ -208,9 +208,10 @@ fun bestHighJump(jumps: String): Int {
 
     val containerParts =
             Regex("\\s+").replace(jumps, " ").filter {
-                                                                (it in '0'..'9') ||
-                                                                (it == ' ') ||
-                                                                (it == '+') }.split(" ")
+                (it in '0'..'9') ||
+                        (it == ' ') ||
+                        (it == '+')
+            }.split(" ")
     var answer = -1
 
     for (index in 0 until containerParts.size - 1) {
@@ -349,16 +350,12 @@ fun fromRoman(roman: String): Int {
         } else roman[i].toString()
 
         when {
-            romanNum in containerRimNum -> for (j in 0 until containerRimNum.size) {
-                if (romanNum == containerRimNum[j]) {
-                    answer += containerArabNum[j]
-                    i++
-                }
+            romanNum in containerRimNum -> {
+                answer += containerArabNum[containerRimNum.indexOf(romanNum)]
+                i++
             }
-            romanNum[0].toString() in containerRimNum -> for (j in 0 until containerRimNum.size) {
-                if (romanNum[0].toString() == containerRimNum[j]) {
-                    answer += containerArabNum[j]
-                }
+            romanNum[0].toString() in containerRimNum -> {
+                answer += containerArabNum[containerRimNum.indexOf(romanNum[0].toString())]
             }
             else -> return -1
         }
@@ -463,7 +460,8 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                 if (answer[positionDevice] != 0) {
                     commandIndex = containerPosBrackets.find { it.second == commandIndex }?.first!!
                 }
-            ' ' -> {}
+            ' ' -> {
+            }
             else -> throw IllegalArgumentException("Invalid command.")
         }
 

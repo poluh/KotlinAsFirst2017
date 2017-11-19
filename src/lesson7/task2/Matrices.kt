@@ -72,31 +72,32 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
     val matrix = MatrixImpl(height, width, 1)
 
     var count = 1
-    val notSum = height * width
-    var x = 1
-    while (count <= notSum) {
+    val dimension = height * width
+    var argumenr = 1
+    while (count <= dimension) {
 
-        for (i in (x - 1) until (width - x + 1)) {
-            if (count > notSum) break
-            matrix[x - 1, i] = count++
+
+        for (i in (argumenr - 1) until (width - argumenr + 1)) {
+            if (count > dimension) break
+            matrix[argumenr - 1, i] = count++
         }
 
-        for (i in x until (height - x + 1)) {
-            if (count > notSum) break
-            matrix[i, width - x] = count++
+        for (i in argumenr until (height - argumenr + 1)) {
+            if (count > dimension) break
+            matrix[i, width - argumenr] = count++
         }
 
-        for (i in (width - x - 1) downTo (x - 1)) {
-            if (count > notSum) break
-            matrix[height - x, i] = count++
+        for (i in (width - argumenr - 1) downTo (argumenr - 1)) {
+            if (count > dimension) break
+            matrix[height - argumenr, i] = count++
         }
 
-        for (i in (height - x - 1) downTo x) {
-            if (count > notSum) break
-            matrix[i, x - 1] = count++
+        for (i in (height - argumenr - 1) downTo argumenr) {
+            if (count > dimension) break
+            matrix[i, argumenr - 1] = count++
         }
 
-        x++
+        argumenr++
     }
 
     return matrix
@@ -121,32 +122,34 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> {
     var count = 1
     val matrix = createMatrix(height, width, 1)
     var argument = 1
-    while (count <= height * width) {
+    val dimension = height * width
+
+    while (count <= dimension) {
+
+        val isCountBig = count > height * width
 
         for (j in (argument - 1) until (width - argument + 1)) {
-            if (count > height * width) break
+            if (isCountBig) break
             matrix[argument - 1, j] = argument
-            count++
+
         }
 
         for (j in argument until (height - argument + 1)) {
-            if (count > height * width) break
+            if (isCountBig) break
             matrix[j, width - argument] = argument
-            count++
         }
 
         for (j in (width - argument - 1) downTo (argument - 1)) {
-            if (count > height * width) break
+            if (isCountBig) break
             matrix[height - argument, j] = argument
-            count++
         }
 
         for (j in (height - argument - 1) downTo argument) {
-            if (count > height * width) break
+            if (isCountBig) break
             matrix[j, argument - 1] = argument
-            count++
         }
 
+        count += 4
         argument++
     }
     return matrix
@@ -237,7 +240,6 @@ fun isLatinSquare(matrix: Matrix<Int>): Boolean {
 
     return true
 }
-
 
 /**
  * Средняя
@@ -390,11 +392,11 @@ fun sumSubMatrix(matrix: Matrix<Int>): Matrix<Int> {
 
 fun transformable(matrix: Matrix<Int>): Matrix<Int> {
 
-    val invertedMatrix = createMatrix(matrix.height, matrix.width, 0)
+    val invertedMatrix = createMatrix(matrix.height, matrix.width, 1)
 
     for (i in 0 until matrix.width) {
         for (j in 0 until matrix.height) {
-            if (matrix[i, j] == 0) invertedMatrix[i, j] = 1
+            if (matrix[i, j] == 1) invertedMatrix[i, j] = 0
         }
     }
     return invertedMatrix
@@ -457,12 +459,12 @@ operator fun Matrix<Int>.times(other: Matrix<Int>): Matrix<Int> {
 
     if (this.width != other.height) throw IllegalArgumentException("Invalid input matrix")
 
-    val matrix = MatrixImpl(this.width, other.height, 0)
+    val matrix = MatrixImpl(this.height, other.width, 0)
 
     for (i in 0 until this.height) {
         for (j in 0 until other.width) {
-            for (k in 0 until other.height) {
-                matrix[i, j] = this[i, k] * other[k, j]
+            for (k in 0 until this.width) {
+                matrix[i, j] += this[i, k] * other[k, j]
             }
         }
     }

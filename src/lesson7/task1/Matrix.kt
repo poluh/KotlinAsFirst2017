@@ -92,9 +92,10 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : M
                     }
                 }
             }
+            return true
         }
 
-        return true
+        return false
 
     }
 
