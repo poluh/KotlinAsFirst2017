@@ -34,12 +34,15 @@ class Graph {
 
     private fun bfs(start: Vertex, finish: Vertex): Int {
         val queue = ArrayDeque<Vertex>()
+        var trajectory = listOf<String>()
         queue.add(start)
         val visited = mutableMapOf(start to 0)
         while (queue.isNotEmpty()) {
             val next = queue.poll()
             val distance = visited[next]!!
-            if (next == finish) return distance
+            if (next == finish) {
+                return distance
+            }
             for (neighbor in next.neighbors) {
                 if (neighbor in visited) continue
                 visited.put(neighbor, distance + 1)

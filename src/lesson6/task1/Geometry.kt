@@ -201,14 +201,11 @@ fun lineBySegment(s: Segment): Line {
     var angle = atan2((s.end.y - s.begin.y), (s.end.x - s.begin.x))
 
 
-    if (angle < 0) {
-        angle += PI
+    when {
+        angle < 0 -> angle += PI
+        angle == PI -> angle -= PI
+        else -> IllegalArgumentException("Invalid angle")
     }
-
-    if (angle >= PI) {
-        angle -= PI
-    }
-
     return Line(s.begin, angle)
 
 }
@@ -309,7 +306,7 @@ fun minContainingCircle(vararg points: Point): Circle {
     if (points.count() == 1) return Circle(points[0], 0.0)
     if (points.count() == 2) return circleByDiameter(Segment(points[0], points[1]))
 
-    var bigCircle = Circle(Point(0.0, 0.0), 10000.0)
+    var bigCircle = Circle(Point(0.0, 0.0), Double.MAX_VALUE)
 
     /*  Как я не старался сделать более "гибкий" наиболее большой конечный
      *  радиус сжимаемой окружности через Double.MAX_VALUE, Int.MAX_VALUE.toDouble()
@@ -317,10 +314,10 @@ fun minContainingCircle(vararg points: Point): Circle {
      *  Почитав пару статей на хабре/вики я понял, как все это должно работать,
      *  и чтобы избежать погрешностей в больших числах необходимо создать новый
      *  тип данных, либо использовть высокоуровневые языки, либо библиотеки etc.
-     *  Но, думаю, в рамках этой задачи подобного решение не столь необходимо.
+     *  Но, думаю, в рамках этой задачи подобное решение не столь необходимо.
      *  Я надеюсь, что если существует какой-то другой более удобный способ
      *  выражения больших чисел с плавающей запятой через встроеные языковые
-      *  константы, Вы мне об этом скажете.
+     *  константы, Вы мне об этом скажете.
      */
 
     points.forEach { first -> points.filter { it != first }.forEach { second ->

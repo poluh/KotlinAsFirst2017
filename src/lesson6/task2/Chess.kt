@@ -27,7 +27,7 @@ data class Square(val column: Int, val row: Int) {
      */
     fun notation(): String {
 
-        if (((column + 'a'.toInt() - 1) !in 'a'.toInt()..'h'.toInt()) || (!inside())) return ""
+        if (!inside()) return ""
         return "${(column + 'a'.toInt() - 1).toChar()}$row"
     }
 }
@@ -282,7 +282,6 @@ fun Square.thoseSameMoves(termination: Square): List<Square> {
 }
 
 
-
 fun kingTrajectory(start: Square, end: Square): List<Square> = start.thoseSameMoves(end)
 
 /**
@@ -310,8 +309,10 @@ fun kingTrajectory(start: Square, end: Square): List<Square> = start.thoseSameMo
  */
 
 fun Graph.fillDesk(): Graph {
-    (1..8).forEach { column -> (1..8)
-            .forEach{ row -> this.addVertex(Square(column, row).notation()) } }
+    (1..8).forEach { column ->
+        (1..8)
+                .forEach { row -> this.addVertex(Square(column, row).notation()) }
+    }
     return this.createLine()
 }
 
@@ -319,7 +320,8 @@ fun Graph.createLine(): Graph {
     val containerKnightMoves = listOf(Pair(2, 1), Pair(2, -1), Pair(-2, 1),
             Pair(-2, -1), Pair(1, 2), Pair(1, -2), Pair(-1, 2), Pair(-1, -2))
 
-    (1..8).forEach { column -> (1..8).forEach { row ->
+    (1..8).forEach { column ->
+        (1..8).forEach { row ->
             for ((first, second) in containerKnightMoves) {
                 if (Square(column + first, row + second).inside()) {
                     val firstSquare = Square(column, row).notation()
@@ -333,7 +335,8 @@ fun Graph.createLine(): Graph {
     return this
 }
 
-fun knightMoveNumber(start: Square, end: Square): Int = Graph().fillDesk().bfs(start.notation(), end.notation())
+fun knightMoveNumber(start: Square, end: Square): Int =
+        Graph().fillDesk().bfs(start.notation(), end.notation())
 
 /**
  * Очень сложная
@@ -356,4 +359,7 @@ fun knightMoveNumber(start: Square, end: Square): Int = Graph().fillDesk().bfs(s
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
 
-fun knightTrajectory(start: Square, end: Square): List<Square> = TODO()
+
+fun knightTrajectory(start: Square, end: Square): List<Square> {
+    TODO()
+}

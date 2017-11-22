@@ -160,9 +160,8 @@ fun dateDigitToStr(digital: String): String {
  */
 fun flattenPhoneNumber(phone: String): String {
 
-    val dampPhone = Regex("""\++|\s+|\(+|\)+|-+""").replace(phone, "")
-    if (phone.length == 1 && phone.matches(Regex("\\d"))) return phone
-    return if (dampPhone.matches(Regex("""\d+"""))) "+" + dampPhone else ""
+    if (!phone.matches(Regex("""\+?[ \d\-()]+"""))) return ""
+    return phone.replace(Regex("""[\s-()]"""), "")
 
 }
 
@@ -203,8 +202,8 @@ fun bestLongJump(jumps: String): Int {
  */
 fun bestHighJump(jumps: String): Int {
 
-    val ifTrueStr = jumps.matches(Regex("""[\s\d-%+]+"""))
-    if (!ifTrueStr) return -1
+    val isTrueStr = jumps.matches(Regex("""(\s*\d+\s+[-+%]+)+"""))
+    if (!isTrueStr) return -1
 
     val containerParts =
             Regex("\\s+").replace(jumps, " ").filter {
@@ -235,24 +234,16 @@ fun bestHighJump(jumps: String): Int {
 fun plusMinus(expression: String): Int {
 
     val isExpression =
-            (expression.matches(Regex("""(?:\d+\s*[-+]\s*)+\d+""")) ||
-                    expression.matches(Regex("\\d+")))
+            expression.matches(Regex("""(?:\d+\s*[-+]\s*)+\d+|\d+"""))
     if (!isExpression) {
         throw IllegalArgumentException("Сheck the presence of the brain.\n(at least for yourself)")
     }
 
-    if (expression.matches(Regex("\\d+"))) return expression.toInt()
-
     val containerExp = Regex("\\s+").replace(expression, " ").split(" ")
-    var answer = 0
+    var answer = containerExp[0].toInt()
     var i = 0
 
-
     while (i < containerExp.size - 2) {
-
-        if (i == 0) {
-            answer = containerExp[0].toInt()
-        }
 
         val operator = containerExp[i + 1]
         val term = containerExp[i + 2].toInt()
@@ -337,10 +328,9 @@ fun charPlus(char1: Char, char2: Char): String = char1.toString() + char2.toStri
  */
 fun fromRoman(roman: String): Int {
 
-    val containerRimNum =
-            listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
-    val containerArabNum =
-            listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
+    val containerMapNum =
+            mapOf("M" to 1000, "CM" to 900, "D" to 500, "CD" to 400, "C" to 100, "XC" to 90,
+                    "L" to 50, "XL" to 40, "X" to 10, "IX" to 9, "V" to 5, "IV" to 4, "I" to 1)
     var answer = 0
     var i = 0
 
@@ -350,12 +340,12 @@ fun fromRoman(roman: String): Int {
         } else roman[i].toString()
 
         when {
-            romanNum in containerRimNum -> {
-                answer += containerArabNum[containerRimNum.indexOf(romanNum)]
+            containerMapNum.containsKey(romanNum) -> {
+                answer += containerMapNum[romanNum]!!
                 i++
             }
-            romanNum[0].toString() in containerRimNum -> {
-                answer += containerArabNum[containerRimNum.indexOf(romanNum[0].toString())]
+             containerMapNum.containsKey(romanNum[0].toString()) -> {
+                answer += containerMapNum[romanNum[0].toString()]!!
             }
             else -> return -1
         }
@@ -418,6 +408,8 @@ fun String.findIndexBrackets(): MutableList<Pair<Int, Int>> {
             containerPosBrackets.add(Pair(i, indexBracket - 1))
         }
     }
+    if (checkPos != 0) throw IllegalArgumentException("Invalid pair brackets")
+
     return containerPosBrackets
 }
 
@@ -433,9 +425,16 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     }
 
     when {
-        commands.indexOf(']') < commands.indexOf('[') -> throw IllegalArgumentException("Invalid parentheses\n")
         commands == "" -> return MutableList(cells, { 0 })
-        !isCommand || bracket != 0 -> throw IllegalArgumentException("Invalid commands")
+        commands.indexOf(']') < commands.indexOf('[') -> {
+            throw IllegalArgumentException("Invalid parentheses\n")
+        }
+        !isCommand || bracket != 0 -> {
+            throw IllegalArgumentException("Invalid commands")
+        }
+        commands.count { it == '[' } != commands.count { it == ']' } -> {
+            throw IllegalArgumentException("Invalid pair brackets")
+        }
         else -> {
             val answer = MutableList(cells, { 0 })
             val containerPosBrackets = commands.findIndexBrackets()

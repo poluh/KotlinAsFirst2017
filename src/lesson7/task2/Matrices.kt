@@ -586,53 +586,6 @@ fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> {
  * Перед решением этой задачи НЕОБХОДИМО решить предыдущую
  */
 
-fun Matrix<Int>.swapElement2(mineIndex: Cell, minorIndex: Cell): Matrix<Int> {
-    this[mineIndex] = this[minorIndex]
-    this[minorIndex] = 0
-    return this
-}
-
-fun Matrix<Int>.isValid(): Boolean {
-    val start1 = createMatrix(4, 4, listOf(listOf(1, 2, 3, 4), listOf(5, 6, 7, 8),
-            listOf(9, 10, 11, 12), listOf(13, 14, 15, 0)))
-    val start2 = createMatrix(4, 4, listOf(listOf(1, 2, 3, 4), listOf(5, 6, 7, 8),
-            listOf(9, 10, 11, 12), listOf(13, 15, 14, 0)))
-
-    return this == start1 || this == start2
-}
-
 fun fifteenGameSolution(matrix: Matrix<Int>): List<Int> {
-
-    val collectionDesk = mutableListOf(matrix)
-    val containerMoveZero =
-            listOf(Pair(0, 1), Pair(1, 0), Pair(-1, 0), Pair(0, -1))
-    var i = 0
-    var changeMatrix = matrix
-
-    while (i < 100000) {
-        for ((first, second) in containerMoveZero) {
-            var locationZero = changeMatrix.indexOf(0)
-            var newMove = Cell(locationZero.row + first, locationZero.column + second)
-            if (newMove.isValidIndex()) changeMatrix = changeMatrix.swapElement2(locationZero, newMove)
-
-            for ((first2, second2) in containerMoveZero) {
-                newMove = Cell(locationZero.row + first2, locationZero.column + second2)
-                if (newMove.isValidIndex()) {
-                    locationZero = changeMatrix.indexOf(0)
-                    val newMatrix = changeMatrix.swapElement2(locationZero, newMove)
-                    if (newMatrix !in collectionDesk) {
-                        collectionDesk += newMatrix
-                    } else {
-                        if (newMatrix.isValid()) return listOf(1, 2, 3)
-                    }
-                }
-            }
-            if (changeMatrix.isValid()) return listOf(4, 2, 3)
-        }
-        i++
-
-    }
-
-    return listOf(0, 0, 0 )
-
+    TODO()
 }

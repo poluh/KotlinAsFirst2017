@@ -59,7 +59,7 @@ class Tests {
     fun flattenPhoneNumber() {
         //assertEquals("+", flattenPhoneNumber("+123  04 (909)    ()0 ()"))
         assertEquals("+79211234567", flattenPhoneNumber("+7 (921) 123-45-67"))
-        assertEquals("+123456798", flattenPhoneNumber("12 --  34- 5 -- 67 -98"))
+        assertEquals("123456798", flattenPhoneNumber("12 --  34- 5 -- 67 -98"))
         assertEquals("", flattenPhoneNumber("ab-123"))
         assertEquals("+12345", flattenPhoneNumber("+12 (3) 4-5"))
         assertEquals("", flattenPhoneNumber("134_+874"))
@@ -85,6 +85,7 @@ class Tests {
         assertEquals(230, bestHighJump("220 + 224 %+ 228 %- 230 + 232 %%- 234 %"))
         assertEquals(649379131, bestHighJump("1 %- 0 %+ 0 %%- 1 %- 0 %%+ 947299348 %- 147483647 %%- 0 %- 147483648 %%+ 1 +" +
                 " 59315341 %+ 147483648 %+ 0 + 406805183 %- 599540544 %- 0 + 111044756 %+ 649379131 %+"))
+        assertEquals(-1, bestHighJump("+ 220 230 +"))
     }
 
     @Test
