@@ -361,5 +361,33 @@ fun knightMoveNumber(start: Square, end: Square): Int =
 
 
 fun knightTrajectory(start: Square, end: Square): List<Square> {
-    TODO()
+    val containerKnightMoves = listOf(Pair(2, 1), Pair(2, -1), Pair(-2, 1),
+            Pair(-2, -1), Pair(1, 2), Pair(1, -2), Pair(-1, 2), Pair(-1, -2))
+    var trajectory =
+            if (start == end) listOf(start) else listOf()
+    var startS = start
+    var i = 0
+
+    //if (kingMoveNumber(start, end) == 1) return listOf(start, end)
+
+    while (i <= kingMoveNumber(start, end)) {
+        val distance = kingMoveNumber(startS, end)
+        for ((first, second) in containerKnightMoves) {
+            val newMove =
+                    if (Square(startS.column + first, startS.row + second).inside()) {
+                        Square(startS.column + first, startS.row + second)
+                    } else null
+            if (newMove != null) {
+                val newDistance = kingMoveNumber(newMove, end)
+                if (newDistance == distance - 1) {
+                    trajectory += newMove
+                    startS = newMove
+                    break
+                }
+            }
+        }
+        i++
+    }
+
+    return trajectory
 }

@@ -30,7 +30,6 @@ interface Matrix<E> {
      */
     operator fun set(row: Int, column: Int, value: E)
     operator fun set(cell: Cell, value: E)
-    fun equals(other: Matrix<E>): Boolean
 }
 
 /**
@@ -81,11 +80,13 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : M
 
     }
 
-    override fun equals(other: Matrix<E>): Boolean {
+    override fun equals(other: Any?): Boolean {
 
         if ((other is MatrixImpl<*>) && (height == other.height) && (width == other.width)) {
             for (i in 0 until height) {
+
                 for (j in 0 until width) {
+
                     if (other[i, j] != this [i, j]) {
                         return false
                     }
@@ -93,18 +94,15 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : M
             }
             return true
         }
-
-        return true
+        return false
 
     }
 
     override fun toString(): String {
 
         val answer = StringBuilder()
-
         for (i in 0 until height) {
             for (j in 0 until width) {
-
                 answer.append(this [i, j], " ")
             }
             answer.append("\n")
@@ -117,19 +115,6 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : M
         result = 31 * result + width
         result = 31 * result + list.hashCode()
         return result
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as MatrixImpl<*>
-
-        if (height != other.height) return false
-        if (width != other.width) return false
-        if (list != other.list) return false
-
-        return true
     }
 
 
