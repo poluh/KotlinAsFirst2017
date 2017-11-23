@@ -113,23 +113,23 @@ data class Segment(val begin: Point, val end: Point) {
 fun diameter(vararg points: Point): Segment {
 
     var max = -1.0
-    var maxPoint = Pair(0, 0)
+    var maxPoint = Pair(Point(0.0, 0.0), Point(0.0, 0.0))
 
     if (points.size < 2) {
         throw IllegalArgumentException()
     }
 
-    for (i in 0 until points.size) {
-        for (j in (i + 1) until points.size) {
-            if (points[i].distance(points[j]) > max) {
+    for (first in points) {
+        for (second in points.filter { it != first }) {
+            if (first.distance(second) > max) {
 
-                max = points[i].distance(points[j])
-                maxPoint = Pair(i, j)
+                max = first.distance(second)
+                maxPoint = Pair(first, second)
 
             }
         }
     }
-    return Segment(points[maxPoint.first], points[maxPoint.second])
+    return Segment(maxPoint.first, maxPoint.second)
 
 }
 
@@ -141,8 +141,8 @@ fun diameter(vararg points: Point): Segment {
  */
 fun circleByDiameter(diameter: Segment): Circle =
         Circle(Point((diameter.begin.x + diameter.end.x) / 2.0,
-        (diameter.begin.y + diameter.end.y) / 2.0),
-        diameter.begin.distance(diameter.end) / 2.0)
+                (diameter.begin.y + diameter.end.y) / 2.0),
+                diameter.begin.distance(diameter.end) / 2.0)
 
 /**
  * Прямая, заданная точкой point и углом наклона angle (в радианах) по отношению к оси X.
@@ -200,7 +200,6 @@ fun lineBySegment(s: Segment): Line {
 
     var angle = atan2((s.end.y - s.begin.y), (s.end.x - s.begin.x))
 
-
     when {
         angle < 0 -> angle += PI
         angle == PI -> angle -= PI
@@ -227,8 +226,7 @@ fun bisectorByPoints(a: Point, b: Point): Line {
     val grad =
             if (lineByPoints(a, b).angle + PI / 2 >= PI) {
                 lineByPoints(a, b).angle - PI / 2
-            }
-            else {
+            } else {
                 lineByPoints(a, b).angle + PI / 2
             }
 
@@ -320,8 +318,9 @@ fun minContainingCircle(vararg points: Point): Circle {
      *  константы, Вы мне об этом скажете.
      */
 
-    points.forEach { first -> points.filter { it != first }.forEach { second ->
-        points.filter { it != first && it != second }.forEach { third ->
+    for (first in points) {
+        for (second in points.filter { it != first }) {
+            for (third in points.filter { it != first && it != second }) {
                 val createCircle = circleByThreePoints(first, second, third)
 
                 if (points.all { createCircle.contains(it) }) {
@@ -331,6 +330,7 @@ fun minContainingCircle(vararg points: Point): Circle {
             }
         }
     }
+
 
     val otherBigCircle = circleByDiameter(diameter(*points))
     return bigCircle

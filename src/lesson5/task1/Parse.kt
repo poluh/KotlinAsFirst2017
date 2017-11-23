@@ -160,7 +160,7 @@ fun dateDigitToStr(digital: String): String {
  */
 fun flattenPhoneNumber(phone: String): String {
 
-    if (!phone.matches(Regex("""\+?[ \d\-()]+"""))) return ""
+    if (!phone.matches(Regex("""\+?[\s\d-()]+"""))) return ""
     return phone.replace(Regex("""[\s-()]"""), "")
 
 }
@@ -202,7 +202,7 @@ fun bestLongJump(jumps: String): Int {
  */
 fun bestHighJump(jumps: String): Int {
 
-    val isTrueStr = jumps.matches(Regex("""(\s*\d+\s+[-+%]+)+"""))
+    val isTrueStr = (jumps + " ").matches(Regex("""(\s*\d+\s+[-+%]+\s+)+"""))
     if (!isTrueStr) return -1
 
     val containerParts =

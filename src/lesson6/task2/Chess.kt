@@ -371,9 +371,7 @@ fun Square.findTrajectory(termination: Square): List<Square> {
     var terminalDistance = knightMoveNumber(this, termination)
 
     while (terminalDistance != 0) {
-
         for ((first, second) in containerMoves) {
-
             val newSquare = Square(startSave.column + first,
                     startSave.row + second)
             if (newSquare.inside()) {
