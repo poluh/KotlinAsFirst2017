@@ -333,9 +333,6 @@ fun minContainingCircle(vararg points: Point): Circle {
     }
 
     val otherBigCircle = circleByDiameter(diameter(*points))
-    return if (bigCircle.radius < otherBigCircle.radius ||
-            !points.all { otherBigCircle.contains(it) }) {
-        bigCircle
-    } else otherBigCircle
+    return bigCircle
 }
 
