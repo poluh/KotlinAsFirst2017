@@ -359,35 +359,36 @@ fun knightMoveNumber(start: Square, end: Square): Int =
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
 
+fun Square.findTrajectory(termination: Square): List<Square> {
+    if (!this.inside() || !termination.inside()) {
+        throw IllegalArgumentException("Invalid square")
+    }
 
-fun knightTrajectory(start: Square, end: Square): List<Square> {
-    val containerKnightMoves = listOf(Pair(2, 1), Pair(2, -1), Pair(-2, 1),
+    val containerMoves = listOf(Pair(2, 1), Pair(2, -1), Pair(-2, 1),
             Pair(-2, -1), Pair(1, 2), Pair(1, -2), Pair(-1, 2), Pair(-1, -2))
-    var trajectory =
-            if (start == end) listOf(start) else listOf()
-    var startS = start
-    var i = 0
+    val answer = mutableListOf(this)
+    var startSave = this
+    var terminalDistance = knightMoveNumber(this, termination)
 
-    //if (kingMoveNumber(start, end) == 1) return listOf(start, end)
+    while (terminalDistance != 0) {
 
-    while (i <= kingMoveNumber(start, end)) {
-        val distance = kingMoveNumber(startS, end)
-        for ((first, second) in containerKnightMoves) {
-            val newMove =
-                    if (Square(startS.column + first, startS.row + second).inside()) {
-                        Square(startS.column + first, startS.row + second)
-                    } else null
-            if (newMove != null) {
-                val newDistance = kingMoveNumber(newMove, end)
-                if (newDistance == distance - 1) {
-                    trajectory += newMove
-                    startS = newMove
-                    break
+        for ((first, second) in containerMoves) {
+
+            val newSquare = Square(startSave.column + first,
+                    startSave.row + second)
+            if (newSquare.inside()) {
+
+                val newDistance = knightMoveNumber(newSquare, termination)
+                if (newDistance < terminalDistance) {
+
+                    terminalDistance--
+                    startSave = newSquare
+                    answer.add(newSquare)
                 }
             }
         }
-        i++
     }
-
-    return trajectory
+    return answer
 }
+
+fun knightTrajectory(start: Square, end: Square): List<Square> = start.findTrajectory(end)

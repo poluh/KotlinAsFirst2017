@@ -160,7 +160,7 @@ fun longestString(inputName: String): Int {
 
     var max = 0
     for (line in File(inputName).readLines()) {
-        max = Math.max(Regex("\\s{2,}").replace(line, "").length, max)
+        max = Math.max(Regex("\\s+").replace(line, " ").length, max)
     }
 
     return max
@@ -184,7 +184,7 @@ fun centerFile(inputName: String, outputName: String) {
  * Сложная
  *
  * Во входном файле с именем inputName содержится некоторый текст (в том числе, и на русском языке).
- * Вывести его в выходной файл с именем outputName, выровняв по левому и правому краю относительно
+ * Вывести его в выходной файл с именем outputName, выровняв по левому и правому краям относительно
  * самой длинной строки.
  * Выравнивание производить, вставляя дополнительные пробелы между словами: равномерно по всей строке
  *
@@ -208,8 +208,26 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
+TODO()
+/*    val maxLength = longestString(inputName)
 
+    File(outputName).bufferedWriter().use {
+        for (line in File(inputName).readLines()) {
+            val correctLine = Regex("\\s+").replace(line, " ")
+            var newLine = ""
+            var i = 0
+            if (line.isEmpty()) {
+                while (newLine.trim().length <= maxLength) {
+                    for (word in correctLine.split(" ")) {
+                        newLine += word + i.createGaps()
+                    }
+                    if (newLine.trim().length >= maxLength) break else newLine = ""
+                    i++
+                }
+            }
+            it.write(newLine.trim() + "\n")
+        }
+    }*/
 }
 
 /**
