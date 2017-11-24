@@ -2,9 +2,7 @@
 
 package lesson7.task2
 
-import com.sun.org.apache.xpath.internal.operations.Bool
 import lesson3.task1.factorial
-import lesson6.task2.Square
 import lesson7.task1.Cell
 import lesson7.task1.Matrix
 import lesson7.task1.MatrixImpl
@@ -65,6 +63,8 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
  * 10 11 12  5
  *  9  8  7  6
  */
+
+// Проще ничего в голову не лезет
 fun generateSpiral(height: Int, width: Int): Matrix<Int> {
 
     if (height < 1 || width < 1) throw IllegalArgumentException("Invalid matrix")
@@ -73,31 +73,30 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
 
     var count = 1
     val dimension = height * width
-    var argumenr = 1
+    var argument = 1
     while (count <= dimension) {
 
-
-        for (i in (argumenr - 1) until (width - argumenr + 1)) {
+        for (i in (argument - 1) until (width - argument + 1)) {
             if (count > dimension) break
-            matrix[argumenr - 1, i] = count++
+            matrix[argument - 1, i] = count++
         }
 
-        for (i in argumenr until (height - argumenr + 1)) {
+        for (i in argument until (height - argument + 1)) {
             if (count > dimension) break
-            matrix[i, width - argumenr] = count++
+            matrix[i, width - argument] = count++
         }
 
-        for (i in (width - argumenr - 1) downTo (argumenr - 1)) {
+        for (i in (width - argument - 1) downTo (argument - 1)) {
             if (count > dimension) break
-            matrix[height - argumenr, i] = count++
+            matrix[height - argument, i] = count++
         }
 
-        for (i in (height - argumenr - 1) downTo argumenr) {
+        for (i in (height - argument - 1) downTo argument) {
             if (count > dimension) break
-            matrix[i, argumenr - 1] = count++
+            matrix[i, argument - 1] = count++
         }
 
-        argumenr++
+        argument++
     }
 
     return matrix
@@ -117,43 +116,31 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
  *  1  2  2  2  2  1
  *  1  1  1  1  1  1
  */
+
+// Проще ничего в голову не лезет
 fun generateRectangles(height: Int, width: Int): Matrix<Int> {
 
-    var count = 1
     val matrix = createMatrix(height, width, 1)
     var argument = 1
-    val dimension = height * width
 
-    while (count <= dimension) {
-
-        val isCountBig = count > height * width
-
+   for (k in 1..height * width) {
         for (j in (argument - 1) until (width - argument + 1)) {
-            if (isCountBig) break
             matrix[argument - 1, j] = argument
 
         }
-
         for (j in argument until (height - argument + 1)) {
-            if (isCountBig) break
             matrix[j, width - argument] = argument
         }
-
         for (j in (width - argument - 1) downTo (argument - 1)) {
-            if (isCountBig) break
             matrix[height - argument, j] = argument
         }
-
         for (j in (height - argument - 1) downTo argument) {
-            if (isCountBig) break
             matrix[j, argument - 1] = argument
         }
 
-        count += 4
         argument++
     }
     return matrix
-
 }
 
 /**
@@ -394,9 +381,9 @@ fun transformable(matrix: Matrix<Int>): Matrix<Int> {
 
     val invertedMatrix = createMatrix(matrix.height, matrix.width, 1)
 
-    for (i in 0 until matrix.width) {
-        for (j in 0 until matrix.height) {
-            if (matrix[i, j] == 1) invertedMatrix[i, j] = 0
+    for (row in 0 until matrix.height) {
+        for (column in 0 until matrix.width) {
+            invertedMatrix[row, column] = if (matrix[row, column] == 1) 0 else 1
         }
     }
     return invertedMatrix
@@ -524,6 +511,18 @@ fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> {
     moves
             .filter { it !in 1..15 }
             .forEach { throw IllegalStateException("Invalid move. Check rule.") }
+    val containerNum = mutableListOf<Int>()
+    for (row in 0 until matrix.height) {
+        for (column in 0 until matrix.width) {
+            if (matrix[row, column] !in containerNum) {
+                containerNum += matrix[row, column]
+            }
+            if (matrix[row, column] !in 0..15) {
+                throw IllegalArgumentException("Invalid matrix. Check rule.")
+            }
+        }
+    }
+    if (containerNum.size != 16) throw IllegalArgumentException("Invalid matrix. Check rule.")
 
     val containerMoveZero =
             listOf(Pair(0, 1), Pair(1, 0), Pair(-1, 0), Pair(0, -1))
