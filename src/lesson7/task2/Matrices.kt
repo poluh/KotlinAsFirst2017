@@ -117,6 +117,12 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
  *  1  1  1  1  1  1
  */
 
+fun Matrix<Int>.toRectangle(argumentFirst: Pair<Int, Int>, argumentSecond: Pair<Int, Int>, mainArgument: Int) {
+
+
+
+}
+
 // Проще ничего в голову не лезет
 fun generateRectangles(height: Int, width: Int): Matrix<Int> {
 
@@ -124,21 +130,22 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> {
     var argument = 1
 
    for (k in 1..height * width) {
-        for (j in (argument - 1) until (width - argument + 1)) {
-            matrix[argument - 1, j] = argument
 
-        }
-        for (j in argument until (height - argument + 1)) {
-            matrix[j, width - argument] = argument
-        }
-        for (j in (width - argument - 1) downTo (argument - 1)) {
-            matrix[height - argument, j] = argument
-        }
-        for (j in (height - argument - 1) downTo argument) {
-            matrix[j, argument - 1] = argument
-        }
+       for (j in (argument - 1) until (width - argument + 1)) {
+           matrix[argument - 1, j] = argument
 
-        argument++
+       }
+       for (j in argument until (height - argument + 1)) {
+           matrix[j, width - argument] = argument
+       }
+       for (j in (width - argument - 1) downTo (argument - 1)) {
+           matrix[height - argument, j] = argument
+       }
+       for (j in (height - argument - 1) downTo argument) {
+           matrix[j, argument - 1] = argument
+       }
+
+       argument++
     }
     return matrix
 }

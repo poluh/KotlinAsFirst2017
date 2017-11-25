@@ -208,7 +208,7 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-TODO()
+    TODO()
 /*    val maxLength = longestString(inputName)
 
     File(outputName).bufferedWriter().use {
@@ -249,9 +249,11 @@ fun Map<String, Int>.max(words: List<String>): Pair<String, Int> {
     var max = 0
     var keyWord = ""
     for (word in words) {
-        if (this[word]!! > max) {
-            max = this[word]!!
-            keyWord = word
+        if (this[word] != null) {
+            if (this[word]!! > max) {
+                max = this[word]!!
+                keyWord = word
+            }
         }
     }
     return Pair(keyWord, max)
@@ -264,33 +266,34 @@ fun MutableMap<String, Int>.sorted(words: List<String>): Map<String, Int> {
     for (i in 0..19) {
         val max = this.max(words)
         map[max.first] = max.second
-        this[max.first] = -1
+        this[max.first] = 1
     }
     return map
 }
 
 fun top20Words(inputName: String): Map<String, Int> {
 
+    val answer = mutableMapOf<String, Int>()
     val containerWords = mutableListOf<String>()
-    val map = mutableMapOf<String, Int>()
 
     for (line in File(inputName).readLines()) {
-        for (wordDamp in line.split(Regex("\\s+"))) {
-            val word = wordDamp.toLowerCase()
-            if (word.matches(Regex("[а-я]+"))) {
+        for (dampWord in Regex("\\s+").split(line)) {
+            var word = dampWord.toLowerCase()
+            word = Regex("""[^а-яa-zА-ЯA-Z]+""").replace(word, "")
 
-                if (map[word] == null) {
-                    containerWords += word
-                    map[word] = 1
+            if (word != "") {
+                if (answer[word] != null) {
+                    val plus = answer[word]?.plus(1) ?: 1
+                    answer[word] = plus
                 } else {
-                    val plus = map[word]!! + 1
-                    map[word] = plus
+                    containerWords += word
+                    answer[word] = 1
                 }
             }
         }
     }
-
-    return map.sorted(containerWords)
+    print(containerWords)
+    return answer.sorted(containerWords)
 
 }
 
@@ -580,17 +583,17 @@ fun markdownToHtml(inputName: String, outputName: String) {
  * Вывести в выходной файл процесс умножения столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 111):
-    19935
+19935
  *    111
 --------
-   19935
+19935
 + 19935
 +19935
 --------
 2212785
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  * Нули в множителе обрабатывать так же, как и остальные цифры:
-   235
+235
  *  10
 -----
 0
@@ -600,7 +603,7 @@ fun markdownToHtml(inputName: String, outputName: String) {
  *
  */
 
-fun Int.createDelimiter(): String{
+fun Int.createDelimiter(): String {
     var answer = ""
     for (i in 1..this) {
         answer += "-"
