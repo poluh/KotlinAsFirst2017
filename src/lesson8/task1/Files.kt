@@ -2,6 +2,7 @@
 
 package lesson8.task1
 
+import lesson5.task1.charPlus
 import java.io.File
 
 
@@ -460,12 +461,69 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
+
+
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
 
-    val containerTags =
-            mapOf("*open" to "<i>", "*close" to "</i>", "**open" to "<b>", "**close" to "</b>",
-                    "~~open" to "<s>", "~~close" to "</s>")
+    val containerUseTags =
+            Triple(Triple(true, true, true),
+                    mapOf("**" to "<b>", "~~" to "<s>", "*" to "<i>"),
+                    mapOf("**" to "</b>", "~~" to "</s>", "*" to "</i>"))
+    val containerTag = listOf("**", "~~", "*")
 
+    File(outputName).bufferedWriter().use {
+
+        it.write("<html>\n" +
+                "<body>\n" +
+                "<p>")
+
+
+        for (line in File(inputName).readLines()) {
+            var index = 0
+            while (index < line.length) {
+
+                val symbol: String
+                val tag =
+                        when {
+                            index < line.length - 1 &&
+                                    charPlus(line[index], line[index + 1]) in containerTag -> {
+                                charPlus(line[index], line[index + 1])
+                            }
+                            line[index].toString() in containerTag -> line[index].toString()
+                            else -> ""
+                        }
+
+                when (tag) {
+                    "**" -> {
+                        symbol = if (containerUseTags.first.first)
+                            containerUseTags.second[tag]!!
+                        else
+                            containerUseTags.third[tag]!!
+                    }
+                    "~~" -> {
+
+                        symbol = if (containerUseTags.first.second)
+                            containerUseTags.second[tag]!!
+                        else
+                            containerUseTags.third[tag]!!
+                    }
+                    "*" -> {
+                        symbol = if (containerUseTags.first.third)
+                            containerUseTags.second[tag]!!
+                        else
+                            containerUseTags.third[tag]!!
+                    }
+                    else -> symbol = ""
+                }
+
+                if (symbol != "") it.write(symbol) else it.append(line[index])
+                if (symbol.length == 2) index += 2 else index++
+
+
+            }
+
+        }
+    }
 }
 
 /**
