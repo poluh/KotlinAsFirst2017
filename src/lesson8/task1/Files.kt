@@ -478,8 +478,8 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                     "*" to Pair("<i>", "</i>"))
 
     File(outputName).bufferedWriter().use {
-        it.append("<html>\n" +
-                "<body>\n" +
+        it.append("<html>" +
+                "<body>" +
                 "<p>")
         for (line in File(inputName).readLines()) {
             var index = 0
@@ -500,10 +500,10 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 it.append(line[index])
                 index++
             }
-            if (line.isEmpty()) it.append("</p>\n<p>")
+            if (line.isEmpty()) it.append("</p><p>")
         }
-        it.append("</p>\n" +
-                "</body>\n" +
+        it.append("</p>" +
+                "</body>" +
                 "</html>")
     }
 }
