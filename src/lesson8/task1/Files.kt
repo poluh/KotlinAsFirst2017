@@ -476,7 +476,6 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             mapOf("**" to Pair("<b>", "</b>"),
                     "~~" to Pair("<s>", "</s>"),
                     "*" to Pair("<i>", "</i>"))
-
     File(outputName).bufferedWriter().use {
         it.append("<html>" +
                 "<body>" +
@@ -486,9 +485,11 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             while (index < line.length) {
                 var tag = whereTag(line, index, containerDetectors)
                 while (tag in containerDetectors.keys) {
-                    when {
-                        containerDetectors[tag]!! -> it.append(containerTags[tag]?.first)
-                        else -> it.append(containerTags[tag]?.second)
+                    if (containerDetectors[tag]!!) {
+                        if (line.lastIndexOf(tag[tag.length - 1]) !in listOf(index, index + 1))
+                            it.append(containerTags[tag]?.first)
+                    } else {
+                        it.append(containerTags[tag]?.second)
                     }
                     containerDetectors[tag] = !containerDetectors[tag]!!
                     if (tag.length == 2) index += 2 else index++
@@ -505,6 +506,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 "</html>")
     }
 }
+
 
 /**
  * Сложная
