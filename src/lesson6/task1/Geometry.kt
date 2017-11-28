@@ -140,9 +140,10 @@ fun diameter(vararg points: Point): Segment {
  * Центр её должен находиться посередине между точками, а радиус составлять половину расстояния между ними
  */
 fun circleByDiameter(diameter: Segment): Circle =
-        Circle(Point((diameter.begin.x + diameter.end.x) / 2.0,
-                (diameter.begin.y + diameter.end.y) / 2.0),
-                diameter.begin.distance(diameter.end) / 2.0)
+        Circle(Point((diameter.begin.x + diameter.end.x) / 2,
+                (diameter.begin.y + diameter.end.y) / 2),
+                diameter.begin.distance(Point((diameter.begin.x + diameter.end.x) / 2,
+                        (diameter.begin.y + diameter.end.y) / 2)))
 
 /**
  * Прямая, заданная точкой point и углом наклона angle (в радианах) по отношению к оси X.
@@ -303,6 +304,7 @@ fun minContainingCircle(vararg points: Point): Circle {
     if (points.isEmpty()) throw IllegalArgumentException("Invalid container points.")
     if (points.count() == 1) return Circle(points[0], 0.0)
     if (points.count() == 2) return circleByDiameter(Segment(points[0], points[1]))
+    if (points.count() == 3) return circleByThreePoints(points[0], points[1], points[2])
 
     var bigCircle = Circle(Point(0.0, 0.0), 100000.0)
 

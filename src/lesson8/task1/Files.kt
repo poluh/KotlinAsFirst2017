@@ -484,18 +484,16 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         for (line in File(inputName).readLines()) {
             var index = 0
             while (index < line.length) {
-                if (index < line.length) {
-                    var tag = whereTag(line, index, containerDetectors)
-                    while (tag in containerDetectors.keys) {
-                        when {
-                            containerDetectors[tag]!! -> it.append(containerTags[tag]?.first)
-                            else -> it.append(containerTags[tag]?.second)
-                        }
-                        containerDetectors[tag] = !containerDetectors[tag]!!
-                        if (tag.length == 2) index += 2 else index++
-
-                        tag = whereTag(line, index, containerDetectors)
+                var tag = whereTag(line, index, containerDetectors)
+                while (tag in containerDetectors.keys) {
+                    when {
+                        containerDetectors[tag]!! -> it.append(containerTags[tag]?.first)
+                        else -> it.append(containerTags[tag]?.second)
                     }
+                    containerDetectors[tag] = !containerDetectors[tag]!!
+                    if (tag.length == 2) index += 2 else index++
+
+                    tag = whereTag(line, index, containerDetectors)
                 }
                 it.append(line[index])
                 index++
