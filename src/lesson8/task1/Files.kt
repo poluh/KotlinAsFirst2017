@@ -462,67 +462,49 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 
+fun whereTag(line: String, index: Int, containerDetectors: MutableMap<String, Boolean>): String =
+        if (index < line.length - 1 &&
+                charPlus(line[index], line[index + 1]) in containerDetectors.keys) {
+            charPlus(line[index], line[index + 1])
+        } else line[index].toString()
 
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
 
-    val containerUseTags =
-            Triple(Triple(true, true, true),
-                    mapOf("**" to "<b>", "~~" to "<s>", "*" to "<i>"),
-                    mapOf("**" to "</b>", "~~" to "</s>", "*" to "</i>"))
-    val containerTag = listOf("**", "~~", "*")
+    val containerDetectors =
+            mutableMapOf("**" to true, "~~" to true, "*" to true)
+    val containerTags =
+            mapOf("**" to Pair("<b>", "</b>"),
+                    "~~" to Pair("<s>", "</s>"),
+                    "*" to Pair("<i>", "</i>"))
 
     File(outputName).bufferedWriter().use {
-
-        it.write("<html>\n" +
+        it.append("<html>\n" +
                 "<body>\n" +
                 "<p>")
-
-
         for (line in File(inputName).readLines()) {
             var index = 0
             while (index < line.length) {
-
-                val symbol: String
-                val tag =
+                if (index < line.length) {
+                    var tag = whereTag(line, index, containerDetectors)
+                    while (tag in containerDetectors.keys) {
                         when {
-                            index < line.length - 1 &&
-                                    charPlus(line[index], line[index + 1]) in containerTag -> {
-                                charPlus(line[index], line[index + 1])
-                            }
-                            line[index].toString() in containerTag -> line[index].toString()
-                            else -> ""
+                            containerDetectors[tag]!! -> it.append(containerTags[tag]?.first)
+                            else -> it.append(containerTags[tag]?.second)
                         }
+                        containerDetectors[tag] = !containerDetectors[tag]!!
+                        if (tag.length == 2) index += 2 else index++
 
-                when (tag) {
-                    "**" -> {
-                        symbol = if (containerUseTags.first.first)
-                            containerUseTags.second[tag]!!
-                        else
-                            containerUseTags.third[tag]!!
+                        tag = whereTag(line, index, containerDetectors)
                     }
-                    "~~" -> {
-
-                        symbol = if (containerUseTags.first.second)
-                            containerUseTags.second[tag]!!
-                        else
-                            containerUseTags.third[tag]!!
-                    }
-                    "*" -> {
-                        symbol = if (containerUseTags.first.third)
-                            containerUseTags.second[tag]!!
-                        else
-                            containerUseTags.third[tag]!!
-                    }
-                    else -> symbol = ""
                 }
-
-                if (symbol != "") it.write(symbol) else it.append(line[index])
-                if (symbol.length == 2) index += 2 else index++
-
-
+                it.append(line[index])
+                index++
             }
-
+            if (line.isEmpty()) it.append("</p>\n<p>")
         }
+        it.append("</p>\n" +
+                "</body>\n" +
+                "</html>")
     }
 }
 
