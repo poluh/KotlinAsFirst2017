@@ -161,7 +161,7 @@ fun longestString(inputName: String): Int {
 
     var max = 0
     for (line in File(inputName).readLines()) {
-        max = Math.max(Regex("\\s+").replace(line, " ").length, max)
+        max = Math.max(line.trim().length, max)
     }
 
     return max
@@ -170,7 +170,6 @@ fun longestString(inputName: String): Int {
 fun centerFile(inputName: String, outputName: String) {
 
     val max = longestString(inputName)
-
     File(outputName).bufferedWriter().use {
         for (line in File(inputName).readLines()) {
             it.append(((max - line.trim().length) / 2 - 1).createGaps())
@@ -178,7 +177,6 @@ fun centerFile(inputName: String, outputName: String) {
             it.newLine()
         }
     }
-
 }
 
 /**
@@ -380,7 +378,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 
-fun String.ifDifferentLetters(): Boolean {
+fun String.isDifferentLetters(): Boolean {
     val line = this.toLowerCase()
     val containerLetter = mutableListOf<Char>()
     for (letter in line) {
@@ -391,29 +389,34 @@ fun String.ifDifferentLetters(): Boolean {
     return (containerLetter.size == line.length)
 }
 
-fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-
-    val containerWord = mutableListOf<String>()
-    var theMaxLength = File(inputName).readLines()[0].length
-    for (word in File(inputName).readLines()) {
-        if (word.ifDifferentLetters()) {
-            if (word.length >= theMaxLength) {
-                theMaxLength = word.length
-                containerWord += word
-            }
+fun String.maxWord(): Int {
+    var maxWord = 0
+    for (word in File(this).readLines()) {
+        if (word.isDifferentLetters() && word.length > maxWord) {
+            maxWord = word.length
         }
     }
+    return maxWord
+}
+
+fun chooseLongestChaoticWord(inputName: String, outputName: String) {
+
+    val theMaxLength = inputName.maxWord()
+    val readFile = File(inputName).readLines()
+    val answerWords = mutableListOf<String>()
 
     File(outputName).bufferedWriter().use {
-        if (containerWord.size > 1) {
-            for ((index, word) in containerWord.withIndex()) {
-                it.append(word)
-                if (index != containerWord.size - 1) {
-                    it.append(", ")
+        if (readFile.size > 1) {
+            for (word in readFile) {
+                if (word.isDifferentLetters() && word.length == theMaxLength) {
+                    answerWords += word
                 }
             }
+            if (answerWords.isEmpty()) {
+                it.append(answerWords.joinToString(", "))
+            } else it.append("")
         } else {
-            it.append(containerWord[0])
+            it.append(readFile[0])
         }
     }
 }
@@ -486,8 +489,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 var tag = whereTag(line, index, containerDetectors)
                 while (tag in containerDetectors.keys) {
                     if (containerDetectors[tag]!!) {
-                        if (line.lastIndexOf(tag[tag.length - 1]) !in listOf(index, index + 1))
-                            it.append(containerTags[tag]?.first)
+                        it.append(containerTags[tag]?.first)
                     } else {
                         it.append(containerTags[tag]?.second)
                     }

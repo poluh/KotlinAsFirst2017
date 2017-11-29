@@ -133,7 +133,6 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> {
 
        for (j in (argument - 1) until (width - argument + 1)) {
            matrix[argument - 1, j] = argument
-
        }
        for (j in argument until (height - argument + 1)) {
            matrix[j, width - argument] = argument
