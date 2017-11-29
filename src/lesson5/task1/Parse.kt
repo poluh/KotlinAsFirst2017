@@ -202,8 +202,8 @@ fun bestLongJump(jumps: String): Int {
  */
 fun bestHighJump(jumps: String): Int {
 
-    val isTrueStr = (jumps + " ").matches(Regex("""(?:(?:\s*\d+\s+[-+%]+\s+)+)"""))
-    if (!isTrueStr) return -1
+    val isJumps = Regex("""\d+\s+[-+%]+""").replace(jumps, "")
+    if (!isJumps.matches(Regex("\\s*"))) return -1
 
     val containerParts =
             Regex("\\s+").replace(jumps, " ").filter {
