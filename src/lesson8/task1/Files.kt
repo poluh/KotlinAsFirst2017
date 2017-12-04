@@ -78,14 +78,14 @@ fun String.findOccurrences(substrings: String): Int {
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
 
     val answer = mutableMapOf<String, Int>()
-    var allText = ""
+    val allText = StringBuilder()
 
     for (line in File(inputName).readLines()) {
-        allText += line.toLowerCase() + " "
+        allText.append(line.toLowerCase() + " ")
     }
 
     for (substr in substrings) {
-        answer[substr] = allText.findOccurrences(substr.toLowerCase())
+        answer[substr] = allText.toString().findOccurrences(substr.toLowerCase())
     }
 
     return answer
@@ -149,12 +149,12 @@ fun sibilants(inputName: String, outputName: String) {
 
 fun Int.createGaps(): String {
 
-    var answer = ""
+    val answer = StringBuilder()
     for (i in 0..this) {
-        answer += " "
+        answer.append(" ")
     }
 
-    return answer
+    return answer.toString()
 }
 
 fun longestString(inputName: String): Int {
@@ -262,10 +262,10 @@ fun MutableMap<String, Int>.sorted(words: List<String>): Map<String, Int> {
 
     val map = mutableMapOf<String, Int>()
 
-    for (i in 0..19) {
+    for (i in 0..Math.min(19, this.size)) {
         val max = this.max(words)
         map[max.first] = max.second
-        this[max.first] = 1
+        this[max.first] = 0
     }
     return map
 }
@@ -282,7 +282,7 @@ fun top20Words(inputName: String): Map<String, Int> {
 
             if (word != "") {
                 if (answer[word] != null) {
-                    val plus = answer[word]?.plus(1) ?: 1
+                    val plus = answer[word]!! + 1
                     answer[word] = plus
                 } else {
                     containerWords += word
@@ -324,31 +324,32 @@ fun top20Words(inputName: String): Map<String, Int> {
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
 
-    var lines = ""
-    val fileInput = File(inputName).readLines()
-
-
-    for ((indexLine, line) in fileInput.withIndex()) {
-        for (index in 0 until line.length) {
-            lines += when {
-                dictionary[line[index].toLowerCase()] != null -> dictionary[line[index].toLowerCase()]
-                dictionary[line[index].toUpperCase()] != null -> dictionary[line[index].toUpperCase()]
-                else -> line[index]
-            }
-        }
-        if (indexLine != fileInput.size - 1) {
-            lines += "\n"
-        }
-    }
+    var line = StringBuilder()
 
     File(outputName).bufferedWriter().use {
-        for (index in 0 until lines.length) {
-            if (index == 0) {
-                it.append(lines[index].toUpperCase())
-            } else {
-                it.append(lines[index])
+
+        for ((fileIndex, fileLine) in File(inputName).readLines().withIndex()) {
+            for (index in 0 until fileLine.length) {
+                val char = fileLine[index]
+                var appendChar = ""
+                when {
+                    !dictionary[char.toLowerCase()].isNullOrEmpty() ->
+                        appendChar = dictionary[char.toLowerCase()]!!
+                    !dictionary[char.toUpperCase()].isNullOrEmpty() ->
+                        appendChar = dictionary[char.toUpperCase()]!!
+                }
+                if (appendChar != "") {
+                    line.append(appendChar)
+                } else line.append(fileLine[index])
             }
+            if (line.isNotEmpty() && fileIndex == 0) {
+                it.append("${line[0].toUpperCase()}${line.substring(1)}")
+            } else it.append(line)
+            it.newLine()
+            line = StringBuilder("")
         }
+
+
     }
 
 }
@@ -414,9 +415,12 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
             }
             if (answerWords.isEmpty()) {
                 it.append(answerWords.joinToString(", "))
-            } else it.append("")
+            } else
+                it.append("")
         } else {
-            it.append(readFile[0])
+            if (readFile[0].isNotEmpty() && readFile[0].isDifferentLetters()) {
+                it.append(readFile[0])
+            } else it.append("")
         }
     }
 }

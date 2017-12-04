@@ -535,6 +535,7 @@ fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> {
 
     for (move in moves) {
         for ((first, second) in containerMoveZero) {
+            var moving = 0
             val positionZero = matrix.indexOf(0)
             if (positionZero.column == -1) throw IllegalStateException("Invalid zero.")
 
@@ -544,6 +545,9 @@ fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> {
                 matrix.swapElement(positionZero, movePosition)
                 break
             }
+            moving++
+            if (moving == 3) throw IllegalStateException("Invalid move.")
+
         }
     }
 
