@@ -332,6 +332,8 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
             for (index in 0 until fileLine.length) {
                 val char = fileLine[index]
                 var appendChar = ""
+                //  Символ из таблицы
+                //  Проверяем, существует ли он игнорируя регистр ключа
                 when {
                     !dictionary[char.toLowerCase()].isNullOrEmpty() ->
                         appendChar = dictionary[char.toLowerCase()]!!

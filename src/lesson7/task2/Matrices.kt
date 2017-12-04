@@ -117,35 +117,40 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
  *  1  1  1  1  1  1
  */
 
-fun Matrix<Int>.toRectangle(argumentFirst: Pair<Int, Int>, argumentSecond: Pair<Int, Int>, mainArgument: Int) {
+/*
+ *
+ * ／ﾌﾌ 　　　　　 　　 　ム｀ヽ
+ * / ノ)　　 ∧　　∧　　　　）　ヽ
+ * / ｜　　(´・ω ・`）ノ⌒（ゝ._,ノ
+ * /　ﾉ⌒＿⌒ゝーく　 ＼　　／
+ * 丶＿ ノ 　　 ノ､　　|　/
+ *　 `ヽ `ー-‘人`ーﾉ /
+ * 　　 丶 ￣ _人’彡ﾉ
+ *　　／｀ヽ _/\__'
+ */
 
-
-
+fun Matrix<Int>.generatePerimeter(argument: Int) {
+    for (i in (argument - 1) until (this.height - argument + 1)) {
+        for (j in (argument - 1) until (this.width - argument + 1)) {
+            this[i, j] = argument
+        }
+    }
 }
 
-// Проще ничего в голову не лезет
 fun generateRectangles(height: Int, width: Int): Matrix<Int> {
 
     val matrix = createMatrix(height, width, 1)
-    var argument = 1
+    val depth =
+            if (maxOf(height, width) % 2 == 0) {
+                maxOf(height, width) / 2
+            } else maxOf(height, width) / 2 + 1
+    var argument = 2
 
-   for (k in 1..height * width) {
-
-       for (j in (argument - 1) until (width - argument + 1)) {
-           matrix[argument - 1, j] = argument
-       }
-       for (j in argument until (height - argument + 1)) {
-           matrix[j, width - argument] = argument
-       }
-       for (j in (width - argument - 1) downTo (argument - 1)) {
-           matrix[height - argument, j] = argument
-       }
-       for (j in (height - argument - 1) downTo argument) {
-           matrix[j, argument - 1] = argument
-       }
-
-       argument++
+    (1..depth).forEach {
+        matrix.generatePerimeter(argument)
+        argument++
     }
+
     return matrix
 }
 
@@ -162,7 +167,31 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> {
  * 10 13 16 18
  * 14 17 19 20
  */
-fun generateSnake(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateSnake(height: Int, width: Int): Matrix<Int> {
+
+    var row = 0; var column = 0
+    var newRow = 0; var newColumn = 0
+
+    val matrix = createMatrix(height, width, 0)
+    for (argument in 1..height * width) {
+
+        when {
+            column == 0 || row == height - 1 -> if (newColumn == width - 1) newRow++
+            else if (newColumn < width - 1) newColumn++
+        }
+
+        matrix[row, column] = argument
+        row++
+        column--
+
+        if (row == height || column == -1) {
+            row = newRow
+            column = newColumn
+        }
+    }
+    return matrix
+
+}
 
 /**
  * Средняя
@@ -216,7 +245,7 @@ fun isLatinSquare(matrix: Matrix<Int>): Boolean {
     var compositionX = 0
     var compositionY = compositionX
     val buf = if (matrix.width > 2) factorial(matrix.width).toInt()
-                    else factorial(matrix.width).toInt() + 1
+    else factorial(matrix.width).toInt() + 1
 
     val rotateMatrix = rotate(matrix)
 
