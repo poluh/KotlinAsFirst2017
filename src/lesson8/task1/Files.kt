@@ -272,26 +272,20 @@ fun MutableMap<String, Int>.sorted(words: List<String>): Map<String, Int> {
 
 fun top20Words(inputName: String): Map<String, Int> {
 
-    val answer = mutableMapOf<String, Int>()
     val containerWords = mutableListOf<String>()
 
     for (line in File(inputName).readLines()) {
         for (dampWord in Regex("\\s+").split(line)) {
-            var word = dampWord.toLowerCase()
-            word = Regex("""[^а-яa-zА-ЯA-Z]+""").replace(word, "")
-
-            if (word != "") {
-                if (answer[word] != null) {
-                    val plus = answer[word]!! + 1
-                    answer[word] = plus
-                } else {
-                    containerWords += word
-                    answer[word] = 1
-                }
+            var word = Regex("""[^а-яa-zА-ЯA-Z]+""")
+                    .replace(dampWord.toLowerCase(), "")
+            if (word.isNotEmpty()) {
+                if (containerWords.indexOf(word) == -1) containerWords += word
             }
         }
     }
-    print(containerWords)
+
+    val answer  = countSubstrings(inputName, containerWords).toMutableMap()
+    print(answer)
     return answer.sorted(containerWords)
 
 }
@@ -382,48 +376,29 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  */
 
 fun String.isDifferentLetters(): Boolean {
-    val line = this.toLowerCase()
-    val containerLetter = mutableListOf<Char>()
-    for (letter in line) {
-        if (containerLetter.indexOf(letter) == -1) {
-            containerLetter += letter
-        }
-    }
-    return (containerLetter.size == line.length)
+    this.forEach { char -> if (this.indexOf(char) != this.lastIndexOf(char)) return false }
+    return true
 }
 
 fun String.maxWord(): Int {
     var maxWord = 0
-    for (word in File(this).readLines()) {
-        if (word.isDifferentLetters() && word.length > maxWord) {
-            maxWord = word.length
-        }
-    }
+    File(this).readLines()
+            .asSequence()
+            .filter { it.toLowerCase().isDifferentLetters() && it.length > maxWord }
+            .forEach { maxWord = it.length }
     return maxWord
 }
 
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
 
     val theMaxLength = inputName.maxWord()
-    val readFile = File(inputName).readLines()
     val answerWords = mutableListOf<String>()
-
     File(outputName).bufferedWriter().use {
-        if (readFile.size > 1) {
-            for (word in readFile) {
-                if (word.isDifferentLetters() && word.length == theMaxLength) {
-                    answerWords += word
-                }
-            }
-            if (answerWords.isEmpty()) {
-                it.append(answerWords.joinToString(", "))
-            } else
-                it.append("")
-        } else {
-            if (readFile[0].isNotEmpty() && readFile[0].isDifferentLetters()) {
-                it.append(readFile[0])
-            } else it.append("")
-        }
+        File(inputName).readLines()
+                .asSequence()
+                .filter { it.toLowerCase().isDifferentLetters() && it.length == theMaxLength }
+                .forEach { answerWords.add(it) }
+        it.append(answerWords.joinToString(separator = ", "))
     }
 }
 
