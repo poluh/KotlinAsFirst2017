@@ -2,6 +2,7 @@
 
 package lesson8.task1
 
+import lesson3.task1.digitNumber
 import lesson5.task1.charPlus
 import java.io.File
 
@@ -270,22 +271,30 @@ fun MutableMap<String, Int>.sorted(words: List<String>): Map<String, Int> {
     return map
 }
 
+
 fun top20Words(inputName: String): Map<String, Int> {
 
-    val containerWords = mutableListOf<String>()
-
+    val allText = StringBuilder()
     for (line in File(inputName).readLines()) {
-        for (dampWord in Regex("\\s+").split(line)) {
-            var word = Regex("""[^а-яa-zА-ЯA-Z]+""")
-                    .replace(dampWord.toLowerCase(), "")
-            if (word.isNotEmpty()) {
-                if (containerWords.indexOf(word) == -1) containerWords += word
-            }
-        }
+        allText.append(line.toLowerCase() + " ")
     }
 
-    val answer  = countSubstrings(inputName, containerWords).toMutableMap()
-    print(answer)
+    val containerWords = mutableListOf<String>()
+    File(inputName).readLines()
+            .flatMap { it.split(Regex("\\s+")) }
+            .filter {
+                it.matches(Regex("""[а-яА-Яa-zA-Z]+"""))
+                        && it.toLowerCase() !in containerWords
+            }
+            .forEach { containerWords.add(it.toLowerCase()) }
+
+    val answer = mutableMapOf<String, Int>()
+
+    /*for (word in containerWords) {
+        val result = Regex("\\b$word\\b").findAll(allText)
+        answer[word] = result.toList().size
+    }*/
+
     return answer.sorted(containerWords)
 
 }
@@ -627,41 +636,36 @@ fun markdownToHtml(inputName: String, outputName: String) {
  */
 
 fun Int.createDelimiter(): String {
-    var answer = ""
-    for (i in 1..this) {
-        answer += "-"
-    }
-
-    return answer
+    val answer = StringBuilder()
+    (1..this).forEach { i -> answer.append("-") }
+    return answer.toString()
 }
 
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 
-    val delimiter = (lhv.toString().length + rhv.toString().length).createDelimiter()
+    val with = digitNumber(lhv * rhv * 10)
+    val delimiter = with.createDelimiter()
+    val lhvLength = digitNumber(lhv)
+    val rhvLength = digitNumber(rhv)
     var secondFactor = rhv
 
     File(outputName).bufferedWriter().use {
-        it.append((rhv.toString().length - 1).createGaps() + "$lhv\n")
-        it.append("*" + (delimiter.length - rhv.toString().length - 2).createGaps() + "$rhv\n")
-        it.append(delimiter + "\n")
+        it.append("${(with - lhvLength - 1).createGaps()}$lhv\n")
+        it.append("*${(with - rhvLength - 2).createGaps()}$rhv\n")
+        it.append("$delimiter\n")
+        it.append((with - digitNumber(secondFactor % 10 * lhv) - 1).createGaps() +
+                "${secondFactor % 10 * lhv}\n")
+        secondFactor /= 10
 
-        for (i in 1..(secondFactor.toString().length)) {
-
-            val space = if (i != 1) {
-                it.append("\n+")
-                (secondFactor.toString().length - 2).createGaps()
-            } else {
-                (secondFactor.toString().length - 1).createGaps()
-            }
-
-            it.append(space + "${lhv * (secondFactor % 10)}")
+        var shift = 3
+        while (secondFactor > 0) {
+            val interim = secondFactor % 10 * lhv
             secondFactor /= 10
+            it.append("+${(with - digitNumber(interim) - shift).createGaps()}$interim\n")
+            shift++
         }
 
-        it.append("\n" + delimiter + "\n")
-        it.append((delimiter.length - (lhv * rhv).toString().length - 1).createGaps() + "${lhv * rhv}")
-
-
+        it.append("$delimiter\n ${lhv * rhv}")
     }
 
 }
