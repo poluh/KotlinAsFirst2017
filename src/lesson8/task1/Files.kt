@@ -637,37 +637,37 @@ fun markdownToHtml(inputName: String, outputName: String) {
 
 fun Int.createDelimiter(): String {
     val answer = StringBuilder()
-    (1..this).forEach { i -> answer.append("-") }
+    (1..this).forEach { answer.append("-") }
     return answer.toString()
 }
 
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 
-    val with = digitNumber(lhv * rhv * 10)
+    val with = if (lhv * rhv > 0) {
+        digitNumber(lhv * rhv * 10)
+    } else digitNumber(lhv * rhv * 10) + 2
+
     val delimiter = with.createDelimiter()
-    val lhvLength = digitNumber(lhv)
-    val rhvLength = digitNumber(rhv)
     var secondFactor = rhv
+    var interim = secondFactor % 10 * lhv
 
     File(outputName).bufferedWriter().use {
-        it.append("${(with - lhvLength - 1).createGaps()}$lhv\n")
-        it.append("*${(with - rhvLength - 2).createGaps()}$rhv\n")
+        it.append("${(with - digitNumber(lhv) - 1).createGaps()}$lhv\n")
+        it.append("*${(with - digitNumber(rhv) - 2).createGaps()}$rhv\n")
         it.append("$delimiter\n")
-        it.append((with - digitNumber(secondFactor % 10 * lhv) - 1).createGaps() +
-                "${secondFactor % 10 * lhv}\n")
+        it.append((with - digitNumber(interim) - 1).createGaps() +
+                "$interim\n")
         secondFactor /= 10
 
         var shift = 3
         while (secondFactor > 0) {
-            val interim = secondFactor % 10 * lhv
+            interim = secondFactor % 10 * lhv
             secondFactor /= 10
             it.append("+${(with - digitNumber(interim) - shift).createGaps()}$interim\n")
             shift++
         }
-
         it.append("$delimiter\n ${lhv * rhv}")
     }
-
 }
 
 
