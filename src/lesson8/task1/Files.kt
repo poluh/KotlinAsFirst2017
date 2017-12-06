@@ -644,8 +644,8 @@ fun Int.createDelimiter(): String {
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 
     val with = if (lhv * rhv > 0) {
-        digitNumber(lhv * rhv * 10)
-    } else digitNumber(lhv * rhv * 10) + 2
+        digitNumber(lhv * rhv) + 1
+    } else digitNumber(lhv * rhv) + 2
 
     val delimiter = with.createDelimiter()
     var secondFactor = rhv
