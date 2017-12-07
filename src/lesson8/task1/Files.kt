@@ -244,41 +244,33 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  * Ключи в ассоциативном массиве должны быть в нижнем регистре.
  *
  */
+fun <E> Map<E, Int>.bubbleSort(): Map<E, Int> {
+    val containerKey = keys.toMutableList()
+    val containerSortedValues = values.toMutableList()
 
-fun Map<String, Int>.max(words: List<String>): Pair<String, Int> {
-    var max = 0
-    var keyWord = ""
-    for (word in words) {
-        if (this[word] != null) {
-            if (this[word]!! > max) {
-                max = this[word]!!
-                keyWord = word
+    (containerSortedValues.size - 1 downTo 1).forEach { i ->
+        (0 until i).forEach { j ->
+            if (containerSortedValues[j] < containerSortedValues[j + 1]) {
+                val temp = Pair(containerSortedValues[j], containerKey[j])
+                containerSortedValues[j] = containerSortedValues[j + 1]
+                containerSortedValues[j + 1] = temp.first
+                containerKey[j] = containerKey[j + 1]
+                containerKey[j] = temp.second
             }
         }
     }
-    return Pair(keyWord, max)
+    val answer = mutableMapOf<E, Int>()
+    containerKey.withIndex().forEach { (index, key) -> answer[key] = containerSortedValues[index] }
+    return answer
 }
 
-fun MutableMap<String, Int>.sorted(words: List<String>): Map<String, Int> {
-
-    val map = mutableMapOf<String, Int>()
-
-    for (i in 0..Math.min(19, this.size)) {
-        val max = this.max(words)
-        map[max.first] = max.second
-        this[max.first] = 0
-    }
-    return map
-}
+fun MutableMap<String, Int>.count(container: List<String>, text: String) =
+        container.forEach { key -> this[key] = text.split(Regex("\\b$key\\b")).size - 1 }
 
 
 fun top20Words(inputName: String): Map<String, Int> {
-
-    val allText = StringBuilder()
-    for (line in File(inputName).readLines()) {
-        allText.append(line.toLowerCase() + " ")
-    }
-
+    val answer = mutableMapOf<String, Int>()
+    val allText = File(inputName).readText().toLowerCase()
     val containerWords = mutableListOf<String>()
     File(inputName).readLines()
             .flatMap { it.split(Regex("\\s+")) }
@@ -286,16 +278,20 @@ fun top20Words(inputName: String): Map<String, Int> {
                 it.matches(Regex("""[а-яА-Яa-zA-Z]+"""))
                         && it.toLowerCase() !in containerWords
             }
-            .forEach { containerWords.add(it.toLowerCase()) }
+            .forEach {
+                containerWords.add(it.toLowerCase())
+                answer[it.toLowerCase()] = 0
+            }
 
-    val answer = mutableMapOf<String, Int>()
+    answer.count(containerWords, allText)
+
 
     /*for (word in containerWords) {
         val result = Regex("\\b$word\\b").findAll(allText)
         answer[word] = result.toList().size
     }*/
 
-    return answer.sorted(containerWords)
+    return answer.bubbleSort()
 
 }
 
