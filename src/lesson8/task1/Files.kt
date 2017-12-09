@@ -4,6 +4,7 @@ package lesson8.task1
 
 import lesson3.task1.digitNumber
 import lesson5.task1.charPlus
+import lesson5.task1.findIndexBrackets
 import java.io.File
 
 
@@ -255,42 +256,32 @@ fun <E> Map<E, Int>.bubbleSort(): Map<E, Int> {
                 containerSortedValues[j] = containerSortedValues[j + 1]
                 containerSortedValues[j + 1] = temp.first
                 containerKey[j] = containerKey[j + 1]
-                containerKey[j] = temp.second
+                containerKey[j + 1] = temp.second
             }
         }
     }
     val answer = mutableMapOf<E, Int>()
-    containerKey.withIndex().forEach { (index, key) -> answer[key] = containerSortedValues[index] }
+    for ((index, key) in containerKey.withIndex()) {
+        answer[key] = containerSortedValues[index]
+        if (index == minOf(19, containerKey.size)) break
+    }
     return answer
 }
 
-fun MutableMap<String, Int>.count(container: List<String>, text: String) =
-        container.forEach { key -> this[key] = text.split(Regex("\\b$key\\b")).size - 1 }
-
+fun MutableMap<String, Int>.count(text: String) =
+        keys.toList().filter { it != "" }.forEach { key -> this[key] = text.split(Regex("\\b$key\\b")).size - 1 }
 
 fun top20Words(inputName: String): Map<String, Int> {
     val answer = mutableMapOf<String, Int>()
-    val allText = File(inputName).readText().toLowerCase()
-    val containerWords = mutableListOf<String>()
-    File(inputName).readLines()
-            .flatMap { it.split(Regex("\\s+")) }
-            .filter {
-                it.matches(Regex("""[а-яА-Яa-zA-Z]+"""))
-                        && it.toLowerCase() !in containerWords
-            }
-            .forEach {
-                containerWords.add(it.toLowerCase())
-                answer[it.toLowerCase()] = 0
-            }
-
-    answer.count(containerWords, allText)
-
-
-    /*for (word in containerWords) {
-        val result = Regex("\\b$word\\b").findAll(allText)
-        answer[word] = result.toList().size
-    }*/
-
+    val text = File(inputName).readText().toLowerCase()
+    val newText = StringBuilder()
+    text.forEach { char -> if (char.toString().matches(Regex("[\\sа-яA-Z]"))) newText.append(char) }
+    newText
+            .split(Regex("\\s+"))
+            .filter { it !in answer.keys }
+            .forEach { answer[it] = 0 }
+    print(answer.keys)
+    answer.count(newText.toString())
     return answer.bubbleSort()
 
 }
@@ -451,47 +442,41 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 
-fun whereTag(line: String, index: Int, containerDetectors: MutableMap<String, Boolean>): String =
-        if (index < line.length - 1 &&
-                charPlus(line[index], line[index + 1]) in containerDetectors.keys) {
-            charPlus(line[index], line[index + 1])
-        } else line[index].toString()
+fun whereTag(index: Int, text: String): String = text.substring(index, index + 3)
 
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-
     val containerDetectors =
-            mutableMapOf("**" to true, "~~" to true, "*" to true)
-    val containerTags =
-            mapOf("**" to Pair("<b>", "</b>"),
-                    "~~" to Pair("<s>", "</s>"),
-                    "*" to Pair("<i>", "</i>"))
+            mutableMapOf("<b>" to false, "<s>" to false, "<i>" to false)
+    val base = Pair("<html><body><p>", "</p></body></html>")
+    val dampText = base.first + File(inputName)
+            .readText()
+            .replace("*", "<i>")
+            .replace("~~", "<s>")
+            .replace("<i><i>", "<b>") +
+            base.second
+
     File(outputName).bufferedWriter().use {
-        it.append("<html>" +
-                "<body>" +
-                "<p>")
-        for (line in File(inputName).readLines()) {
-            var index = 0
-            while (index < line.length) {
-                var tag = whereTag(line, index, containerDetectors)
+        var index = 0
+        while (index < dampText.length) {
+            if (index < dampText.length - 3) {
+                var tag = whereTag(index, dampText)
                 while (tag in containerDetectors.keys) {
                     if (containerDetectors[tag]!!) {
-                        it.append(containerTags[tag]?.first)
+                        it.append("${tag[0]}/${tag.substring(1)}")
                     } else {
-                        it.append(containerTags[tag]?.second)
+                        it.append(tag)
                     }
                     containerDetectors[tag] = !containerDetectors[tag]!!
-                    if (tag.length == 2) index += 2 else index++
-
-                    tag = whereTag(line, index, containerDetectors)
+                    index += 3
+                    tag = whereTag(index, dampText)
                 }
-                it.append(line[index])
-                index++
             }
-            if (line.isEmpty()) it.append("</p><p>")
+
+            if (index < dampText.length - 1 &&
+                    dampText.substring(index, index + 2) == "\n\n") it.append("</p><p>")
+            it.append(dampText[index])
+            index++
         }
-        it.append("</p>" +
-                "</body>" +
-                "</html>")
     }
 }
 

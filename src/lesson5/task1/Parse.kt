@@ -205,16 +205,6 @@ fun bestHighJump(jumps: String): Int {
     val isJumps = Regex("""\d+\s+[-+%]+\s+""").replace(jumps + " ", "")
     if (!isJumps.matches(Regex("\\s*"))) return -1
 
-    // или, на всякий случай
-    // в следующем пуше уберу ненужное
-
-    val mfkJumps = jumps.split(Regex("\\s+"))
-    if (mfkJumps.size % 2 != 0) return -1
-
-    for (index in 0 until mfkJumps.size - 1 step 2) {
-        if (!mfkJumps[index].matches(Regex("\\d+")) ||
-                !mfkJumps[index + 1].matches(Regex("""([-+%]+)+"""))) return -1
-    }
 
     /* -----------(\/) (;,,;) (\/)-----------BAZINGA!
     *
