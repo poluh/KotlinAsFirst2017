@@ -3,8 +3,6 @@
 package lesson8.task1
 
 import lesson3.task1.digitNumber
-import lesson5.task1.charPlus
-import lesson5.task1.findIndexBrackets
 import java.io.File
 
 
@@ -441,42 +439,49 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
+fun findPair(text: String, tags: List<String>): List<Int> {
+    val answer = mutableListOf<Int>()
+    tags.forEach{ tag -> answer += Regex(tag).findAll(text).toList().size }
+    return answer
+}
 
-fun whereTag(index: Int, text: String): String = text.substring(index, index + 3)
+fun getTag(index: Int, text: String): String = text.substring(index, index + 3)
 
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val containerDetectors =
             mutableMapOf("<b>" to false, "<s>" to false, "<i>" to false)
     val base = Pair("<html><body><p>", "</p></body></html>")
-    val dampText = base.first + File(inputName)
-            .readText()
-            .replace("*", "<i>")
-            .replace("~~", "<s>")
-            .replace("<i><i>", "<b>") +
-            base.second
+    val countPairTags = findPair(File(inputName).readText(), containerDetectors.keys.toList())
 
     File(outputName).bufferedWriter().use {
-        var index = 0
-        while (index < dampText.length) {
-            if (index < dampText.length - 3) {
-                var tag = whereTag(index, dampText)
-                while (tag in containerDetectors.keys) {
-                    if (containerDetectors[tag]!!) {
-                        it.append("${tag[0]}/${tag.substring(1)}")
-                    } else {
-                        it.append(tag)
+        it.append(base.first)
+        for (line in File(inputName).readLines()) {
+            val dampText = line
+                    .replace("*", "<i>")
+                    .replace("~~", "<s>")
+                    .replace("<i><i>", "<b>")
+            var index = 0
+            while (index < dampText.length) {
+                if (index < dampText.length - 3) {
+                    var tag = getTag(index, dampText)
+                    while (tag in containerDetectors.keys) {
+                        if (containerDetectors[tag]!!) {
+                            it.append("${tag[0]}/${tag.substring(1)}")
+                        } else {
+                            it.append(tag)
+                        }
+                        containerDetectors[tag] = !containerDetectors[tag]!!
+                        index += 3
+                        if (index < dampText.length - 3) tag = getTag(index, dampText) else break
                     }
-                    containerDetectors[tag] = !containerDetectors[tag]!!
-                    index += 3
-                    tag = whereTag(index, dampText)
                 }
-            }
 
-            if (index < dampText.length - 1 &&
-                    dampText.substring(index, index + 2) == "\n\n") it.append("</p><p>")
-            it.append(dampText[index])
-            index++
+                it.append(dampText[index])
+                index++
+            }
+            if (line.isEmpty()) it.append("</p><p>")
         }
+        it.append(base.second)
     }
 }
 
@@ -575,7 +580,11 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlLists(inputName: String, outputName: String) {
-    TODO()
+
+    // Читаем файл
+    // Заменаяем * на <li>
+    // Если следующая строка свдинута, то облорачиваем в теги
+
 }
 
 /**
