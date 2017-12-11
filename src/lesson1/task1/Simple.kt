@@ -57,14 +57,12 @@ fun main(args: Array<String>) {
 fun seconds(hours: Int, minutes: Int, seconds: Int): Int = hours * 3600 + minutes * 60 + seconds
 
 
-
 /**
  * Тривиальная
  *
  *
  */
 fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double = (sagenes * 48 + arshins * 16 + vershoks) * 0.04445
-
 
 
 /**

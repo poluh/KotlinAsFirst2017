@@ -273,7 +273,7 @@ fun top20Words(inputName: String): Map<String, Int> {
     val answer = mutableMapOf<String, Int>()
     val text = File(inputName).readText().toLowerCase()
     val newText = StringBuilder()
-    text.forEach { char -> if (char.toString().matches(Regex("[\\sа-яA-Z]"))) newText.append(char) }
+    text.forEach { char -> if (char.toString().matches(Regex("[\\sа-яёa-z]"))) newText.append(char) }
     newText
             .split(Regex("\\s+"))
             .filter { it !in answer.keys }
@@ -312,7 +312,7 @@ fun top20Words(inputName: String): Map<String, Int> {
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
 
-    var line = StringBuilder()
+    val line = StringBuilder()
 
     File(outputName).bufferedWriter().use {
 
@@ -336,7 +336,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
                 it.append("${line[0].toUpperCase()}${line.substring(1)}")
             } else it.append(line)
             it.newLine()
-            line = StringBuilder("")
+            line.delete(0, line.length - 1)
         }
 
 
@@ -439,23 +439,30 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
-fun findPair(text: String, tags: List<String>): List<Int> {
-    val answer = mutableListOf<Int>()
-    tags.forEach{ tag -> answer += Regex(tag).findAll(text).toList().size }
+fun countTags(text: String, tags: List<String>): Map<String, Int> {
+    val answer = mutableMapOf<String, Int>()
+    tags.forEach { tag -> answer[tag] = Regex("""\$tag""").findAll(text).count() }
     return answer
 }
 
 fun getTag(index: Int, text: String): String = text.substring(index, index + 3)
 
+// При данной реализации пока не могу экспектировать закрытый ли тэг или нет,
+// на данный момент не охота расставаться с уже созданной концепцией.
+
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val containerDetectors =
             mutableMapOf("<b>" to false, "<s>" to false, "<i>" to false)
     val base = Pair("<html><body><p>", "</p></body></html>")
-    val countPairTags = findPair(File(inputName).readText(), containerDetectors.keys.toList())
+    val countOfTagsIntText = countTags(File(inputName).readText(), listOf("**", "*", "~~"))
+    val checkPair = mutableMapOf<String, Boolean>()
+    for (key in countOfTagsIntText.keys) {
+        if (countOfTagsIntText[key]!! % 2 != 0) checkPair[key] = false
+    }
 
     File(outputName).bufferedWriter().use {
         it.append(base.first)
-        for (line in File(inputName).readLines()) {
+        for ((indexLines, line) in File(inputName).readLines().withIndex()) {
             val dampText = line
                     .replace("*", "<i>")
                     .replace("~~", "<s>")
